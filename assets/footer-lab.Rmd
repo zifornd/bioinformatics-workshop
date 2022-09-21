@@ -1,0 +1,33 @@
+---
+title: "&nbsp;"
+---
+
+<footer class="footer">
+<div class="container footer-container">
+<div class="row">
+
+<div class="col-sm-8" style="text-align:left;vertical-align:middle;">
+<p class="small" style="color:#bdbdbd;">
+<b>2022</b> • [Zifo](https://www.zifornd.com)
+</p>
+</div>
+
+<div class="col-sm-4" style="text-align:right;vertical-align:middle;">
+<p style="color:#bdbdbd;">
+<span>
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://www.zifornd.com">`r fontawesome::fa("globe",fill="#bdbdbd")`</a>
+</span>
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://twitter.com/zifornd">`r fontawesome::fa("twitter",fill="#bdbdbd")`</a>
+</span>
+<span class="footericon" style="padding-left:4px">
+<a href="https://www.linkedin.com/company/zifo-technologies">`r fontawesome::fa("linkedin",fill="#bdbdbd")`</a>
+</span>
+</span>
+</p>
+</div>
+
+</div>
+</div>
+</footer>
