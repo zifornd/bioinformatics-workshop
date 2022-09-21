@@ -1,0 +1,364 @@
+---
+title: "RNA sequencing"
+subtitle: "RNA-seq data analysis"
+author: "`r paste0('<b>James Ashmore</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo RnD Solutions
+keywords: rnaseq
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: false
+    chakra: 'assets/remark-latest.min.js'
+    css: 'assets/slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+exclude: true
+count: false
+
+```{r,echo=FALSE,child="assets/header-slide.Rmd"}
+```
+
+<!-- ------------ Only edit title, subtitle & author above this ------------ -->
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+```
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+library(kableExtra)
+```
+
+---
+
+# Introduction
+
+## Overview of RNA-seq
+
+* Gene expression studies get a snapshot of the RNA molecules present in a biological system
+
+* Gene expression dictates what cells are doing or what cells are capable of doing
+
+* A basic overview of the main steps in a standard RNA-seq experiment is given below
+
+<br>
+
+```{r, fig.cap = "A typical RNA-seq experiment", out.width = "75%"}
+knitr::include_graphics("images/rnaseq-protocol.png")
+```
+
+???
+
+* The first step is the extraction and purification of RNA from a sample, followed by an enrichment of target RNAs
+
+* Most commonly used is poly(A) capture, to select for polyadenylated RNAs
+
+* Or ribosomal depletion, to deplete ribosomal RNAs that are highly abundant in a cell
+
+* The selected RNAs are then chemically or enzymatically fragmented to molecules of approproiate size (e.g., 300 - 500 bp)
+
+* Single-stranded target RNAs are reverse-transcribed to cDNA, the RNA is then degraded, and the cDNA is complemented to a double strand
+
+* Adapter sequences are either ligated to the 3' and 5' end of the double-stranded cDNA or used as primers in the reverse transcription reaction
+
+* The final cDNA library consists of cDNA inserts flanked by an adapter sequence on each end
+
+* In the last step, the cDNA library is amplified by polymerase chain reaction (PCR) using parts of the adapter sequences as primers
+
+
+
+
+---
+
+# Design Aspects of RNA-seq
+
+* Specific aspects to be considered while designing an RNA-seq experiment include:
+
+  * The number of replicates
+  
+      * Three is the minimum required to do any statistical analysis
+  
+  * The depth of sequencing
+
+* In many genomic experiments resources are scarce (e.g., material from subjects)
+
+* The first driver of sample size is often budget
+
+
+---
+
+# RNA-seq Applications
+
+* The popularity of RNA-seq is driven by its large number of applications
+
+* One of the main application areas is gene regulation:
+
+  * Comparison of gene expression between different tissues, cell types, genotypes, stimulation conditions, time points, disease states, growth condtions, and so on
+  
+  * The goal of such comparisons is to identify the genes that change in expression to understand the molecular pathways that are used or altered
+
+
+---
+
+# ALIGNMENT AND QUANTIFICATION
+
+## Introduction
+
+* After an experiment has been conducted, the analyst is presented with FASTQ files
+
+* Following sufficient quality control, the next step will either be:
+
+  1. Alignment to a reference genome
+  
+  2. Alignment to a reference transcriptome
+  
+```{r, fig.cap = "An illustration of spliced alignment of RNA-seq fragments", out.width = "60%"}
+knitr::include_graphics("images/rnaseq-alignment.png")
+```
+
+---
+
+# Alignment and Quantification
+
+## Spliced alignment to a reference Genome
+
+* A popular solution for handling RNA-seq alignments is to use a splice-aware aligner
+
+* Popular splice-aware aligners include [STAR](https://github.com/alexdobin/STAR) and [HISAT](http://daehwankimlab.github.io/hisat2/)
+
+```{r, fig.cap = "Spliced alignment of RNA-seq fragments to a genome", out.width = "80%"}
+knitr::include_graphics("images/genome-alignment.png")
+```
+
+---
+
+# Alignment and Quantification
+
+## Unspliced alignment to a reference transcriptome
+
+* An alternative to splice-aware genome alignment is direct transcriptome alignment
+
+* Direct transcriptome alignment consists of aligning against a set of known transcripts
+
+* Popular transcriptome aligners include [Kallisto](https://pachterlab.github.io/kallisto/) and  [Salmon](https://salmon.readthedocs.io/en/latest/salmon.html)
+
+```{r, fig.cap = "Unspliced alignment of RNA-seq fragments to a transcriptome", out.width = "50%"}
+knitr::include_graphics("images/transcriptome-alignment.png")
+```
+
+---
+
+# Alignment and Quantification
+
+## Gene- and Transcript-Level Quantification From RNA-seq Data
+
+* One of the main uses of RNA-seq is to assess gene- and transcript-level abundances
+
+* Most commonly, abundances are estimated at the level of genes
+
+* Transcript-level abundances have become more widely used
+
+---
+
+# Alignment and Quantification
+
+## Gene- and Transcript-Level Quantification From RNA-seq Data
+
+* Gene-level quantification consists of assigning reads to genes
+
+* A gene consists of all transcripts produced from a specific strand at a specific locus
+
+* The total expression of a gene is the sum of the expression of its isoforms
+
+* Popular stand-alone read counting tools include [featureCounts](http://subread.sourceforge.net) and [HTSeq](https://htseq.readthedocs.io/en/master/)
+
+---
+
+# Alignment and Quantification
+
+## Transcript Quantification
+
+* Gene-level quantification consists of assigning reads to genes
+
+* A gene consists of all transcripts produced from a specific strand at a specific locus
+
+* The total expression of a gene is the sum of the expression of its isoforms
+
+* Popular stand-alone read counting tools include [featureCounts](http://subread.sourceforge.net) and [HTSeq](https://htseq.readthedocs.io/en/master/)
+
+
+
+---
+
+# Differential expression
+
+## Overview
+
+* Following alignment and quantification, the next step is testing for differential expression (DE)
+
+* The starting point for DE is often a count table:
+
+  * Rows represent genomic features (e.g., genes)
+  * Columns represent samples (i.e., experimental units)
+  
+* The goal of DE is to identify genes which are differentially expressed between conditions
+
+
+---
+
+# Differential expression
+
+## Workflow
+
+.pull-left-50[
+
+* A
+
+* B
+
+* C
+
+]
+
+.pull-right-50[
+
+```{r, fig.cap = "Schematic of a DE analysis for RNA-seq data", out.width = "100%"}
+knitr::include_graphics("images/de-analysis-overview.png")
+```
+
+]
+
+---
+
+# Differential expression
+
+## Filtering
+
+* Genes with very low counts across all libraries provide little evidence for DE
+
+* From a biological point of view:
+
+  * a gene must be expressed at some minimal level before it is likely to be translated into a protein or to be biologically important
+
+* From a statistical point of view:
+
+  * The more inferences are made, the more likely erroneous inferences become
+  
+  * 
+
+* The expression level is indistinguishable from technical noise
+
+* These genes should be filtered out prior to further analysis:
+
+  * As a rule of thumb, genes are dropped if they can’t possibly be expressed in all the samples for any of the conditions
+
+  * Users can set their own definition of genes being expressed
+
+  * Usually a gene is required to have a count of 5-10 in a library to be considered expressed in that library
+
+---
+
+# Differential expression
+
+## Normalization
+
+* The observed counts of the genes cannot be directly compared across samples since there
+are differences in sequencing depth across libraries
+
+* Several methods have been developed to normalize counts to facilitate cross-sample comparisons:
+
+
+---
+
+# Differential expression
+
+## Modeling and estimation
+
+
+
+
+
+
+
+---
+
+# RNA-seq analysis
+
+```{r, fig.cap = "A typical RNA-seq experiment", out.width = "60%"}
+knitr::include_graphics("images/rnaseq-experiment.png")
+```
+
+---
+
+# RNA-seq analysis
+
+```{r, fig.cap = "A generic roadmap for RNA-seq computational analyses"}
+knitr::include_graphics("images/rnaseq-analysis-roadmap.png")
+```
+
+---
+
+# RNA-seq analysis
+
+```{r, fig.cap = "Read mapping and transcript identification strategies"}
+knitr::include_graphics("images/rnaseq-analysis-strategies.png")
+```
+
+---
+
+# RNA-seq analysis
+
+```{r, fig.cap = "Common software tools in use for differential gene expression analysis using RNA-seq data"}
+knitr::include_graphics("images/rnaseq-common-tools.png")
+```
+
+---
+
+# RNA-seq analysis
+
+```{r, fig.cap = "An overview is shown of the three main sequencing technologies for RNA-seq", out.width = "100%"}
+knitr::include_graphics("images/rnaseq-sequencing-technology.png")
+```
+
+---
+
+# RNA-seq analysis
+
+```{r, fig.cap = "Comparison of short-read, long-read and direct RNA-seq analysis", out.width = "85%"}
+knitr::include_graphics("images/rnaseq-analysis-technology.png")
+```
+
+
+---
+
+# RNA-seq analysis
+
+```{r, fig.cap = "RNA-seq data analysis workflow for differential gene expression", out.width = "100%"}
+knitr::include_graphics("images/rnaseq-analysis-workflow.png")
+```
+
+<!-- --------------------- Do not edit this and below --------------------- -->
+
+---
+name: end_slide
+class: end-slide, middle
+count: false
+
+# Thank you. Questions?
+
+```{r,echo=FALSE,child="assets/footer-slide.Rmd"}
+```
+
+```{r,include=FALSE,eval=FALSE}
+# manually run this to render this document to HTML
+rmarkdown::render("slide_sample.Rmd")
+# manually run this to convert HTML to PDF
+#pagedown::chrome_print("slide_sample.html",output="slide_sample.pdf")
+```

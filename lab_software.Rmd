@@ -1,0 +1,391 @@
+---
+title: "Introduction to Conda"
+author: "James Ashmore"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r,child="assets/header-lab.Rmd"}
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(chunk.title = TRUE, engine.opts = list(bash = "-l"))
+```
+
+# Introduction
+
+Conda is an open source package management system and environment management system for installing multiple versions of software packages and their dependencies and switching easily between them. It works on Linux, OS X and Windows, and was created for Python programs but can package and distribute any software.
+
+# Objectives
+
+- [Installing conda]
+- [Setting up channels]
+- [Conda basics]
+- [Using environments]
+- [Finding conda packages]
+- [Installing and updating packages]
+- [Specifying version numbers]
+
+# Tutorial
+
+## Installing conda
+
+The first thing we need to do is install the conda package manager. There are actually two versions of the package manager, one is called anaconda and the other is called miniconda. Anaconda includes the conda package manager and 150 of the most popular data science packages. Miniconda on the other hand comes with just a handful of these packages. This is the better option for us as we don't really need all of those data science packages. You can download the [Miniconda installer](https://docs.conda.io/en/latest/miniconda.html#latest-miniconda-installer-links) from the conda website, however we are going to do it from the command line instead.
+
+<!-- Download the Miniconda installer for macOS -->
+
+```{bash, include = FALSE}
+curl -s -L https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh > $HOME/miniconda-installer.sh
+```
+
+Download the Miniconda installer for Linux:
+
+```{bash, eval = FALSE}
+curl -s -L https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh > $HOME/miniconda-installer.sh
+```
+
+<!-- Delete the installation before re-installing -->
+
+```{bash, include = FALSE}
+rm -rf $HOME/miniconda
+```
+
+Run the installer without manual intervention:
+
+```{bash}
+# Batch or 'silent' mode
+bash $HOME/miniconda-installer.sh -b -p $HOME/miniconda
+```
+
+Alternatively, run the installer with manual intervention:
+
+```{bash, eval = FALSE}
+# Follow the prompts on the installer screen.
+# If you are unsure about any setting, accept the defaults.
+bash $HOME/miniconda-installer.sh
+```
+
+To finish the installation, source the contents of the `.bashrc` file:
+
+```{bash}
+# Shell script that Bash runs whenever it is started interactively
+source $HOME/.bashrc
+```
+
+## Setting up channels
+
+After the installation is complete, we need to set up the conda channels. Remember, channels are the locations where packages are stored. To install bioinformatics software, you will need to add the [bioconda](https://bioconda.github.io/index.html) channel as well as the other channels bioconda depends on, including the [conda-forge](https://conda-forge.org) channel.
+
+Add the bioconda channel and its dependencies to the conda installation:
+
+```{bash}
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+```
+
+It is important to add them in this order so that the priority is set correctly (that is, conda-forge is highest priority).
+
+## Conda basics
+
+Now that you have conda installed and configured we can start learning some of the basic commands. Use the `info` command to display information about the current conda installation:
+
+```{bash}
+conda info
+```
+
+There is a lot of useful information listed in the output. For example, what version of conda is installed and what channels conda searches to find a package. Remember, this can be different for each installation so it's helpful to check this information when you are on a new machine.
+
+Now, lets have a go at searching for some packages. Use the `search` command to find the `scipy` package:
+
+```{bash}
+conda search scipy
+```
+
+The command outputs all of the versions of the `scipy` package it can find across all of the channels. We can narrow the search down by specifying a particular version number:
+
+```{bash}
+conda search scipy=1.1.0
+```
+
+Okay, lets try to install our first software package! Packages are installed using the obviously named `install` command. The packages you want to install should be listed on the command line, separated by a single whitespace character. For example, to install the scipy and numpy packages:
+
+```{bash}
+# Do not ask for confirmation (-y)
+conda install --yes scipy numpy
+```
+
+At this point you may be wondering where scipy and numpy were installed. We haven't created an environment yet, so where did conda install these packages? Actually, once conda is installed a default environment is created which is called the 'base' environment. When we use the `install` command outside of a specified environment, conda will install the packages into the 'base' environment. We do not suggest you make a habit of this! The reason is that if something breaks in the 'base' environment then you will have to uninstall and re-install conda from scratch. Instead, always create a new environment for the software or collection of software you want to have installed.
+
+## Using environments
+
+As we mentioned previously, conda allows you to create separate environments containing files, packages, and their dependencies. The advantage of using environments is that you can install multiple versions of the same software. This is important because some bioinformatics software requires specific versions of tools and libraries which may be incompatible with other software you already have installed. To create a named environment, use the `create` command accordingly.
+
+Create a new environment named 'bioinfo' and install Python 3.6:
+
+```{bash}
+conda create --yes --name bioinfo python=3.6
+```
+
+Once the environment is created, we need to 'activate' it in order to make the software available. You might be wondering what actually happens when we 'activate' an environment? To put it simply, conda changes the directories the computer searches for a command. When you type a command at the terminal, the computer looks for a command with that exact name in a number of pre-specified directories. These directories are specified in the [PATH environment variable](https://www.ibm.com/docs/en/aix/7.1?topic=accounts-path-environment-variable). When an environment is 'activated' conda changes the PATH environment variable so that it only searches the 'activated' conda environment directory.
+
+Activate the 'bioinfo' environment to use it:
+
+```{bash}
+conda activate bioinfo
+```
+
+Install some additional packages:
+
+```{bash, echo = -1}
+conda activate bioinfo
+conda install --yes numpy matplotlib
+```
+
+List all packages installed in the 'bioinfo' environment:
+
+```{bash, echo = -1}
+conda activate bioinfo
+conda list
+```
+
+Deactivate the environment when you are finished:
+
+```{bash, echo = -1}
+conda activate bioinfo
+conda deactivate
+```
+
+Lets say we now wanted to install this environment on a different machine. Perhaps your colleague needs to re-run an analysis you did and they need to have the same versions of all the software you used. This is where the environment system really shines. We can make an 'environment file' which lists all of the packages in a given environment. This file can then be shared with your colleague who also has conda installed and they can replicate the exact environment on their machine.
+
+Save the 'bioinfo' environment to a text file:
+
+```{bash, echo = -1}
+conda activate bioinfo
+conda list --name bioinfo --explicit > bioinfo-env.txt
+```
+
+Create new environment from the 'bioinfo' text file:
+
+```{bash, echo = -1}
+conda activate bioinfo
+conda create --yes --name bioinfo-copy --file bioinfo-env.txt
+```
+
+Activate the 'bioinfo-copy' environment to use it:
+
+```{bash}
+conda activate bioinfo-copy
+```
+
+List all packages installed in the 'bioinfo-copy' environment:
+
+```{bash, echo = -1}
+conda activate bioinfo-copy
+conda list
+```
+
+Deactivate the environment:
+
+```{bash, echo = -1}
+conda activate bioinfo-copy
+conda deactivate
+```
+
+Delete the environment file:
+
+```{bash}
+rm -f bioinfo-env.txt
+```
+
+You should see that the package versions are exactly the same between the 'bioinfo' and 'bioinfo-copy' environments. It is good practice to create a new environment for each project. This ensures your work will be reproducible (at least from a software perspective) and colleagues can easily pickup the work afterwords by installing the same environment.
+
+## Finding conda packages
+
+Sometimes you won't be sure if a package is available from any of channels, so instead you will have to 'search' for it by name. You can search for packages using the `search` command followed by a text query. This approach is helpful because you don't have to be sure of the exact name - you can use partial matching.
+
+Use conda to search for the 'scikit-learn' package:
+
+```{bash}
+conda search scikit-learn
+```
+
+Use conda to search for a package beginning with the word 'fast':
+
+```{bash}
+conda search 'fast*'
+```
+
+Use conda to search for the 'fastqc' package in the bioconda channel:
+
+```{bash}
+conda search --channel bioconda fastqc
+```
+
+In some cases it can be easier to search for a package on the channel website. For the bioconda channel, the package index is available [here](http://bioconda.github.io/conda-package_index.html).
+
+## Installing and updating packages
+
+Environments are not static installations - you can install and update packages as much as you want within them. Very rarely will you create an environment with the exact collection of software and versions required for your project. Instead, you will often go through a process of installing, updating, and removing packages as you determine which are actually needed. The important thing to remember is that once you have finished configuring your environment, save a copy of the environment to a text file for reproducibility.
+
+Activate the 'bioinfo' environment:
+
+```{bash}
+conda activate bioinfo
+```
+
+Install the 'cutadapt' package:
+
+```{bash, echo = -1}
+conda activate bioinfo
+conda install --yes cutadapt
+```
+
+Try to update the 'cutadapt' package:
+
+```{bash, echo = -1}
+conda activate bioinfo
+conda update --yes cutadapt
+```
+
+Remove the 'cutadapt' package:
+
+```{bash, echo = -1}
+conda activate bioinfo
+conda remove --yes cutadapt
+```
+
+Deactivate the environment:
+
+```{bash, echo = -1}
+conda activate bioinfo
+conda deactivate
+```
+
+## Specifying version numbers
+
+Usually you will want to install the latest version of a software package. The latest version typically has more features and any minor bugs will have probably been fixed. However, sometimes you may be required to install a specific version - perhaps even a very old version - because it is the only version compatible with some other piece of software you need to have installed. For example, a software package may be dependent on an older version of a library and hasn't yet been updated to work with the newer version. To install a specific version of some software, simply write the name of the software followed by a logical operator and then the version number.
+
+Create a new environment with the latest Python installed:
+
+```{bash}
+conda create --yes --name pyenv python
+```
+
+Activate the new 'pyenv' environment:
+
+```{bash}
+conda activate pyenv
+```
+
+Install Python version 3.6:
+
+```{bash, echo = -1}
+conda activate pyenv
+# Fuzzy matching
+conda install --yes python=3.6 # 3.6.0, 3.6.1, 3.6.2, etc.
+```
+
+Install Python version 3.8.5:
+
+```{bash, echo = -1}
+conda activate pyenv
+# Exact matching
+conda install --yes python==3.8.5 # 3.8.5
+```
+
+Install Python version 3.6.5 or greater:
+
+```{bash, echo = -1}
+conda activate pyenv
+# Greater than or equal to matching
+conda install --yes "python>=3.6.5" # 3.6.5, 3.6.6, 3.6.7, etc.
+```
+
+Install Python version 3.8.5 or 3.9.6:
+
+```{bash, echo = -1}
+conda activate pyenv
+# Logical OR operator matching
+conda install --yes "python=3.8.5|3.9.6" # 3.8.5, 3.9.6
+```
+
+Install any Python version between 3.8.0 and 3.10.0:
+
+```{bash, echo = -1}
+conda activate pyenv
+# Logical AND operator matching
+conda install "python>=3.8|3.10" # 3.8, 3.9, not 3.10
+```
+
+Deactivate the environment:
+
+```{bash, echo = -1}
+conda activate pyenv
+conda deactivate
+```
+
+# Exercises
+
+The exercises below are intended to test your knowledge of using conda for package management. The solution to each exercise is blurred, only after attempting to solve the exercise yourself should you look at the solution. Should you need any help, please ask one of the instructors.
+
+## Exercise 1
+
+Create a new environment named `bio-qc` with python version 3.6.5 and the following bioinformatics software used for quality control of sequencing reads:
+
+- cutadapt
+- fastqc
+- seqkit
+
+```{bash, blur = TRUE}
+conda create --yes --name bio-qc python=3.6.5 cutadapt fastqc seqkit
+```
+
+## Exercise 2
+
+Create a new environment named `bio-align` with the latest python version and the following bioinformatics software used for alignment of sequencing reads:
+
+- bwa (version greater than or equal to 0.7.4)
+- bowtie2 version (version 2.3.5 or 2.4.1)
+
+```{bash, blur = TRUE}
+conda create --yes --name bio-align "bwa>=0.7.4" "bowtie2=2.3.5|2.4.1"
+```
+
+After creating the environment, install version 2.4.4 of bowtie2 instead:
+
+```{bash, blur = TRUE}
+conda install --yes --name bio-align bowtie2==2.4.4
+```
+
+## Exercise 3
+
+Create a new environment named `bio-quant` with python version 3.7 and the following bioinformatics software typically used for quantification of aligned sequencing reads:
+
+- bedtools (version 2.25.0)
+- samtools (version greater than or equal to 1.3.1)
+- subread (version 2.0.0 or 2.0.1)
+
+```{bash, blur = TRUE}
+conda create --yes --name bio-quant python=3.7 bedtools==2.25.0 "samtools>=1.3.1" "subread=2.0.0|2.0.1"
+```
+
+After creating the environment, make an exact copy called `bio-quant2`:
+
+```{bash, blur = TRUE}
+conda create --yes --clone bio-quant --name bio-quant2
+```
+
+Next, install version 2.30.0 of bedtools into the `bio-quant2` environment instead:
+
+```{bash, blur = TRUE}
+conda install --yes --name bio-quant2 bowtie2==2.4.4
+```
+
+Finally, delete the `bio-quant` environment and everything in it:
+
+```{bash, blur = TRUE}
+conda remove --yes --name bio-quant --all
+```
+
+```{r,child="assets/footer-lab.Rmd"}
+```

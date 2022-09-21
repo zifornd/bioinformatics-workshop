@@ -1,0 +1,541 @@
+---
+title: "Sequence alignment"
+author: "`r paste0('<b>James Ashmore</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo Rnd Solutions
+keywords: bioinformatics, course, workshop, scilifelab, nbis
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: false
+    chakra: 'assets/remark-latest.min.js'
+    css: 'assets/slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+exclude: true
+count: false
+
+```{r,echo=FALSE,child="assets/header-slide.Rmd"}
+```
+
+<!-- ------------ Only edit title, subtitle & author above this ------------ -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center", out.width = "100%")
+```
+
+---
+
+## What is sequence alignment?
+
+* From Wikipedia, the free encyclopedia:
+
+> In bioinformatics, a sequence alignment is a way of arranging the sequences of DNA, RNA, or protein to identify regions of similarity that may be a consequence of functional, structural, or evolutionary relationships between the sequences.
+
+* For example, the alignment of GATTACA and GATCA could look like:
+
+```{verbatim, echo = TRUE}
+# GATTACA
+# ||| |  
+# GATCA--
+```
+
+* **Okay, that's nice but what do we use alignments for?**
+
+---
+
+## What are alignments used for?
+
+* Given two or more sequences, we may wish to:
+
+  * Measure their similarity
+
+  * Determine the residue-residue correspondences
+
+  * Observe patterns of conservation and variability
+
+  * Infer evolutionary relationships
+
+* **That all seems pretty important, so how do we create alignments?**
+
+---
+
+## How are alignments created?
+
+  * Alignment is the procedure of finding corresponding positions
+
+  * Governed by the specific alignment algorithm and scoring system
+
+  * Different algorithms and scoring systems will produce different alignments
+  
+  * For example, the sequences GATTACA and GATCA can be aligned:
+
+```{verbatim, echo = TRUE}
+# Alignment 1
+# GATTACA
+# ||| |
+# GATCA--
+
+# Alignment 2
+# GATTACA
+# |||  ||
+# GAT--CA
+
+# Alignment 3
+# GATTACA
+# || | ||
+# GA-T-CA
+```
+
+* **So which alignment is the best? Tell me the secret!**
+
+---
+
+## How do we select the best alignment?
+
+* There is no such thing as the "best" alignment
+
+* Alignments are relative to the algorithm and scoring system used
+
+* The scoring system effectively asks how you want to penalize pairs of residues:
+
+  * Penalty for inserting a residue
+  
+  * Penalty for deleting a residue
+  
+  * Penalty for substituting a residue
+
+* **That seems complicated, can we start simple please?**
+
+---
+
+## What is a dotplot?
+
+* Dotplots give a pictorial overview of the similarities between two sequences
+
+* Rows and columns correspond to the residues of the first and second sequence
+
+* Positions in the dotplot are left blank if the residues are different, and filled if they match
+
+* Stretches of similar residues show up as diagonals in the upper left–lower right direction
+
+```{r, out.width = "70%"}
+knitr::include_graphics("data/alignment/dotplot.png")
+```
+
+* **That's a nice way to view similarity, but how does it relate to alignments?**
+
+---
+
+## Dotplots and alignments
+
+* Dotplots capture both the overall similarity and the different possible alignments
+
+* Any path through the dotplot from upper left to lower right corresponds to an alignment
+
+* Each direction moved through the path is an alignment choice:
+
+  * `DIAGONAL`: residues are placed in corresponding positions
+  
+  * `HORIZONTAL`: gap introduced in the sequence indexing the rows
+  
+  * `VERTICAL`: gap introduced in the sequencing indexing the columns
+
+.pull-left-60[
+
+```{r, out.width = "100%"}
+knitr::include_graphics("data/alignment/dotplot-arrows.png")
+```
+
+* **That's cool! So how do we score these alignments?**
+
+]
+
+.pull-right-40[
+
+```{verbatim, echo = TRUE}
+# Red alignment
+# GACGGCATTGCGTACGACG
+# ||| ||||  ||
+# GACTGCAT--CG-------
+
+# Blue alignment
+# G------ACGGCATTGCGTACGACG
+# |       ||
+# GACTGCATCG---------------
+
+# Green alignment
+# GACGGCATTGCGTACGACG
+# |     | |||   ||
+# G-----ACTGCA-TCG---
+```
+
+]
+
+---
+
+## Sequence similarity and scoring
+
+* Dotplots allow you to 'eyeball' the alignment of two sequences
+
+* To go beyond this, we must define a quantitative measure of sequence similarity or distance
+
+* Given two strings, two measures of the distance between them are:
+
+    1. Hamming distance - number of mismatching characters
+    
+    2. Levenshtein distance - minimal number of 'edits' to change one string into another
+
+* **That's a bit vague, can you show me some examples?**
+
+---
+
+## Hamming distance
+
+* Example 1
+
+```{verbatim, echo = TRUE}
+# A: GCTGATCG
+# B: GCTCAGCG
+
+# A: GCTGATCG
+#    |||.|.||
+# B: GCTCAGCG
+
+# Hamming distance: 2
+```
+
+* Example 2
+
+```{verbatim, echo = TRUE}
+# A: GTCGCAGATCGAT
+# B: GTCGGAGCCCGGT
+
+# A: GTCGCAGATCGAT
+     ||||.||..||.|
+# B: GTCGGAGCCCGGT
+
+# Hamming distance: 4
+```
+
+---
+
+## Levenshtein distance
+
+ * Insertion edit
+
+```{verbatim, echo = TRUE}
+# A: GTAG
+# B: GCTAG
+
+# 1: GTAG > GCTAG [insert C]
+
+# Distance: 1
+```
+
+ * Deletion edit
+
+```{verbatim, echo = TRUE}
+# A: GCTGA
+# B: GCTA
+
+# 1: GCTGA > GCTA [delete G]
+
+# Distance: 1
+```
+
+ * Substitution edit
+
+```{verbatim, echo = TRUE}
+# A: GCTAG
+# B: GGTAG
+
+# 1: GCTAG > GGTAG [substitute C with G]
+
+# Distance: 1
+```
+
+---
+
+## Levenshtein distance
+
+* Example 1 
+
+```{verbatim, echo = TRUE}
+# A: RAIN
+# B: SHINE
+
+# 1: RAIN > SAIN  [substitute R with A]
+# 2: SAIN > SHIN  [substitute A with H]
+# 3: SHIN > SHINE [insert H]
+
+# Distance: 3
+```
+
+* Example 2
+
+```{verbatim, echo = TRUE}
+# A: SHINE
+# B: TRAIN
+
+# 1: SHINE  > TSHINE [insert T]
+# 2: TSHINE > TRHINE [substitute S with R]
+# 3: TRHINE > TRAINE [substitute H with A]
+# 4: TRAINE > TRAIN  [delete E]
+
+# Distance: 4
+```
+
+---
+
+## How do we create a scoring scheme?
+
+* Using these similarity measures, we now have a way to score each possible alignment
+
+* However, does it make sense to penalize substitutions, insertions, and deletions the same?
+
+* In molecular biology, certain mutations are more likely to occur than others
+
+* Based on their frequency, we can assign different penalty scores for each type of mutation
+
+* Researchers have created a variety of **substitution matrices** for this objective:
+
+  * For nucleic acid sequences, the most popular is EDNAFULL
+  
+  * For amino acid sequences, there are two main scoring schemes PAM and BLOSUM
+  
+* **But what do these substitution matrices look like?**
+
+---
+
+## Subsitution matrix
+
+### EDNAFULL
+
+> DNAfull (also known as EDNAFULL and NUC4.4) is a commonly used scoring matrix in alignment problems considering DNA and RNA strings
+
+```{verbatim, echo = TRUE}
+    A   T   G   C   S   W   R   Y   K   M   B   V   H   D   N
+A   5  -4  -4  -4  -4   1   1  -4  -4   1  -4  -1  -1  -1  -2
+T  -4   5  -4  -4  -4   1  -4   1   1  -4  -1  -4  -1  -1  -2
+G  -4  -4   5  -4   1  -4   1  -4   1  -4  -1  -1  -4  -1  -2
+C  -4  -4  -4   5   1  -4  -4   1  -4   1  -1  -1  -1  -4  -2
+S  -4  -4   1   1  -1  -4  -2  -2  -2  -2  -1  -1  -3  -3  -1
+W   1   1  -4  -4  -4  -1  -2  -2  -2  -2  -3  -3  -1  -1  -1
+R   1  -4   1  -4  -2  -2  -1  -4  -2  -2  -3  -1  -3  -1  -1
+Y  -4   1  -4   1  -2  -2  -4  -1  -2  -2  -1  -3  -1  -3  -1
+K  -4   1   1  -4  -2  -2  -2  -2  -1  -4  -1  -3  -3  -1  -1
+M   1  -4  -4   1  -2  -2  -2  -2  -4  -1  -3  -1  -1  -3  -1
+B  -4  -1  -1  -1  -1  -3  -3  -1  -1  -3  -1  -2  -2  -2  -1
+V  -1  -4  -1  -1  -1  -3  -1  -3  -3  -1  -2  -1  -2  -2  -1
+H  -1  -1  -4  -1  -3  -1  -3  -1  -3  -1  -2  -2  -1  -2  -1  
+D  -1  -1  -1  -4  -3  -1  -1  -3  -1  -3  -2  -2  -2  -1  -1
+N  -2  -2  -2  -2  -1  -1  -1  -1  -1  -1  -1  -1  -1  -1  -1
+```
+
+---
+
+## Subsitution matrix
+
+## PAM250
+
+> PAM matrices were introduced by Margaret Dayhoff in 1978. The calculation of these matrices were based on 1572 observed mutations in the phylogenetic trees of 71 families of closely related proteins.
+
+```{verbatim, echo = TRUE}
+   A  C  D  E  F  G  H  I  K  L  M  N  P  Q  R  S  T  V  W  Y
+A  2 -2  0  0 -3  1 -1 -1 -1 -2 -1  0  1  0 -2  1  1  0 -6 -3
+C -2 12 -5 -5 -4 -3 -3 -2 -5 -6 -5 -4 -3 -5 -4  0 -2 -2 -8  0
+D  0 -5  4  3 -6  1  1 -2  0 -4 -3  2 -1  2 -1  0  0 -2 -7 -4
+E  0 -5  3  4 -5  0  1 -2  0 -3 -2  1 -1  2 -1  0  0 -2 -7 -4
+F -3 -4 -6 -5  9 -5 -2  1 -5  2  0 -3 -5 -5 -4 -3 -3 -1  0  7
+G  1 -3  1  0 -5  5 -2 -3 -2 -4 -3  0  0 -1 -3  1  0 -1 -7 -5
+H -1 -3  1  1 -2 -2  6 -2  0 -2 -2  2  0  3  2 -1 -1 -2 -3  0
+I -1 -2 -2 -2  1 -3 -2  5 -2  2  2 -2 -2 -2 -2 -1  0  4 -5 -1
+K -1 -5  0  0 -5 -2  0 -2  5 -3  0  1 -1  1  3  0  0 -2 -3 -4
+L -2 -6 -4 -3  2 -4 -2  2 -3  6  4 -3 -3 -2 -3 -3 -2  2 -2 -1
+M -1 -5 -3 -2  0 -3 -2  2  0  4  6 -2 -2 -1  0 -2 -1  2 -4 -2
+N  0 -4  2  1 -3  0  2 -2  1 -3 -2  2  0  1  0  1  0 -2 -4 -2
+P  1 -3 -1 -1 -5  0  0 -2 -1 -3 -2  0  6  0  0  1  0 -1 -6 -5
+Q  0 -5  2  2 -5 -1  3 -2  1 -2 -1  1  0  4  1 -1 -1 -2 -5 -4
+R -2 -4 -1 -1 -4 -3  2 -2  3 -3  0  0  0  1  6  0 -1 -2  2 -4
+S  1  0  0  0 -3  1 -1 -1  0 -3 -2  1  1 -1  0  2  1 -1 -2 -3
+T  1 -2  0  0 -3  0 -1  0  0 -2 -1  0  0 -1 -1  1  3  0 -5 -3
+V  0 -2 -2 -2 -1 -1 -2  4 -2  2  2 -2 -1 -2 -2 -1  0  4 -6 -2
+W -6 -8 -7 -7  0 -7 -3 -5 -3 -2 -4 -4 -6 -5  2 -2 -5 -6 17  0
+Y -3  0 -4 -4  7 -5  0 -1 -4 -1 -2 -2 -5 -4 -4 -3 -3 -2  0 10
+```
+
+---
+
+## Subsitution matrix
+
+## BLOSUM62
+
+> BLOSUM matrices were introduced by Steve and Jorja Henikoff in 1978. The calculation of the BLOSUM62 matrix was based on the BLOCKS database of alignments after filtering for a 62% percentage identity.
+
+```{verbatim, echo = TRUE}
+   A  C  D  E  F  G  H  I  K  L  M  N  P  Q  R  S  T  V  W  Y
+A  4  0 -2 -1 -2  0 -2 -1 -1 -1 -1 -2 -1 -1 -1  1  0  0 -3 -2
+C  0  9 -3 -4 -2 -3 -3 -1 -3 -1 -1 -3 -3 -3 -3 -1 -1 -1 -2 -2
+D -2 -3  6  2 -3 -1 -1 -3 -1 -4 -3  1 -1  0 -2  0 -1 -3 -4 -3
+E -1 -4  2  5 -3 -2  0 -3  1 -3 -2  0 -1  2  0  0 -1 -2 -3 -2
+F -2 -2 -3 -3  6 -3 -1  0 -3  0  0 -3 -4 -3 -3 -2 -2 -1  1  3
+G  0 -3 -1 -2 -3  6 -2 -4 -2 -4 -3  0 -2 -2 -2  0 -2 -3 -2 -3
+H -2 -3 -1  0 -1 -2  8 -3 -1 -3 -2  1 -2  0  0 -1 -2 -3 -2  2
+I -1 -1 -3 -3  0 -4 -3  4 -3  2  1 -3 -3 -3 -3 -2 -1  3 -3 -1
+K -1 -3 -1  1 -3 -2 -1 -3  5 -2 -1  0 -1  1  2  0 -1 -2 -3 -2
+L -1 -1 -4 -3  0 -4 -3  2 -2  4  2 -3 -3 -2 -2 -2 -1  1 -2 -1
+M -1 -1 -3 -2  0 -3 -2  1 -1  2  5 -2 -2  0 -1 -1 -1  1 -1 -1
+N -2 -3  1  0 -3  0  1 -3  0 -3 -2  6 -2  0  0  1  0 -3 -4 -2
+P -1 -3 -1 -1 -4 -2 -2 -3 -1 -3 -2 -2  7 -1 -2 -1 -1 -2 -4 -3
+Q -1 -3  0  2 -3 -2  0 -3  1 -2  0  0 -1  5  1  0 -1 -2 -2 -1
+R -1 -3 -2  0 -3 -2  0 -3  2 -2 -1  0 -2  1  5 -1 -1 -3 -3 -2
+S  1 -1  0  0 -2  0 -1 -2  0 -2 -1  1 -1  0 -1  4  1 -2 -3 -2
+T  0 -1 -1 -1 -2 -2 -2 -1 -1 -1 -1  0 -1 -1 -1  1  5  0 -2 -2
+V  0 -1 -3 -2 -1 -3 -3  3 -2  1  1 -3 -2 -2 -3 -2  0  4 -3 -1
+W -3 -2 -4 -3  1 -2 -2 -3 -3 -2 -1 -4 -4 -2 -3 -3 -2 -3 11  2
+Y -2 -2 -3 -2  3 -3  2 -1 -2 -1 -1 -2 -3 -1 -2 -2 -2 -1  2  7
+```
+
+---
+
+## Tweaking the scoring schemes
+
+* Substitutions aren't the only things where we can change the scoring:
+
+  * Gap open penalty
+  
+  * Gap extension penalty
+
+  * Deletions of successive residues versus non-contiguous residues:
+  
+```{verbatim, echo = TRUE}
+# A: GTATCGCTG
+# B: GTCTG
+
+# More probable! (lower penalty)
+# 1: GTATCGCTG > GTCTG [delete ATCG]
+
+# Less probable! (higher penalty)
+# 1: GTATCGCTG > GTCGCTG [delete TA]
+# 2: GTCGCTG   > GTCTG   [delete GC]
+```
+
+* **Right, enough theory! Show me a full-on example!**
+
+---
+
+## Alignment scoring by hand
+
+Alignment:
+
+```{verbatim, echo = TRUE}
+# A: G-ATCGAT
+#    | ||.|.|
+# B: GTATAGC-
+```
+
+Scoring scheme:
+
+```{verbatim, echo = TRUE}
+    A   T   G   C
+A   5  -4  -4  -4
+T  -4   5  -4  -4
+G  -4  -4   5  -4
+C  -4  -4  -4   5
+
+Gap open penalty = -2
+Gap extend penalty = -1
+```
+
+The alignment score:
+
+```{verbatim, echo = TRUE}
+# 1: Match (G/G) = 5
+# 2: Gap open = -2
+# 3: Match (A/A) = 4
+# 4: Match (T/T) = 5
+# 5: Mismatch (A/C) = -4
+# 6: Match (G/G) = 5
+# 7: Mismatch (A/C) = -4
+# 8: Gap open = -2
+# Total score = 7
+```
+
+---
+
+## How does the computer score alignments?
+
+* In practice, alignment software does not calculate the score for every possible alignment
+
+* Instead it uses *dynamic programming* to retrieve the optimal alignment(s)
+
+<br>
+
+```{r, out.width = "75%", fig.cap = "https://doi.org/10.1038/nbt0704-909"}
+knitr::include_graphics("data/alignment/dynamic-programming.png")
+```
+
+---
+
+## Significance of alignments
+
+* Any two random sequences can be aligned to produce a similarity score
+
+* Is the similarity **significant** or could it have arisen by **chance**?
+
+* A practical approach to the problem is as follows:
+
+  1. Randomly permute the query sequence multiple times
+  
+  2. Align each permuted sequence to the target sequence
+  
+  3. Collect all of the alignment scores from the permuted sequences
+  
+  4. Calculate how often the permuted score is greater than the query score
+  
+  <br>
+
+```{r, out.width = "85%", fig.cap = "P value of match"}
+knitr::include_graphics("data/alignment/alignment-pvalue.png")
+```
+
+---
+
+## Summary
+
+* Sequence alignment arranges the sequences of DNA, RNA, or protein to identify regions of similarity
+
+* Similarity can be measured using distance measures (e.g., Levenshtein distance)
+
+* Sequences can be aligned using three edits: substitution, insertion, and deletion
+
+* Scoring schemes can be used to differentially penalize each type of sequence edit
+
+* Dynamic programming is used to retrieve the optimal alignment(s)
+
+<!-- --------------------- Do not edit this and below --------------------- -->
+
+---
+name: end_slide
+class: end-slide, middle
+count: false
+
+# Thank you. Questions?
+
+```{r,echo=FALSE,child="assets/footer-slide.Rmd"}
+```
+
+```{r,include=FALSE,eval=FALSE}
+# manually run this to render this document to HTML
+rmarkdown::render("slide.Rmd")
+# manually run this to convert HTML to PDF
+#pagedown::chrome_print("slide.html",output="slide.pdf")
+```

@@ -1,0 +1,378 @@
+---
+title: "SRA Toolkit and EDirect"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r, child = "assets/header-lab.Rmd"}
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(chunk.title = TRUE, engine.opts = list(bash = "-l"))
+```
+
+# Introduction
+
+The [Sequence Read Archive (SRA)](https://www.ncbi.nlm.nih.gov/sra) is the largest publicly available repository of high throughput sequencing data. The archive accepts data from all branches of life as well as metagenomic and environmental studies. The SRA stores raw sequencing data and alignment information to enhance reproducibility and facilitate new discoveries through data analysis. The SRA stores sequencing data in a [hierarchical structure](https://www.ncbi.nlm.nih.gov/sra/docs/submitmeta). There are four levels to this hierarchy, each of which represents a particular aspect of the data:
+
+  * **Project** - The research project (SRP)
+  * **Sample** - The biological sample (SRS)
+  * **Experiment** - The sequencing experiment (SRX)
+  * **Run** - The sequencing run (SRR)
+
+This hierarchy is useful because it explicitly models the relationship between data files. For example, all those generated from a single sample will have the same SRS accession number. The [SRA Toolkit](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc) from NCBI is a collection of tools and libraries for downloading data from the SRA using accession numbers.
+
+[Entrez](https://www.ncbi.nlm.nih.gov) is NCBI’s primary text search and retrieval system that integrates the PubMed database of biomedical literature with 38 other literature and molecular databases including DNA and protein sequence, structure, gene, genome, genetic variation and gene expression. [Entrez Direct (EDirect)](https://www.ncbi.nlm.nih.gov/books/NBK179288/) provides access to the NCBI's suite of interconnected databases (publication, sequence, structure, gene, variation, expression, etc.) from a Unix terminal window. Search terms are entered as command line arguments. Individual operations are connected with Unix pipes to construct multi-step queries. Selected records can then be retrieved in a variety of formats.
+
+# Objectives
+
+- [Install SRA Toolkit]
+- [Install EDirect]
+- [Prefetch SRA data]
+- [Dump FASTQ data]
+- [Fetch SRA metadata]
+
+# Tutorial
+
+In this tutorial we are going to learn how to use the SRA Toolkit and EDirect to query and download public sequencing data. The first thing to do is create a directory to store all the tutorial data. It is good practice to create a new directory for each project you work on, this ensures files do not get mixed up and all the results are self-contained. Additionally we will create an installation directory where all of the conda environments we are going to use are stored.
+
+Create a 'tutorial' directory to store output files:
+
+```{bash, echo = -1}
+rm -rf tutorial
+mkdir tutorial
+```
+
+## Install SRA Toolkit
+
+The software we are going to use in this tutorial can be installed using the conda package manager. Please refer to the previous conda workshop for details on installing software and creating conda environments. The first software package we need to install is the SRA Toolkit. This allows you to download sequencing data from the SRA database on the command line.
+
+Create a new environment with the SRA Toolkit installed:
+
+```{bash}
+conda create --yes --name sra-tools sra-tools=2.11.0=pl5262h37d2149_1 # only this version works currently (21/09/2022)
+```
+
+Activate the new environment to use it:
+
+```{bash}
+conda activate sra-tools
+```
+
+Test that the `fastq-dump` command is available:
+
+```{bash, echo = -1}
+conda activate sra-tools
+which fastq-dump
+```
+
+## Install EDirect
+
+The second software package we need to install is the EDirect package. This allows you to search all of the NCBI databases using a text query. We are going to use it to search for public sequencing data and download the metadata associated with the sequencing libraries.
+
+Create a new environment with EDirect installed:
+
+```{bash}
+conda create --yes --name entrez-direct entrez-direct
+```
+
+<!-- Download xtract for Apple Silicon -->
+
+```{bash, include = FALSE}
+curl -o /opt/miniconda3/envs/entrez-direct/bin/xtract.Silicon.gz https://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/xtract.Silicon.gz
+gunzip /opt/miniconda3/envs/entrez-direct/bin/xtract.Silicon.gz
+chmod +x /opt/miniconda3/envs/entrez-direct/bin/xtract.Silicon
+```
+
+Activate the new environment to use it:
+
+```{bash}
+conda activate entrez-direct
+```
+
+Test that the `esearch` command is available:
+
+```{bash, echo = -1}
+conda activate entrez-direct
+which esearch
+```
+
+## Prefetch SRA data
+
+Prefetch is a command that is part of the SRA toolkit. This program downloads runs (sequence files in the compressed SRA format) and all additional data necessary to convert the run from the SRA format to a more commonly used format like FASTA or FASTQ files. Prefetch can also be used to correct and finish an incomplete run download. This is really helpful when you have an unstable connection as it prevents you from needing to re-download the same data repeatedly.
+
+For this example we are going to download the run with accession SRR4413906 from the SRA database. Below is the SRA webpage listing all of the run information:
+
+```{r, echo = FALSE, out.width = "100%"}
+knitr::include_url("https://trace.ncbi.nlm.nih.gov/Traces/sra/?run=SRR4413906", height = "600px")
+```
+
+The SRA webpage provides some useful information about the sequencing run:
+
+  * The SPOTS field lists how many reads were sequenced for this library (7.3M)
+  * The PLATFORM field lists the type of sequencing machine (Illumina)
+  * The STRATEGY field lists the type of sequencing assay (ChIP-Seq)
+  * The LAYOUT field lists the type of sequencing layout (Paired-end)
+
+To fetch the sequencing data, we will use the `prefetch` command from the EDirect software package. This command has a lot of different parameters and we advise you to look through these before continuing.
+
+Activate the `sra-tools` environment:
+
+```{bash}
+conda activate sra-tools
+```
+
+Print the help information for the `prefetch` command:
+
+```{bash, echo = -1}
+conda activate sra-tools
+prefetch -h
+```
+
+Next, use the `prefetch` command to download the SRR4413906 run in SRA format:
+
+```{bash, echo = -1}
+conda activate sra-tools
+# Save files to tutorial directory
+prefetch --output-directory tutorial SRR4413906
+```
+
+Display the contents of the tutorial directory:
+
+```{bash}
+ls tutorial
+```
+
+The SRA file is saved in a directory named by the run accession. It is important not to move this directory as the toolkit will no longer know that we have previously downloaded the file. The toolkit keeps track of what files have been downloaded by creating an internal database of what files have been downloaded and to which location on disk.
+
+Public sequencing data usually contains lots of runs. Multiple SRA files can be download by either providing list of run accession numbers on the command line:
+
+```{bash, eval = FALSE}
+# Do not run
+prefetch --output-directory tutorial SRR4413817 SRR4413816 SRR4413888
+```
+
+Or providing a text file with a run accession number on each line:
+
+```{bash, eval = FALSE}
+# Do not run
+prefetch --output-directory tutorial --option-file accessions.txt
+```
+
+Deactivate the current environment:
+
+```{bash}
+conda deactivate
+```
+
+## Dump FASTQ data
+
+Once the SRA file has been downloaded, we can then covert it to a more commonly used format like a FASTQ file. The `fastq-dump` command is used to extract FASTQ files from SRA files. Again, this command has a lot of parameters and we suggest you read through them before continuing.
+
+Activate the `sra-tools` environment:
+
+```{bash}
+conda activate sra-tools
+```
+
+Print the help information for the `fastq-dump` command:
+
+```{bash, echo = -1}
+conda activate sra-tools
+fastq-dump -h
+```
+
+There are a few important parameters to highlight here:
+
+  * The `--minSpotId` and `--maxSpotId` parameters are used to download a subset of the sequencing reads. For example, setting --maxSpotId to 100 will download just the first 100 reads of a library. Setting the `--minSpotId` to 10 and the `--maxSpotId` 80 will download reads 20 to 80 of the library.
+  
+  * The `--split-files` parameter will write reads into separate files. Paired-end libraries produce two reads, one from the start and end of each DNA fragment which is sequenced. These reads need to be placed in separate files for most downstream analyses. The reads are placed in files ending with '_1' and '_2', respectively. Single-end libraries do not require you to set this parameter.
+
+Next, convert the prefetched file from SRA format to FASTQ format:
+
+```{bash, echo = -1}
+conda activate sra-tools
+# Convert first 100 paired-end reads
+fastq-dump --maxSpotId 100 --outdir tutorial/SRR4413906 --split-files tutorial/SRR4413906/SRR4413906.sra
+```
+
+Display the contents of the output directory:
+
+```{bash}
+ls tutorial/SRR4413906
+```
+
+As expected, two FASTQ files are extracted from the SRA file because the sequencing was paired-end. Each file should have the same number of reads, one from each end of the sequenced DNA fragment.
+
+Deactivate the current environment:
+
+```{bash, echo = -1}
+conda activate sra-tools
+conda deactivate
+```
+
+## Fetch SRA metadata
+
+When handling lots of sequencing data, it is often easier to programmatically retrieve all of the associated metadata. Entrez Direct (EDirect) can be used to access this and other information from the NCBI databases. In particular, the `efetch` command can return formatted data records for a list of input accession numbers. As usual, this command has a lot of parameters and we suggest you read through them before continuing.
+
+Activate the `entrez-direct` environment:
+
+```{bash}
+conda activate entrez-direct
+```
+
+Print the help information for the `efetch` command:
+
+```{bash, echo = -1}
+conda activate entrez-direct
+efetch -h
+```
+
+Again, there are a few important parameters to highlight here:
+
+  * The `-format` parameter decides what format to retrieve the data. Each NCBI databse supports multiple formats so you need to specify which format you would like.
+  
+  * The `-db` parameter decided which NCBI database you will search for the associated metadata. The accession number you use must be compatible with the chosen database. Here we are using SRA accession numbers so we must specify the SRA database.
+  
+  * The `-id` parameter is the unique identifier or accession number you are using as a query. This accession number must be in the same format as the database you are searching. Again, since we are searching the SRA database, we need to use an SRA accession number.
+
+If you look back at the SRA webpage for the SRR4413906 run, you will see an SRA Study field near the bottom. This accession number (SRP091443) can be used to find all of the sequencing libraries associated with that given study.
+
+Fetch run information for all runs in a given study:
+
+```{bash, echo = -1, max.height = "500px"}
+conda activate entrez-direct
+efetch -format runinfo -db sra -id SRP091443 > tutorial/runinfo.csv
+```
+
+Display the contents of the run information file:
+
+```{bash, max.height = "600px"}
+cat tutorial/runinfo.csv
+```
+
+The run information file contains all of the metadata about each run in the given study. Some fields contain information on the sequencing itself (e.g., Number of reads, Average read length, and Library layout) and others contain information about the sample the run was prepared from (e.g. Sex, Disease, Tumor).
+
+# Exercises
+
+The exercises below are intended to test your knowledge of querying and downloading sequencing data. The solution to each exercise is blurred, only after attempting to solve the exercise yourself should you look at the solution. Should you need any help, please ask one of the instructors.
+
+Create a directory to store the output files from each exercise:
+
+```{bash, echo = -1}
+rm -rf exercises
+mkdir exercises
+mkdir exercises/ex1
+mkdir exercises/ex2
+mkdir exercises/ex3
+```
+
+## Exercise 1
+
+Use the [SRA website](https://www.ncbi.nlm.nih.gov/sra) to search for an SRA study with accession number SRP094580. Once you have found the study, send all of the runs to the 'Run Selector'. Then answer the following questions:
+
+1. What is the total number of runs in this study?
+  
+```{verbatim, blur = TRUE}
+119
+```
+
+2. What organism and strain was this study performed on?
+
+```{verbatim, blur = TRUE}
+Mus musculus (mouse) and 129SV/Jae/C57BL6J
+```
+
+3. Which run has the largest number of bases?
+
+```{verbatim, blur = TRUE}
+SRR5077666
+```
+
+4. Use the `efetch` command to download and save the run information into a file called `runinfo.csv` in the `exercises/ex1` directory:
+
+```{bash, echo = -1, blur = TRUE}
+conda activate entrez-direct
+efetch -format runinfo -db sra -id SRP094580 > exercises/ex1/runinfo.csv
+```
+
+## Exercise 2
+
+1. Use the `efetch` command to download and save the run information from SRA study SRP000002 into a file called `runinfo.csv` in the `exercises/ex2` directory:
+
+```{bash, echo = -1, blur = TRUE}
+conda activate entrez-direct
+efetch -format runinfo -db sra -id SRP000002 > exercises/ex2/runinfo.csv
+```
+
+2. Create a file called `runids.txt` in the `exercises/ex2` directory with the SRR accession number of all the runs in the study. You can do this manually by looking at the file, or you can try to solve the problem using command line tools (e.g., sort, cut):
+
+```{bash, blur = TRUE}
+cat exercises/ex2/runinfo.csv | # Print the contents of the file to the standard output
+cut -d "," -f 1 |               # Cut out the 1st field of each line, using "," as a field delimiter 
+tail -n +2 |                    # Print standard output beginning from line 2
+> exercises/ex2/runids.txt      # Redirect standard output to a file
+```
+
+<!-- Run above command without comments -->
+
+```{bash, include = FALSE}
+cat exercises/ex2/runinfo.csv | cut -d "," -f 1 | tail -n +2 > exercises/ex2/runids.txt
+```
+
+3. Download all the SRA files listed in the study used the `prefetch` command:
+
+```{bash, echo = -1, blur = TRUE}
+conda activate sra-tools
+prefetch --output-directory exercises/ex2 --option-file exercises/ex2/runids.txt 
+```
+
+4. Convert the first 100 reads from each SRA format to FASTQ format. Remember to check whether the library is single or paired end.
+
+```{bash, echo = -1, blur = TRUE}
+conda activate sra-tools
+fastq-dump --maxSpotId 100 --outdir exercises/ex2/SRR000066 exercises/ex2/SRR000066/SRR000066.sra
+fastq-dump --maxSpotId 100 --outdir exercises/ex2/SRR000067 exercises/ex2/SRR000067/SRR000067.sra
+```
+
+## Exercise 3
+
+1. Use the `efetch` command to download and save the run information from SRA study SRP000599 into a file called `runinfo.csv` in the `exercises/ex3` directory:
+
+```{bash, echo = -1, blur = TRUE}
+conda activate entrez-direct
+efetch -format runinfo -db sra -id SRP000599 > exercises/ex3/runinfo.csv
+```
+
+2. Create a file called `runids.txt` in the `exercises/ex3` directory with the SRR accession number of the run with the **smallest** number of reads. You can do this manually by looking at the file, or you can try to solve the problem using command line tools (e.g., sort, cut):
+
+```{bash, blur = TRUE}
+cat exercises/ex3/runinfo.csv |  # Print the contents of the file to the standard output
+sort -t "," -k 4n |              # Sort by the 4th field of each line numerically, using "," as a field delimiter
+cut -d "," -f 1 |                # Cut out the 1st field of each line, using "," as a field delimiter 
+tail -n +2 |                     # Print standard output beginning from line 2
+head -n 1 |                      # Print the first line of the standard output
+> exercises/ex3/runids.txt       # Redirect standard output to a file
+```
+
+<!-- Run above command without comments -->
+
+```{bash, include = FALSE}
+cat exercises/ex3/runinfo.csv | sort -t "," -k 4n | cut -d "," -f 1 | tail -n +2 | head -n 1 > exercises/ex3/runids.txt
+```
+
+3. Download the SRA file for the SRR accession number identified above:
+
+```{bash, echo = -1, blur = TRUE}
+conda activate sra-tools
+prefetch --output-directory exercises/ex3 --option-file exercises/ex3/runids.txt
+```
+
+4. Convert reads 100-500 from SRA format to FASTQ format. Remember to check whether the library is single or paired end.
+
+```{bash, echo = -1, blur = TRUE}
+conda activate sra-tools
+fastq-dump --minSpotId 100 --maxSpotId 500 --outdir exercises/ex3/SRR013564 exercises/ex3/SRR013564/SRR013564.sra
+```
+
+```{r,child="assets/footer-lab.Rmd"}
+```

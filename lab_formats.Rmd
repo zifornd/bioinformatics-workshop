@@ -1,0 +1,543 @@
+---
+title: "FASTA/Q Processing"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r,child="assets/header-lab.Rmd"}
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, engine.opts = list(bash = "-l"), chunk.title = TRUE)
+```
+
+# Introduction
+
+SeqKit is a cross-platform ultra-fast comprehensive toolkit for FASTA/Q processing. It works on Linux, macOS and Windows, and can be directly used without any dependencies or pre-configuration. Further information can be found on the project [website](https://bioinf.shenwei.me/seqkit/) and technical details are available in the research [article](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0163962).
+
+# Objectives
+
+* [Install SeqKit]
+* [Perform basic operations]
+* [Convert between file formats]
+* [Search for sub-sequences]
+* [Perform set operations]
+* [Edit sequence files]
+* [Order sequence files]
+
+# Tutorial
+
+In this tutorial we are going to learn how to use SeqKit to process and manipulate FASTA/Q files. The first thing to do is create a directory to store all the tutorial data. It is good practice to create a new directory for each project you work on, this ensures files do not get mixed up and all the results are self-contained.
+
+Create a 'tutorial' directory to store output files:
+
+```{bash, echo = -1}
+rm -rf tutorial
+mkdir tutorial
+```
+
+Download the tutorial and exercise data:
+
+```{bash}
+curl https://raw.githubusercontent.com/zifornd/bioinformatics-workshop/main/data/formats/data.tar.gz --output tutorial/data.tar.gz
+```
+
+Extract the archive file into the tutorial directory:
+
+```{bash}
+tar xf tutorial/data.tar.gz --directory=tutorial
+```
+
+## Install SeqKit
+
+The software we are going to use in this tutorial can be installed using the conda package manager. Please refer to the previous conda workshop for details on installing software and creating conda environments.
+
+Create a new environment with SeqKit installed:
+
+```{bash}
+conda create --yes --name seqkit seqkit
+```
+
+Activate the new environment to use it:
+
+```{bash}
+conda activate seqkit
+```
+
+Test that the `seqkit` command is available:
+
+```{bash, echo = -1, error = TRUE}
+conda activate seqkit
+which seqkit
+```
+
+## Perform basic operations
+
+We will start the tutorial by performing some basic operations on FASTA/Q files. The most popular operations include transforming sequences, calculating statistics, and extracting sub-sequences.
+
+### Transform sequences
+
+Display help information for seq subcommand:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit seq --help
+```
+
+Only print sequence names:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit seq --name tutorial/data/example/genes.fasta
+```
+
+Only print sequences:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit seq --seq tutorial/data/example/genes.fasta
+```
+
+Filter by sequence length:
+
+```{bash, echo = -1}
+conda activate seqkit
+# Only print sequences shorter than 250 characters
+seqkit seq --max-len 250 tutorial/data/example/genes.fasta
+```
+
+### Calculate statistics
+
+Display help information for stats subcommand:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit stats --help
+```
+
+Calculate simple statistics:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit stats tutorial/data/example/genes.fasta
+```
+
+Output simple statistics in tabular format:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit stats --tabular tutorial/data/example/genes.fasta
+```
+
+Calculate advanced statistics:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit stats --all tutorial/data/example/genes.fasta
+```
+
+### Extract subsequences
+
+Display help information for subseq subcommand:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit subseq --help
+```
+
+Get the first 10 bases from each sequence:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit subseq --region 1:10 tutorial/data/example/genes.fasta
+```
+
+Get the last 10 bases from each sequence:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit subseq --region -10:-1 tutorial/data/example/genes.fasta
+```
+
+## Convert between file formats
+
+Next, we will look at how to convert between the FASTA/Q file formats. Remember, it only makes sense to convert from FASTQ to FASTA and not the other way around.
+
+### FASTQ to FASTA
+
+Display help information for fq2fa subcommand:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit fq2fa --help
+```
+
+Convert FASTQ to FASTA:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit fq2fa tutorial/data/example/reads.fastq
+```
+
+### FASTA/Q to TSV
+
+Display help information for fx2tab subcommand:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit fx2tab --help
+```
+
+Output FASTQ in tabular format:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit fx2tab tutorial/data/example/reads.fastq
+```
+
+Output specific FASTQ information in tabular format:
+
+```{bash, echo = -1}
+conda activate seqkit
+# print sequence name, length, and GC content
+seqkit fx2tab --name --length --gc tutorial/data/example/reads.fastq
+```
+
+## Search for sub-sequences
+
+Now we will look at how to search for small sub-sequences within the sequences stored in FASTA/Q files.
+
+### Search sequence
+
+Display help information for grep subcommand:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit grep --help
+```
+
+Extract sequences with matching name:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit grep --by-name --pattern "gene-GU280_gp04" tutorial/data/example/genes.fasta
+```
+
+Extract sequences containing AGGCG subsequence:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit grep --by-seq --pattern "AGGCG" tutorial/data/example/genes.fasta
+```
+
+Extract sequences containing AGGCG in the first N bases:
+
+```{bash, echo = -1}
+conda activate seqkit
+# sequence region for searching (1:10 for first 10 bases)
+seqkit grep --by-seq --pattern "AGGCG" --region 1:10 tutorial/data/example/genes.fasta
+```
+
+### Locate subsequence
+
+Display help information for locate subcommand:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit locate --help
+```
+
+Locate a subsequence in each sequence:
+
+```{bash, echo = -1}
+conda activate seqkit
+# exact match
+seqkit locate --pattern "ACGT" tutorial/data/example/genes.fasta
+```
+
+Locate a subsequence with N mismatches:
+
+```{bash, echo = -1}
+conda activate seqkit
+# allow 1 mismatch
+seqkit locate --pattern "ACGT" --max-mismatch 1 tutorial/data/example/genes.fasta
+```
+
+Locate a subsequence using regular expressions:
+
+```{bash, echo = -1}
+conda activate seqkit
+# match AAGC or GGGC
+seqkit locate --pattern "(A{2}|G{2})GC" --use-regexp tutorial/data/example/genes.fasta
+```
+
+## Perform set operations
+
+### Sample sequences
+
+Display help information for sample subcommand:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit sample --help
+```
+
+Sample sequences by number:
+
+```{bash, echo = -1}
+conda activate seqkit
+# set seed to reproduce result
+seqkit sample --number 5 --rand-seed 1701 tutorial/data/example/genes.fasta
+```
+
+Sample sequences by proportion:
+
+```{bash, echo = -1}
+conda activate seqkit
+# set seed to reproduce result
+seqkit sample --proportion 0.25 --rand-seed 1701 tutorial/data/example/genes.fasta
+```
+
+### Split sequences
+
+Display help information for split subcommand:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit split --help
+```
+
+Split sequences into files by name:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit split --by-id tutorial/data/example/genes.fasta
+```
+
+Split sequences into multiple files with N sequences:
+
+```{bash, echo = -1}
+conda activate seqkit
+# 2 sequences per file
+seqkit split --by-size 2 tutorial/data/example/genes.fasta
+```
+
+## Edit sequence files
+
+### Replace name/sequence
+
+Display help information for replace subcommand:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit replace --help
+```
+
+Replace name by regular expression:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit replace --pattern "-" --replacement "_" tutorial/data/example/genes.fasta
+```
+
+Replace sequence by regular expression:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit replace --by-seq --pattern "AGC" --replacement "---" tutorial/data/example/genes.fasta
+```
+
+## Order sequence files
+
+### Sort sequences
+
+Display help information for sort subcommand:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit sort --help
+```
+
+Sort file by sequence name:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit sort --by-name tutorial/data/example/genes.fasta
+```
+
+Sort file by sequence length:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit sort --by-length tutorial/data/example/genes.fasta
+```
+
+### Shuffle sequences
+
+Display help information for shuffle subcommand:
+
+```{bash, echo = -1}
+conda activate seqkit
+seqkit shuffle --help
+```
+
+Shuffle sequences:
+
+```{bash, echo = -1}
+conda activate seqkit
+# set seed to reproduce result
+seqkit shuffle --rand-seed 1701 tutorial/data/example/genes.fasta
+```
+
+# Exercises
+
+The exercies below are designed to strengthen your knowledge of using SeqKit for FASTA/Q parsing. The solution to each problem is blurred, only after attempting to solve the problem yourself should you look at the solution. Should you need any help, please ask one of the instructors.
+
+Create a directory to store the output files from each exercise:
+
+```{bash, echo = -1}
+rm -rf exercises
+mkdir exercises
+mkdir exercises/covid19
+mkdir exercises/malaria
+mkdir exercises/leishmania
+```
+
+## Coronavirus
+
+> Coronavirus disease (COVID-19) is an infectious disease caused by the SARS-CoV-2 virus. Most people infected with the virus will experience mild to moderate respiratory illness and recover without requiring special treatment. However, some will become seriously ill and require medical attention.
+
+The `covid19` directory contains the COVID-19 reference genome in FASTA format. This was downloaded from the COVID-19 [portal](https://covid-19.ensembl.org/index.html) maintained by the Ensembl genome database. Using the SeqKit software, answer the follow questions about the viral genome:
+
+1. How long is the genome?
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+# 29,903
+seqkit stats tutorial/data/covid19/GCA_009858895.3.fasta > exercises/covid19/genome-length.txt
+```
+
+2. What is the GC content of the genome?
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+# 37.97
+seqkit fx2tab --name --gc tutorial/data/covid19/GCA_009858895.3.fasta > exercises/covid19/genome-gc.txt
+```
+
+3. How many "GAGAGA" subsequences are in the genome?
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+# 12
+seqkit locate --pattern "GAGAGA" tutorial/data/covid19/GCA_009858895.3.fasta | tail -n +2 | wc -l > exercises/covid19/genome-pattern.txt
+```
+
+4. Translate the DNA sequence to its corresponding protein sequence:
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+seqkit translate tutorial/data/covid19/GCA_009858895.3.fasta | head  > exercises/covid19/genome-protein.txt
+```
+
+5. How many STOP characters are in the protein sequence?
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+# 116
+seqkit translate tutorial/data/covid19/GCA_009858895.3.fasta | grep --count "*" > exercises/covid19/genome-stop.txt
+```
+
+## Malaria
+
+> *Plasmodium falciparum* is the malarial parasite most dangerous to humans, accounting for over 90% of all malarial deaths, and was the first species of the genus Plasmodium to be sequenced. Its genome is notable for an exceptionally low GC content of under 20%. In other respects, the genome has a similar size (23.3 Mb) and gene count (about 5300) to other species of malaria.
+
+The `malaria` directory contains a FASTA file of all the cDNA sequences in the parasite genome. The file was downloaded from the *Plasmodium falciparum* [portal](https://protists.ensembl.org/Plasmodium_falciparum/Info/Index) maintained by the Ensembl genome database. Using the SeqKit software, answer the follow questions about the parasite genes:
+
+1. How many genes are in the genome?
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+# 5,515
+seqkit stats tutorial/data/malaria/Plasmodium_falciparum.ASM276v2.cdna.all.fa > exercises/malaria/total-genes.txt
+```
+
+2. What is the name of the longest gene?
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+# PF3D7_0628100
+seqkit sort --by-length --reverse tutorial/data/malaria/Plasmodium_falciparum.ASM276v2.cdna.all.fa | seqkit head -n 1 | seqkit seq --name > exercises/malaria/longest-gene.txt
+```
+
+3. What is the range of GC content across all genes? Use the watch subcommand to help you answer this question.
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+# 14.90 to 50.98
+seqkit watch --fields GC --img exercises/malaria/genes-gc.png tutorial/data/malaria/Plasmodium_falciparum.ASM276v2.cdna.all.fa
+```
+
+4. Extract the name and sequence of the gene which causes resistance to the antimalarial drug chloroquine:
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+# Search sequences mentioning "chloroquine" and extract the sequence by name
+grep "chloroquine" tutorial/data/malaria/Plasmodium_falciparum.ASM276v2.cdna.all.fa
+seqkit grep --pattern "CAD50842" tutorial/data/malaria/Plasmodium_falciparum.ASM276v2.cdna.all.fa > exercises/malaria/drug-gene.txt
+```
+
+5. Extract subsequences of the chloroquine resistance gene in sliding windows (step size = 1, window size = 10) and produce a histogram of the GC content:
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+seqkit grep --pattern "CAD50842" tutorial/data/malaria/Plasmodium_falciparum.ASM276v2.cdna.all.fa | seqkit sliding --step 1 --window 10 | seqkit watch --fields GC --img exercises/malaria/gc-hist.png
+```
+
+## Leishmaniasis
+
+> Leishmania is a Tryanosomatid protozoa and is the parasite responsible for the disease Leishmaniasis. Leishmania is transmitted by the bite of certain species of sand fly and affects the populations of 88 tropical and sub-tropical countries worldwide. The symptoms are cutaneous and muco-cutaneous lesions initially around the bite, the parasite can also migrate causing visceral leishmaniasis affecting the haemopoietic organs.
+
+The `leishmania` directory contains the *Leishmania major* reference genome and gene sequences in FASTA format.  The file was downloaded from the *Plasmodium falciparum* [portal](http://protists.ensembl.org/Leishmania_major/Info/Index) maintained by the Ensembl genome database. Using the SeqKit software, answer the follow questions about the parasite genome:
+
+1. What is the total number of polar amino acids (SCNBQZTY) in the protein sequences?
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+# 2,706
+seqkit translate tutorial/data/leishmania/Leishmania_major.ASM272v2.cdna.all.fa | grep -c "[SCNBQZTY]" > exercises/leishmania/total-polar.txt
+```
+
+2. How many genes have duplicate sequences and what are their names?
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+# 2	CBZ11846, CBZ11847
+# 2	CBZ11883, CBZ11882
+seqkit rmdup --by-seq --ignore-case --dup-num-file exercises/leishmania/dupnum.txt --out-file exercises/leishmania/dupfile.txt tutorial/data/leishmania/Leishmania_major.ASM272v2.cdna.all.fa
+cat exercises/leishmania/dupnum.txt
+```
+
+3. What is the name of the 28th longest gene?
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+# CBZ11909
+seqkit sort --by-length --reverse tutorial/data/leishmania/Leishmania_major.ASM272v2.cdna.all.fa | seqkit range --range 28:28 | seqkit seq --name > exercises/leishmania/name-28-long.txt
+```
+
+4. How many SaCas9 PAM sites (NGRRT or NGRRN) are present on chromosome 1?
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+# 38,139
+seqkit grep --pattern "1" tutorial/data/leishmania/Leishmania_major.ASM272v2.dna.toplevel.fa | seqkit locate --pattern "NGRRT|NGRRN" --degenerate | tail -n +2 | wc -l > exercises/leishmania/cas9-sites.txt
+```
+
+5. What is the average GC content of the regions 20 bases upstream of the SaCas9 PAM sites?
+
+```{bash, echo = -1, blur = TRUE}
+conda activate seqkit
+# 63.1
+seqkit grep --pattern "1" tutorial/data/leishmania/Leishmania_major.ASM272v2.dna.toplevel.fa | seqkit locate --bed --pattern "NGRRT|NGRRN" --degenerate > exercises/leishmania/cas9-sites.bed
+seqkit subseq --bed exercises/leishmania/cas9-sites.bed --only-flank --up-stream 20 tutorial/data/leishmania/Leishmania_major.ASM272v2.dna.toplevel.fa | seqkit watch --fields GC --img exercises/leishmania/cas9-sites-gc.png
+``` 

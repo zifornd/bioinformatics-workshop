@@ -1,0 +1,59 @@
+---
+title: "Info"
+output:
+  bookdown::html_document2:
+    toc: false
+    number_sections: false
+---
+
+```{r,child="assets/header-lab.Rmd"}
+```
+
+## Location
+
+```{r,eval=TRUE,include=FALSE}
+library(yaml)
+library(leaflet)
+
+# set location in _site.yml
+loc <- yaml::read_yaml("_site.yml")$location
+
+if(loc=="chennai") {
+  dfr <- data.frame(venue_lat=55.713394,
+                    venue_lon=13.206628,
+                    venue_address="<b>Department of Biology</b>,Building D, Room Retina D227, Sölvegatan 35,Lund Sweden",
+                    description="For Lund city buses, regional buses and regional trains, [click here](https://www.skanetrafiken.se/). You can buy a ticket at the central station in Lund or at the regional bus (card only). You can also use the app [Skånetrafiken](https://www.skanetrafiken.se/biljetter/app2/)",
+                    stringsAsFactors=F)
+}
+```
+
+```{r,eval=TRUE,echo=FALSE,chunk.title=NULL}
+if(loc!="online") {
+  address <- paste(unlist(strsplit(dfr$venue_address,split=",")),collapse="<br>")
+  leaflet(height=450,width="auto") %>%
+    addTiles(urlTemplate='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png') %>%
+    addMarkers(lat=dfr$venue_lat,lng=dfr$venue_lon,popup=address) %>%
+    setView(lat=dfr$venue_lat,lng=dfr$venue_lon,zoom=15)
+}
+```
+
+```{r,eval=TRUE,echo=FALSE,chunk.title=NULL,results="asis"}
+if(loc=="online") {
+  cat("The workshop is online only. Zoom and Slack links are sent to participants by email.")
+}
+```
+
+```{r,eval=TRUE,echo=FALSE,results="asis",chunk.title=NULL}
+if(loc!="online") {
+  cat("## Travel info")
+  cat("\n",dfr$description)
+}
+```
+
+## Contact
+
+This workshop is run by the **National Bioinformatics Infrastructure Sweden (NBIS)**. NBIS is a platform at SciLifeLab.
+
+If you would like to get in touch with us regarding this workshop, please contact us at **education [at] nbis.se**.
+
+***

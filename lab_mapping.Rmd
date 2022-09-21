@@ -1,0 +1,470 @@
+---
+title: "Read mapping"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r,child="assets/header-lab.Rmd"}
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  chunk.title = TRUE,
+  engine.opts = list(bash = "-l")
+)
+```
+
+# Introduction
+
+## What is Bowtie 2?
+
+Bowtie 2 is an ultrafast and memory-efficient tool for aligning sequencing reads to long reference sequences. It is particularly good at aligning reads of about 50 up to 100s or 1,000s of characters, and particularly good at aligning to relatively long (e.g. mammalian) genomes. Bowtie 2 indexes the genome with an FM Index to keep its memory footprint small: for the human genome, its memory footprint is typically around 3.2 GB. Bowtie 2 supports gapped, local, and paired-end alignment modes.
+
+## What is BWA?
+
+BWA is a software package for mapping DNA sequences against a large reference genome, such as the human genome. It consists of three algorithms: BWA-backtrack, BWA-SW and BWA-MEM. The first algorithm is designed for Illumina sequence reads up to 100bp, while the rest two for longer sequences ranged from 70bp to a few megabases. BWA-MEM and BWA-SW share similar features such as the support of long reads and chimeric alignment, but BWA-MEM, which is the latest, is generally recommended as it is faster and more accurate.
+
+# Objectives
+
+* [Software installation]
+* [Data download]
+* [Bowtie alignment]
+* [BWA alignment]
+
+# Tutorial
+
+In this tutorial we are going to explore how to align short reads to a reference genome. Two of the most popular short read aligners used in bioinformatics are the Bowtie 2 and BWA aligners. Both of these aligners use the Burrows-Wheeler transform to build an index of the reference genome, however they differ from each other in respect of the alignment algorithm. It is important to say up front the alignment problem has not been solved - researchers continue to working on optimizing the efficiency of the read alignment procedure and strategies for determining the position of multi-mapping reads. With that said, lets get to the tutorial. The first thing to do is create a directory to store all the tutorial output files and data.
+
+Create a working directory for this tutorial:
+
+```{bash, echo = -1}
+rm -rf tutorial
+mkdir tutorial
+```
+
+## Software installation
+
+Create a new environment called 'alignment' with all the required software installed:
+
+```{bash}
+conda create --yes --name alignment bowtie2 bwa entrez-direct samtools seqkit sra-tools=2.11.0=pl5262h37d2149_1 # only this version works currently (21/09/2022) 
+```
+
+<!-- Download xtract for Apple Silicon -->
+
+```{bash, include = FALSE}
+curl -o /opt/miniconda3/envs/alignment/bin/xtract.Silicon.gz https://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/xtract.Silicon.gz
+gunzip /opt/miniconda3/envs/alignment/bin/xtract.Silicon.gz
+chmod +x /opt/miniconda3/envs/alignment/bin/xtract.Silicon
+```
+
+Activate the 'alignment' environment:
+
+```{bash}
+conda activate alignment
+```
+
+Test that Bowtie 2 and BWA are available:
+
+```{bash, echo = -1, error = TRUE}
+conda activate alignment
+which bowtie2
+which bwa
+```
+
+## Data download
+
+The data we are going to use in this tutorial is from the original research paper which first reported the genome sequence of the SARS-CoV-2 virus responsible for the COVID-19 pandemic across the globe. The paper is listed below for you to read in your own time, if you are so inclined:
+
+[A new coronavirus associated with human respiratory disease in China](https://www.nature.com/articles/s41586-020-2008-3)
+
+Within the paper there is a 'Data availability' section telling you where to download the sequencing data. To save you some time, I can tell you that the sequencing data was deposited in the SRA database under the study accession number **SRP245409**. Have a look through the study page to get familiar with the data, ask yourself questions like 'how many runs are in this study?', 'what sequencing machine was used?', 'how many reads did they sequence?', etc.
+
+```{r, echo = FALSE, out.width = "100%"}
+knitr::include_url("https://trace.ncbi.nlm.nih.gov/Traces/sra/?study=SRP245409", height = "600px")
+```
+
+As well as the sequencing data, we also need to download a copy of the SARS-CoV-2 reference genome. The NCBI hosts the reference genome in the GenBank database under the accession number **MN908947**. Again, get yourself acquainted with the data by exploring the GenBank page for the genome, ask yourself questions like 'who submitted the genome sequence?', 'how long is the genome?', 'how many genes do it contain?', etc.
+
+```{r, echo = FALSE, out.width = "100%"}
+knitr::include_url("https://www.ncbi.nlm.nih.gov/nuccore/MN908947.3/", height = "600px")
+```
+
+Now that you've had a good rummage around, lets get to business and download the data. First, create a directory to actually store the sequencing data and reference genome.
+
+```{bash}
+mkdir tutorial/data
+```
+
+Although we discussed the advantages of short read aligners in the context of large genomes. This tutorial would take much longer if we went down that route. Instead, small viral genomes such as SARS-CoV-2 are an excellent substitute for teaching. Use the `efetch` command from EDirect to download the reference genome:
+
+```{bash, echo = -1}
+conda activate alignment
+efetch -db nuccore -id MN908947 -format fasta > tutorial/data/MN908947.fasta
+```
+
+To save time and memory requirements, we are only going to use a small sample of the sequencing data. Use the `fastq-dump` command from the SRA Toolkit to download just 1,000 of the paired-end reads from the SARS-CoV-2 sequencing data:
+
+```{bash, echo = -1}
+conda activate alignment
+fastq-dump -X 1000 -O tutorial/data --split-files SRR15168839
+```
+
+Now that we have the reads and the reference genome, lets start aligning!
+
+## Bowtie alignment
+
+The first aligner we're going to use is Bowtie 2 - the second major version of the Bowtie alignment software. The general procedure for read alignment is to first index the reference genome sequence, then align the reads to the genome sequence with the help of the index to speed up mapping. I should warn you now, aligners have a huge number of settings. On the one hand this is great because it means they can be customized for very specific use cases, on the other hand all those settings can be quite bewildering for someone inexperienced. Luckily for you, unless you have a particularly abnormal data set - the defaults work quite well! In fact, Bowtie 2 comes with has handy presets you can choose to automatically set multiple parameters, they even have helpful names like '--very-fast' or '--very-sensitive'.
+
+Lets begin by creating a directory to store all the Bowtie 2 output files:
+
+```{bash}
+mkdir tutorial/bowtie2
+```
+
+To index a reference sequence, you need to use the `bowtie2-build` command:
+
+```{bash, echo = -1}
+conda activate alignment
+bowtie2-build tutorial/data/MN908947.fasta tutorial/bowtie2/MN908947
+```
+
+The command should print many lines of output then quit. When the command completes, the `tutorial/bowtie2` directory will contain six new files that all start with MN908947 and end with `.1.bt2`, `.2.bt2`, `.3.bt2`, `.4.bt2`, `.rev.1.bt2`, and `.rev.2.bt2`. These files constitute the index for the Bowtie 2 aligner. The next step is to align the reads. Remember what I said about the aligner having lots of settings? Now would be a good time to have a quick look at all those settings. I know you're excited to get to the alignment step, but understanding the capabilities of the aligner is important. Go ahead and display the usage information for the `bowtie2` command:
+
+```{bash, echo = -1}
+conda activate alignment
+bowtie2 -h
+```
+
+Now that you've skimmed the usage information, lets run the aligner! We need to provide the index of the reference genome, the FASTQ files containing the sequencing reads, and also the name of file to write the results:
+
+```{bash, echo = -1}
+conda activate alignment
+bowtie2 -x tutorial/bowtie2/MN908947 -1 tutorial/data/SRR15168839_1.fastq -2 tutorial/data/SRR15168839_2.fastq > tutorial/bowtie2/SRR15168839.sam
+```
+
+This runs the Bowtie 2 aligner, which aligns a set of paired-end reads to the SARS-CoV-2 reference genome using the index generated in the previous step. The alignment results are  written in SAM format to the file `tutorial/bowtie2/SRR15168839.sam`, and a short alignment summary is written to the console.
+
+The summary provides some useful information on the mapping rate. In the example above, it tells you that of the 1000 paired-end reads, only 9% of them aligned 'concordantly'. This term is used to label read pairs which align with the expected insert size in the expected orientation. For more details, see the section of the [manual](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#concordant-pairs-match-pair-expectations-discordant-pairs-dont) which describes the difference between concordant and discordant pairs. Of those reads which aligned 'discordantly', nearly 96% of them were aligned. Finally, the overall alignment rate for this data is 96%. 
+
+The SAM file format is the de-facto standard for reporting of alignments to a reference genome. These files can be manipulated using the SAMtools software package. We will learn more about SAMtools in the next workshop, so for now just follow the commands listed below.
+
+Print SAM header only:
+
+```{bash, echo = -1}
+conda activate alignment
+samtools view -H tutorial/bowtie2/SRR15168839.sam
+```
+
+Print SAM alignment records only:
+
+```{bash, echo = -1}
+conda activate alignment
+# Output the first few lines of the file
+samtools view tutorial/bowtie2/SRR15168839.sam | head
+```
+
+Calculate read alignment statistics:
+
+```{bash, echo = -1}
+conda activate alignment
+samtools flagstat tutorial/bowtie2/SRR15168839.sam
+```
+
+## BWA alignment
+
+The next aligner we're going to use is BWA - which stands for Burrows-Wheeler aligner. No prizes for guessing which indexing strategy this aligner uses! As mentioned in the introduction, BWA provides three different alignment algorithms. In practice, most people use the BWA-MEM algorithm as it is generally faster and more accurate. The general procedure for BWA is very similar to Bowtie 2 so we won't go into as much detail about the individual steps as we did previously.
+
+Lets begin by creating a directory to store all the BWA output files:
+
+```{bash}
+mkdir tutorial/bwa
+```
+
+As before, the next thing we need to do is index the reference sequence. To do this we use the `bwa index` command:
+
+```{bash, echo = -1}
+conda activate alignment
+bwa index -p tutorial/bwa/MN908947 tutorial/data/MN908947.fasta
+```
+
+The command should print some lines of output then quit. When the command completes, the `tutorial/bwa` directory will contain five new files that all start with MN908947 and end with `.amb`, `.ann`, `.bwt`, `.pac`, and `.sa`. This constitutes the index for the BWA aligner.
+
+Display usage information for the `bwa mem` command:
+
+```{bash, echo = -1, error = TRUE}
+conda activate alignment
+bwa mem
+```
+
+Run the BWA alignment command:
+
+```{bash, echo = -1}
+conda activate alignment
+bwa mem tutorial/bwa/MN908947 tutorial/data/SRR15168839_1.fastq tutorial/data/SRR15168839_2.fastq > tutorial/bwa/SRR15168839.sam
+```
+
+Print SAM header only:
+
+```{bash, echo = -1}
+conda activate alignment
+samtools view -H tutorial/bwa/SRR15168839.sam
+```
+
+Print SAM alignment records only:
+
+```{bash, echo = -1}
+conda activate alignment
+# Output the first few lines of the file
+samtools view tutorial/bwa/SRR15168839.sam | head
+```
+
+Calculate read alignment statistics:
+
+```{bash, echo = -1}
+conda activate alignment
+samtools flagstat tutorial/bwa/SRR15168839.sam
+```
+
+Before we finish, one thing you might have noticed is the difference in 'properly paired' alignment rates between the Bowtie 2 and BWA aligners. Unfortunately, this is not simple to explain. The 'properly paired' definition is not standard and each aligner uses different rules to define whether a pair of reads is properly paired or not. To know why these rates are different you will have to look up the Bowtie 2 and BWA definitions. We'll leave that as a puzzle you to solve, if you're curious.
+
+# Exercises
+
+The exercises below are designed to strengthen your knowledge of using Bowtie 2 and BWA to align short reads to a reference genome. The solution to each problem is blurred, only after attempting to solve the problem yourself should you look at the solution. Should you need any help, please ask one of the instructors.
+
+Create a directory to store the output files from each exercise:
+
+```{bash, echo = -1}
+rm -rf exercises
+mkdir exercises
+mkdir exercises/ebola
+mkdir exercises/hiv
+mkdir exercises/dengue
+```
+
+## Ebola
+
+> Ebola virus disease (EVD), formerly known as Ebola haemorrhagic fever, is a severe, often fatal illness affecting humans and other primates. The virus is transmitted to people from wild animals (such as fruit bats, porcupines and non-human primates) and then spreads in the human population through direct contact with the blood, secretions, organs or other bodily fluids of infected people, and with surfaces and materials (e.g. bedding, clothing) contaminated with these fluids.
+> `r tufte::quote_footer('World Health Organization')`
+
+1. Use the `efetch` command from EDirect to download and save the Ebola reference genome (AF086833):
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+efetch -db nuccore -id AF086833 -format fasta > exercises/ebola/AF086833.fasta
+```
+
+2. Use the `fastq-dump` command from the SRA Toolkit to download 10,000 paired-end reads from a sequencing run (SRR1972739) of an Ebola sample:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+fastq-dump -X 10000 -O exercises/ebola/ --split-files SRR1972739
+```
+
+3. Use the SeqKit package to list the name, GC content, and length of the genome:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+seqkit fx2tab -n -g -l exercises/ebola/AF086833.fasta
+```
+
+4. Index the reference genome using the BWA aligner:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+bwa index -p exercises/ebola/AF086833 exercises/ebola/AF086833.fasta
+```
+
+5. Align the sequencing reads to the Ebola genome use the BWA aligner:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+bwa mem exercises/ebola/AF086833 exercises/ebola/SRR1972739_1.fastq exercises/ebola/SRR1972739_2.fastq > exercises/ebola/SRR1972739.sam
+```
+
+6. Use the `samtools flagstat` command to report the alignment statistics:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+samtools flagstat exercises/ebola/SRR1972739.sam
+```
+
+## HIV
+
+> Human immunodeficiency virus (HIV) is an infection that attacks the body’s immune system, specifically the white blood cells called CD4 cells. HIV destroys these CD4 cells, weakening a person’s immunity against opportunistic infections, such as tuberculosis and fungal infections, severe bacterial infections and some cancers.
+> `r tufte::quote_footer('World Health Organization')`
+
+1. Use the `efetch` command from EDirect to download and save the HIV reference genome (AF033819):
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+efetch -db nuccore -id AF033819 -format fasta > exercises/hiv/AF033819.fasta
+```
+
+2. Use the `esearch` and `efetch` commands to download and save the run information from a public HIV sequencing project (PRJNA541016):
+
+```{bash, eval = FALSE, blur = TRUE, echo = -1}
+conda activate alignment
+esearch -db sra -query PRJNA541016 | efetch -format runinfo > exercises/hiv/runinfo.csv
+```
+
+<!-- The esearch command only works asynchronously -->
+
+```{bash, include = FALSE}
+conda activate alignment
+esearch -db sra -query PRJNA541016 > /tmp/query.txt &
+sleep 10
+cat /tmp/query.txt | efetch -format runinfo > exercises/hiv/runinfo.csv
+```
+
+3. Create a file which contains the run accession numbers, each accession number should be on its own line:
+
+```{bash, blur = TRUE}
+cut -d ',' -f 1 exercises/hiv/runinfo.csv | tail -n +2 | head -n 5 > exercises/hiv/runids.txt
+```
+
+4. Use the `fastq-dump` command to download 1000 single-end reads from each of the runs listed in the project. Instead of manually creating the command for each run accession number, use a for loop to read each run accession number from the file created in Q3:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+while read RUN; do
+
+  fastq-dump -X 1000 -O exercises/hiv ${RUN}
+
+done < exercises/hiv/runids.txt
+```
+
+5. Use the Bowtie 2 aligner to index the HIV genome:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+bowtie2-build exercises/hiv/AF033819.fasta exercises/hiv/AF033819
+```
+
+6. Align the sequencing reads to the HIV genome use the Bowtie 2 aligner. Again, use a for loop to construct and run each of the commands:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+while read RUN; do
+
+  bowtie2 --very-sensitive -x exercises/hiv/AF033819 -U exercises/hiv/${RUN}.fastq > exercises/hiv/${RUN}.sam
+
+done < exercises/hiv/runids.txt
+```
+
+7. Calculate the alignment statistics for each of the runs. Use a for loop as before:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+while read RUN; do
+
+  samtools flagstat exercises/hiv/${RUN}.sam > exercises/hiv/${RUN}_flagstat.txt
+
+done < exercises/hiv/runids.txt
+```
+
+8. Use `grep` to find and report the number of mapped reads for each run:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+# limit to first match (-m 1)
+grep -m 1 "mapped" exercises/hiv/*_flagstat.txt
+```
+
+## Dengue
+
+> Dengue is a mosquito-borne viral infection that is common in warm, tropical climates. Infection is caused by any one of four closely related dengue viruses (called serotypes) and these can lead to a wide spectrum of symptoms, including some which are extremely mild (unnoticeable) to those that may require medical intervention and hospitalization. In severe cases, fatalities can occur. There is no treatment for the infection itself but the symptoms that a patient experiences can be managed.
+> `r tufte::quote_footer('World Health Organization')`
+
+1. Use the `efetch` command from EDirect to download and save the Dengue reference genome (NC_001477):
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+efetch -db nuccore -id NC_001477 -format fasta > exercises/dengue/NC_001477.fasta
+```
+
+2. Use the `esearch` and `efetch` commands to download and save the run information from a public Dengue sequencing project (PRJNA494391):
+
+```{bash, eval = FALSE, blur = TRUE, echo = -1}
+conda activate alignment
+esearch -db sra -query PRJNA494391 | efetch -format runinfo > exercises/dengue/runinfo.csv
+```
+
+<!-- The esearch command only works asynchronously -->
+
+```{bash, include = FALSE, echo = -1}
+conda activate alignment
+esearch -db sra -query PRJNA494391 > /tmp/query.txt &
+sleep 10
+cat /tmp/query.txt | efetch -format runinfo > exercises/dengue/runinfo.csv
+```
+
+3. Create a file which contains the run accession numbers of those runs which have more than 1,500,000 reads. Column 4 of the run information file contains the number of reads for each run:
+
+```{bash, blur = TRUE}
+tail -n +2 exercises/dengue/runinfo.csv | grep "Dengue virus" | awk -F "," '($4 > 1500000)' | cut -d "," -f 1 > exercises/dengue/runids.txt
+```
+
+4. Use the `fastq-dump` command to download 100,000 paired-end reads from each of the runs listed in the project. Instead of manually creating the command for each run accession number, use a for loop to read each run accession number from the file created in Q3:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+while read RUN; do
+
+  fastq-dump -X 100000 -O exercises/dengue --split-files ${RUN}
+
+done < exercises/dengue/runids.txt
+```
+
+5. Use the BWA aligner to index the Dengue genome:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+bwa index -p exercises/dengue/NC_001477 exercises/dengue/NC_001477.fasta
+```
+
+6. Use the Bowtie 2 aligner to index the Dengue genome:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+bowtie2-build exercises/dengue/NC_001477.fasta exercises/dengue/NC_001477
+```
+
+7. Align the sequencing reads to the Dengue genome use both the Bowtie 2 and BWA aligners. Again, use a for loop to construct and run each of the commands:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+while read RUN; do
+
+  bwa mem exercises/dengue/NC_001477 exercises/dengue/${RUN}_1.fastq exercises/dengue/${RUN}_2.fastq > exercises/dengue/${RUN}_bwa.sam
+
+  bowtie2 -x exercises/dengue/NC_001477 -1 exercises/dengue/${RUN}_1.fastq -2 exercises/dengue/${RUN}_2.fastq > exercises/dengue/${RUN}_bowtie2.sam
+
+done < exercises/dengue/runids.txt
+```
+
+7. Calculate the alignment statistics for each of the runs using both aligners. Use a for loop as before:
+
+```{bash, blur = TRUE, echo = -1}
+conda activate alignment
+while read RUN; do
+
+  samtools flagstat exercises/dengue/${RUN}_bwa.sam > exercises/dengue/${RUN}_bwa_flagstat.txt
+
+  samtools flagstat exercises/dengue/${RUN}_bowtie2.sam > exercises/dengue/${RUN}_bowtie2_flagstat.txt
+
+done < exercises/dengue/runids.txt
+```
+
+8. Use `grep` to find and report the number of mapped reads for each run using the BWA aligner:
+
+```{bash, blur = TRUE}
+# limit to first match (-m 1)
+grep -m 1 "mapped" exercises/dengue/*_bwa_flagstat.txt
+```
+
+9. Use `grep` to find and report the number of mapped reads for each run using the Bowtie 2 aligner:
+
+```{bash, blur = TRUE}
+# limit to first match (-m 1)
+grep -m 1 "mapped" exercises/dengue/*_bowtie2_flagstat.txt
+```
