@@ -1,0 +1,6 @@
+@HD  VN:1.6       SO:coordinate
+@SQ  SN:REF1      LN:953
+@SQ  SN:REF2      LN:1467
+@RG  ID:RUN1      SM:SAMPLE1
+@PG  ID:bwa       PN:bwa         VN:0.7.17-r1188  CL:bwa   mem          -R    @RG\tID:RUN1\tSM:SAMPLE1  genome.fa  reads.fq
+@PG  ID:samtools  PN:samtools    PP:bwa           VN:1.14  CL:samtools  sort  -O                        SAM

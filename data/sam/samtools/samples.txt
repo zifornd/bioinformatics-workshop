@@ -1,0 +1,17 @@
+Usage: samtools samples [options] <input> [...]
+       samtools samples [options] -X f1.bam f2.bam f1.bam.bai f2.bai 
+       find dir1 dir2 -type f \(-name "*.bam" -o -name "*.cram" \) | samtools samples [options]
+       find dir1 dir2 -type f \(-name "*.bam" -o -name "*.bai" \) | sort | paste - - | samtools samples -X [options]
+
+Options:
+  -?              print help and exit
+  -h              add the columns header before printing the results
+  -i              test if the file is indexed.
+  -T <tag>        provide the sample tag name from the @RG line [SM].
+  -o <file>       output file [stdout].
+  -f <file.fa>    load an indexed fasta file in the collection of references. Can be used multiple times.
+  -F <file.txt>   read a file containing the paths to indexed fasta files. One path per line.
+  -X              use a custom index file.
+
+ Using -f or -F will add a column containing the path to the reference or "." if the reference was not found.
+

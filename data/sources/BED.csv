@@ -1,0 +1,13 @@
+Column,Field,Description
+1,chrom,Chromosome name
+2,chromStart,Feature start position
+3,chromEnd,Feature end position
+4,name,Feature description
+5,score,A numerical value
+6,strand,Feature strand
+7,thickStart,Thick start position
+8,thickEnd,Thick end position
+9,itemRgb,Display color
+10,blockCount,Number of blocks
+11,blockSizes,Block sizes
+12,blockStarts,Block start positions

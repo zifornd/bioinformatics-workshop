@@ -1,0 +1,51 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job stats:
+job        count    min threads    max threads
+-------  -------  -------------  -------------
+all            1              1              1
+silicon        1              1              1
+trim           1              1              1
+total          3              1              1
+
+Select jobs to execute...
+
+[Sun Dec 12 15:49:40 2021]
+rule silicon:
+    input: linear.txt
+    output: linear.temp.png
+    jobid: 6
+    wildcards: alignment=linear
+    resources: tmpdir=/var/folders/03/vd5mdrh57cl6cj3qcm73qy5r0000gn/T
+
+[Sun Dec 12 15:49:40 2021]
+Finished job 6.
+1 of 3 steps (33%) done
+Select jobs to execute...
+
+[Sun Dec 12 15:49:40 2021]
+rule trim:
+    input: linear.temp.png
+    output: linear.png
+    jobid: 5
+    wildcards: alignment=linear
+    resources: tmpdir=/var/folders/03/vd5mdrh57cl6cj3qcm73qy5r0000gn/T
+
+Removing temporary output file linear.temp.png.
+[Sun Dec 12 15:49:40 2021]
+Finished job 5.
+2 of 3 steps (67%) done
+Select jobs to execute...
+
+[Sun Dec 12 15:49:40 2021]
+localrule all:
+    input: secondary.png, supplementary.png, linear.png
+    jobid: 0
+    resources: tmpdir=/var/folders/03/vd5mdrh57cl6cj3qcm73qy5r0000gn/T
+
+[Sun Dec 12 15:49:40 2021]
+Finished job 0.
+3 of 3 steps (100%) done
+Complete log: /Users/James/GitHub/samtools-lesson/images/terminology/.snakemake/log/2021-12-12T154940.317595.snakemake.log

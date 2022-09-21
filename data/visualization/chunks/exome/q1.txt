@@ -1,0 +1,5 @@
+new
+genome hg38
+load 1KGP.vcf
+snapshot q1.png
+exit

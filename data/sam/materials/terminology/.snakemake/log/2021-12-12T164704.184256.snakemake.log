@@ -1,0 +1,51 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job stats:
+job        count    min threads    max threads
+-------  -------  -------------  -------------
+all            1              1              1
+silicon        1              1              1
+trim           1              1              1
+total          3              1              1
+
+Select jobs to execute...
+
+[Sun Dec 12 16:47:04 2021]
+rule silicon:
+    input: chimeric.txt
+    output: chimeric.temp.png
+    jobid: 4
+    wildcards: alignment=chimeric
+    resources: tmpdir=/var/folders/03/vd5mdrh57cl6cj3qcm73qy5r0000gn/T
+
+[Sun Dec 12 16:47:04 2021]
+Finished job 4.
+1 of 3 steps (33%) done
+Select jobs to execute...
+
+[Sun Dec 12 16:47:04 2021]
+rule trim:
+    input: chimeric.temp.png
+    output: chimeric.png
+    jobid: 3
+    wildcards: alignment=chimeric
+    resources: tmpdir=/var/folders/03/vd5mdrh57cl6cj3qcm73qy5r0000gn/T
+
+Removing temporary output file chimeric.temp.png.
+[Sun Dec 12 16:47:04 2021]
+Finished job 3.
+2 of 3 steps (67%) done
+Select jobs to execute...
+
+[Sun Dec 12 16:47:04 2021]
+localrule all:
+    input: linear.png, chimeric.png, multiple.png
+    jobid: 0
+    resources: tmpdir=/var/folders/03/vd5mdrh57cl6cj3qcm73qy5r0000gn/T
+
+[Sun Dec 12 16:47:04 2021]
+Finished job 0.
+3 of 3 steps (100%) done
+Complete log: /Users/James/GitHub/samtools-lesson/images/terminology/.snakemake/log/2021-12-12T164704.184256.snakemake.log

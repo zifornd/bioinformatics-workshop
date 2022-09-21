@@ -1,0 +1,37 @@
+Usage: samtools merge [options] -o <out.bam> [options] <in1.bam> ... <inN.bam>
+   or: samtools merge [options] <out.bam> <in1.bam> ... <inN.bam>
+
+Options:
+  -n         Input files are sorted by read name
+  -t TAG     Input files are sorted by TAG value
+  -r         Attach RG tag (inferred from file names)
+  -u         Uncompressed BAM output
+  -f         Overwrite the output BAM if exist
+  -o FILE    Specify output file via option instead of <out.bam> argument
+  -1         Compress level 1
+  -l INT     Compression level, from 0 to 9 [-1]
+  -R STR     Merge file in the specified region STR [all]
+  -h FILE    Copy the header in FILE to <out.bam> [in1.bam]
+  -c         Combine @RG headers with colliding IDs [alter IDs to be distinct]
+  -p         Combine @PG headers with colliding IDs [alter IDs to be distinct]
+  -s VALUE   Override random seed
+  -b FILE    List of input BAM filenames, one per line [null]
+  -X         Use customized index files
+  -L FILE    Specify a BED file for multiple region filtering [null]
+  --no-PG    do not add a PG line
+      --input-fmt-option OPT[=VAL]
+               Specify a single input file format option in the form
+               of OPTION or OPTION=VALUE
+  -O, --output-fmt FORMAT[,OPT[=VAL]]...
+               Specify output format (SAM, BAM, CRAM)
+      --output-fmt-option OPT[=VAL]
+               Specify a single output file format option in the form
+               of OPTION or OPTION=VALUE
+      --reference FILE
+               Reference sequence FASTA FILE [null]
+  -@, --threads INT
+               Number of additional threads to use [0]
+      --write-index
+               Automatically index the output files [off]
+      --verbosity INT
+               Set level of verbosity

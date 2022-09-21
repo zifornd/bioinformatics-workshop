@@ -1,0 +1,4 @@
+data/rnaseq/griffith.tar.gz filter=lfs diff=lfs merge=lfs -text
+data/quality/data.tar.gz filter=lfs diff=lfs merge=lfs -text
+data/quality/fastq/contam.fastq.gz filter=lfs diff=lfs merge=lfs -text
+data/quality/data/contam.fastq.gz filter=lfs diff=lfs merge=lfs -text

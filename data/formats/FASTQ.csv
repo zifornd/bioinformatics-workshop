@@ -1,0 +1,13 @@
+Element,Description,Colour
+@,Record entry,#62b183
+<instrument>,Instrument ID,#7046c8
+<run number>,Run number on instrument,#76b73f
+<flowcell ID>,Flowcell ID,#cd53bf
+<lane>,Lane number,#4f642f
+<tile>, Tile number,#8787c9
+<x_pos>,X coordinate of cluster,#d34d37
+<y_pos>,Y coordinate of cluster,#519bb4
+<read>,Read number (1 or 2),#c6974c
+<is filtered>,Filtered read (Y or N),#5e3872
+<control number>,Control read,#7d3e33
+<sample number>,Sample number,#ce6687

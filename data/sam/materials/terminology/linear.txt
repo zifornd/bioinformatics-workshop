@@ -1,0 +1,19 @@
+REF    GATCGATCATTACGATATGCGCTAGCGCTACGAGCTACGGCATACGCTAG
+          |||||||||
+SEQ       CGATCATTA                                               MATCH
+
+REF    GATCGATCATTACGA---TATGCGCTAGCGCTACGAGCTACGGCATACGCTAG
+                   |||   |||
+SEQ                CGAGCGTAT                                  INSERTION
+
+REF    GATCGATCATTACGATATGCGCTAGCGCTACGAGCTACGGCATACGCTAG
+                           |||   ||||||
+SEQ                        GCT---CCTACG                        DELETION
+
+REF    GATCGATCATTACGATATGCGCTAGCGCTACGAGCTACGGCATACGCTAG
+                                    |||||||||
+SEQ         ATCA...........................ACGGC                   SKIP
+
+REF    GATCGATCATTACGATATGCGCTAGCGCTACGAGCTACGGCATACGCTAG
+                                         |||||||||
+SEQ                                      CTACGGCATaaaaa         CLIPPING

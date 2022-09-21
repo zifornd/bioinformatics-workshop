@@ -1,0 +1,35 @@
+Usage: samtools import [options] [file.fastq ...]
+
+Options:
+  -s FILE      Read paired-ended data from single FILE
+  -0 FILE      Read single-ended data from FILE
+  -1 FILE      Read-1 from FILE
+  -2 FILE      Read-2 from FILE
+  --i1 FILE    Index-1 from FILE
+  --i2 FILE    Index-2 from FILE
+  -i           Parse CASAVA identifier
+  --barcode-tag TAG
+               Tag to use with barcode sequences [BC]
+  --quality-tag TAG
+               Tag to use with barcode qualities [QT]
+  -N, --name2  Use 2nd field as read name (SRA format)
+  -r STRING    Build up a complete @RG line
+  -R STRING    Add a simple RG line of "@RG\tID:STRING"
+  -T TAGLIST   Parse tags in SAM format; list of '*' for all
+  -o FILE      Output to FILE instead of stdout
+  -u           Uncompressed output
+  --order TAG  Store Nth record count in TAG
+
+      --input-fmt-option OPT[=VAL]
+               Specify a single input file format option in the form
+               of OPTION or OPTION=VALUE
+  -O, --output-fmt FORMAT[,OPT[=VAL]]...
+               Specify output format (SAM, BAM, CRAM)
+      --output-fmt-option OPT[=VAL]
+               Specify a single output file format option in the form
+               of OPTION or OPTION=VALUE
+  -@, --threads INT
+               Number of additional threads to use [0]
+
+A single fastq file will be interpreted as -s, -0 or -1 depending on
+file contents, and a pair of fastq files as "-1 FILE1 -2 FILE2".

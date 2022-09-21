@@ -1,0 +1,15 @@
+Usage: samtools fqidx <file.fq|file.fq.gz> [<reg> [...]]
+Option: 
+ -o, --output FILE        Write FASTQ to file.
+ -n, --length INT         Length of FASTQ sequence line. [60]
+ -c, --continue           Continue after trying to retrieve missing region.
+ -r, --region-file FILE   File of regions.  Format is chr:from-to. One per line.
+ -i, --reverse-complement Reverse complement sequences.
+     --mark-strand TYPE   Add strand indicator to sequence name
+                          TYPE = rc   for /rc on negative strand (default)
+                                 no   for no strand indicator
+                                 sign for (+) / (-)
+                                 custom,<pos>,<neg> for custom indicator
+     --fai-idx      FILE  name of the index file (default file.fq.fai).
+     --gzi-idx      FILE  name of compressed file index (default file.fq.gz.gzi).
+ -h, --help               This message.

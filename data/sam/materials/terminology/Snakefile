@@ -1,0 +1,21 @@
+ALIGNMENTS = ["linear", "chimeric", "multiple"]
+
+rule all:
+	input:
+		expand("{alignment}.png", alignment = ALIGNMENTS)
+
+rule silicon:
+	input:
+		txt = "{alignment}.txt"
+	output:
+		png = temp("{alignment}.temp.png")
+	shell:
+		"silicon --no-line-number --no-window-controls --background '#FFFFFF' --output {output.png} {input.txt}"
+
+rule trim:
+	input:
+		png = "{alignment}.temp.png"
+	output:
+		png = "{alignment}.png"
+	shell:
+		"convert {input.png} -trim {output.png}"

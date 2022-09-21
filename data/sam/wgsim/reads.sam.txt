@@ -1,0 +1,15 @@
+@HD   VN:1.6       SO:coordinate
+@SQ   SN:REF1      LN:953
+@SQ   SN:REF2      LN:1467
+@RG   ID:RUN1      SM:SAMPLE1
+@PG   ID:bwa       PN:bwa         VN:0.7.17-r1188  CL:bwa   mem          -R    @RG\tID:RUN1\tSM:SAMPLE1  genome.fa  reads.fq
+@PG   ID:samtools  PN:samtools    PP:bwa           VN:1.14  CL:samtools  sort  -O                        SAM
+SEQ1  0            REF1           153              60       36M          *     0                         0          TCGCAATAACCGCTCACTTACTAAGTATGCAGGACG  GFGGIACB@CHBDIFB@BICIBICBCDICAGBHDFC  NM:i:0  MD:Z:36     AS:i:36    XS:i:0  RG:Z:RUN1
+SEQ2  0            REF1           171              60       36M          *     0                         0          TACTAAGTATGCAGGACGCTTCGTTCGAGGTATTGT  CDBDEB@GGG@GIEGCDHIGCGCBDFADCABCFF@E  NM:i:0  MD:Z:36     AS:i:36    XS:i:0  RG:Z:RUN1
+SEQ3  16           REF1           627              60       36M          *     0                         0          TAGGACAGGTGCGCGACATTCATATGGGATCCGCGA  E@DE@HBFBIHHIFGICDBCFEG@DDDIFG@B@AIE  NM:i:0  MD:Z:36     AS:i:36    XS:i:0  RG:Z:RUN1
+SEQ4  16           REF1           896              60       36M          *     0                         0          GTTCACGGTGCGAAGAGTCCGTGAAATCGTGGGTTA  @H@BBECECDCGAICAEAAIEBFEIEGC@AED@D@F  NM:i:0  MD:Z:36     AS:i:36    XS:i:0  RG:Z:RUN1
+SEQ5  0            REF2           445              60       36M          *     0                         0          CGATAGATGCCCGAGTAGGAATGGTGGACCGGTGGT  AFBDIA@FFBHEFBEFDBDBAAHHHFIACEIDI@GG  NM:i:0  MD:Z:36     AS:i:36    XS:i:0  RG:Z:RUN1
+SEQ8  0            REF2           914              60       36M          *     0                         0          AGTTTCTTTGTTCCTTGCTTAAGACCCCTGTGTCTC  ADDGAIA@BBEIAFFEDHCFFDEDCEABFI@BBCGH  NM:i:1  MD:Z:6G29   AS:i:31    XS:i:0  RG:Z:RUN1
+SEQ9  0            REF2           963              60       36M          *     0                         0          GATCGGATGCGATCTGTATAGTTAGTACTCCGAGTA  FBFFC@G@HD@FBI@BBBAIIH@FHGCAGHF@BEBI  NM:i:1  MD:Z:10C25  AS:i:31    XS:i:0  RG:Z:RUN1
+SEQ7  16           REF2           1142             60       36M          *     0                         0          TTAGAGAAGGCTCGTCTTGTCGAAAAACCCGACTAC  IFCGGDEDHDB@FHIAH@FHGBFGAGAIDF@AFB@F  NM:i:0  MD:Z:36     AS:i:36    XS:i:0  RG:Z:RUN1
+SEQ6  4            *              0                0        *            *     0                         0          CCAGTTATCCCACGGCCGCGAAGGAAATCTGGCAAC  @HCIIDI@DEGAE@AIHDHHIFACA@CAFCDFGDHF  AS:i:0  XS:i:0      RG:Z:RUN1

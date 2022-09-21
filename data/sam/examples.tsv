@@ -1,0 +1,6 @@
+Flag	Sum	Meaning
+4	4	read unmapped
+256	256	not primary alignment
+5	1 + 4	read paired, read unmapped
+129	1 + 128	read paired, Second in pair
+1792	256 + 512 + 1024	not primary alignment, read fails platform/vendor quality checks, read is PCR or optical duplicate

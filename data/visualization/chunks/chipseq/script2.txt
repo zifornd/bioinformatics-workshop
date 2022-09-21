@@ -1,0 +1,9 @@
+new
+genome mm10
+load ZHBTC4_OCT4_UNT.bw
+load ZHBTC4_OCT4_UNT_peaks.narrowPeak
+load ZHBTC4_OCT4_UNT_summits.bed
+goto chr19:38,348,470-38,348,509
+setDataRange auto
+snapshot script2.png
+exit

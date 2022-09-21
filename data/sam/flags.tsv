@@ -1,0 +1,13 @@
+Integer	Binary	Description
+1	000000000001	Read paired
+2	000000000010	Read mapped in proper pair
+4	000000000100	Read unmapped
+8	000000001000	Mate unmapped
+16	000000010000	Read reverse strand
+32	000000100000	Mate reverse strand
+64	000001000000	First in pair
+128	000010000000	Second in pair
+256	000100000000	Not primary alignment
+512	001000000000	Read fails platform/vendor quality checks
+1024	010000000000	Read is PCR or optical duplicate
+2048	100000000000	Supplementary alignment

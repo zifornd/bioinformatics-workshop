@@ -1,0 +1,14 @@
+Usage: samtools tview [options] <aln.bam> [ref.fasta]
+Options:
+   -d display      output as (H)tml or (C)urses or (T)ext 
+   -X              include customized index file
+   -p chr:pos      go directly to this position
+   -s STR          display only reads from this sample or group
+   -w INT          display width (with -d T only)
+      --input-fmt-option OPT[=VAL]
+               Specify a single input file format option in the form
+               of OPTION or OPTION=VALUE
+      --reference FILE
+               Reference sequence FASTA FILE [null]
+      --verbosity INT
+               Set level of verbosity

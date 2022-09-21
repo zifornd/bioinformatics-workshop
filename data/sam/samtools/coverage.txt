@@ -1,0 +1,41 @@
+Usage: samtools coverage [options] in1.bam [in2.bam [...]]
+
+Input options:
+  -b, --bam-list FILE     list of input BAM filenames, one per line
+  -l, --min-read-len INT  ignore reads shorter than INT bp [0]
+  -q, --min-MQ INT        mapping quality threshold [0]
+  -Q, --min-BQ INT        base quality threshold [0]
+  --rf <int|str>          required flags: skip reads with mask bits unset []
+  --ff <int|str>          filter flags: skip reads with mask bits set 
+                                      [UNMAP,SECONDARY,QCFAIL,DUP]
+  -d, --depth INT         maximum allowed coverage depth [1000000].
+                          If 0, depth is set to the maximum integer value,
+                          effectively removing any depth limit.
+Output options:
+  -m, --histogram         show histogram instead of tabular output
+  -A, --ascii             show only ASCII characters in histogram
+  -o, --output FILE       write output to FILE [stdout]
+  -H, --no-header         don't print a header in tabular mode
+  -w, --n-bins INT        number of bins in histogram [terminal width - 40]
+  -r, --region REG        show specified region. Format: chr:start-end. 
+  -h, --help              help (this page)
+
+Generic options:
+      --input-fmt-option OPT[=VAL]
+               Specify a single input file format option in the form
+               of OPTION or OPTION=VALUE
+      --reference FILE
+               Reference sequence FASTA FILE [null]
+      --verbosity INT
+               Set level of verbosity
+
+See manpage for additional details.
+  rname       Reference name / chromosome
+  startpos    Start position
+  endpos      End position (or sequence length)
+  numreads    Number reads aligned to the region (after filtering)
+  covbases    Number of covered bases with depth >= 1
+  coverage    Percentage of covered bases [0..100]
+  meandepth   Mean depth of coverage
+  meanbaseq   Mean baseQ in covered region
+  meanmapq    Mean mapQ of selected reads

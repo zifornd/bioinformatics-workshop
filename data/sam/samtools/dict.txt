@@ -1,0 +1,12 @@
+
+About:   Create a sequence dictionary file from a fasta file
+Usage:   samtools dict [options] <file.fa|file.fa.gz>
+
+Options: -a, --assembly STR    assembly
+         -A, --alias, --alternative-name
+                               add AN tag by adding/removing 'chr'
+         -H, --no-header       do not print @HD line
+         -o, --output FILE     file to write out dict file [stdout]
+         -s, --species STR     species
+         -u, --uri STR         URI [file:///abs/path/to/file.fa]
+

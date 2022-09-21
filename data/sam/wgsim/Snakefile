@@ -1,0 +1,138 @@
+SECTIONS = ["sam", "header", "alignment"]
+FIELDS = {
+	"QNAME" : 1,
+	"FLAG"  : 2,
+	"RNAME" : 3,
+	"POS"   : 4,
+	"MAPQ"  : 5,
+	"CIGAR" : 6,
+	"RNEXT" : 7,
+	"PNEXT" : 8,
+	"TLEN"  : 9,
+	"SEQ"   : 10,
+	"QUAL"  : 11
+}
+
+wildcard_constraints:
+	section = "|".join(SECTIONS),
+	field = "|".join(FIELDS)
+
+rule all:
+	input:
+		expand("reads.{section}.png", section = SECTIONS),
+		expand("reads.alignment.{field}.png", field = FIELDS)
+
+rule wgsim:
+	input:
+		fa  = "genome.fa"
+	output:
+		fq1 = temp("reads.wgsim.txt")
+	conda:
+		"wgsim.yaml"
+	shell:
+		"wgsim -N 9 -1 36 -2 36 -S 1701 genome.fa {output.fq1} /dev/null"
+
+rule seqkit:
+	input:
+		fq = "reads.wgsim.txt"
+	output:
+		fq = temp("reads.seqtk.txt")
+	conda:
+		"seqkit.yaml"
+	shell:
+		"seqkit replace -p .+ -r 'SEQ{{nr}}' {input} > {output}"
+
+rule qual:
+	input:
+		fq = "reads.seqtk.txt"
+	output:
+		fq = "reads.fq"
+	conda:
+		"biopython.yaml"
+	script:
+		"qual.py"
+
+rule bwa_index:
+	input:
+		fa = "genome.fa"
+	output:
+		multiext("genome.fa", ".amb", ".ann", ".bwt", ".pac", ".sa")
+	conda:
+		"bwa.yaml"
+	shell:
+		"bwa index {input}"
+
+rule bwa_align:
+	input:
+		fq1 = "reads.fq",
+		idx = rules.bwa_index.output
+	output:
+		sam = "reads.sam"
+	params:
+		idx = "genome.fa"
+	conda:
+		"bwa.yaml"
+	shell:
+		"bwa mem -R '@RG\\tID:RUN1\\tSM:SAMPLE1' {params.idx} {input.fq1} | samtools sort -O SAM > {output}"
+
+rule sam:
+	input:
+		sam = "reads.sam"
+	output:
+		txt = "reads.sam.txt"
+	shell:
+		"cat {input} | column -t > {output.txt}"
+
+rule header:
+	input:
+		sam = "reads.sam"
+	output:
+		txt = "reads.header.txt"
+	conda:
+		"samtools.yaml"
+	shell:
+		"samtools view -H {input.sam} | sed '$d' | column -t > {output.txt}"
+
+rule alignment:
+	input:
+		sam = "reads.sam"
+	output:
+		txt = "reads.alignment.txt"
+	conda:
+		"samtools.yaml"
+	shell:
+		"samtools view {input.sam} | cut -f 1-11 | column -t > {output.txt}"
+
+rule field:
+	input:
+		txt = "reads.alignment.txt"
+	output:
+		txt = "reads.alignment.{field}.txt"
+	params:
+		num = lambda wildcards: FIELDS[wildcards.field]
+	shell:
+		"awk '{{print ${params.num}}}' {input.txt} > {output.txt}"
+
+rule silicon1:
+	input:
+		txt = "reads.{section}.txt"
+	output:
+		png = temp("reads.{section}.temp.png")
+	shell:
+		"silicon --no-line-number --no-window-controls --background '#FFFFFF' --line-pad 15 --output {output.png} {input.txt}"
+
+rule silicon2:
+	input:
+		txt = "{accession}.alignment.{field}.txt"
+	output:
+		png = temp("{accession}.alignment.{field}.temp.png")
+	shell:
+		"silicon --no-line-number --no-window-controls --background '#FFFFFF' --line-pad 15 --output {output.png} {input.txt}"
+
+rule trimws:
+	input:
+		png = "{basename}.temp.png"
+	output:
+		png = "{basename}.png"
+	shell:
+		"convert -trim -bordercolor white -border 10 {input} {output}"

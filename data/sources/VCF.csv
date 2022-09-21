@@ -1,0 +1,9 @@
+Column,Field,Description
+1,CHROM,Chromosome
+2,POS,Position
+3,ID,Identifier
+4,REF,Reference base
+5,ALT,Alternate base
+6,QUAL,Quality
+7,FILTER,Filter status
+8,INFO,Additional information

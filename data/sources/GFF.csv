@@ -1,0 +1,10 @@
+Column,Field,Description
+1,seqid,Chromosome name
+2,source,Data source
+3,type,Feature type name
+4,start,Feature start position
+5,end,Feature end position
+6,score,A numerical value
+7,strand,Feature strand
+8,phase,Phase of CDS feature
+9,attributes,List of tag-value pairs

@@ -1,0 +1,23 @@
+new
+
+genome mm10
+
+goto chr19:8,987,120-9,078,935 chr19:38,052,980-38,076,424 chr19:27,386,697-27,431,908
+
+load data/rnaseq/BRG1FL_TAM.bw
+setColor #FF0000 BRG1FL_TAM.bw
+
+load data/rnaseq/BRG1FL_UNT.bw
+setColor #0000FF BRG1FL_UNT.bw
+
+load data/rnaseq/ZHBTC4_DOX.bw
+setColor #008000 ZHBTC4_DOX.bw
+
+load data/rnaseq/ZHBTC4_UNT.bw
+setColor #800080 ZHBTC4_UNT.bw
+
+setDataRange 0,50
+
+snapshot data/rnaseq/snapshot.png
+
+exit

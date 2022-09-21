@@ -1,0 +1,5 @@
+File Format	Data Type
+seg	Segmented copy number
+bam, cram	Sequence alignments
+bed, gtf, gff3, psl, bigbed	Genome annotations
+wig, bedgraph, bigwig, tdf	Quantative data

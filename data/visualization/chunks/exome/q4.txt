@@ -1,0 +1,6 @@
+new
+genome hg38
+load 1KGP.vcf
+goto chr19:9,387,798-9,387,798 chr19:55,999,276-55,999,276
+snapshot q4.png
+exit

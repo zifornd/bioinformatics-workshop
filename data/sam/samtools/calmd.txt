@@ -1,0 +1,25 @@
+Usage: samtools calmd [-eubrAESQ] <aln.bam> <ref.fasta>
+Options:
+  -e       change identical bases to '='
+  -u       uncompressed BAM output (for piping)
+  -b       compressed BAM output
+  -S       ignored (input format is auto-detected)
+  -A       modify the quality string
+  -Q       use quiet mode to output less debug info to stdout
+  -r       compute the BQ tag (without -A) or cap baseQ by BAQ (with -A)
+  -E       extended BAQ for better sensitivity but lower specificity
+  --no-PG  do not add a PG line
+      --input-fmt-option OPT[=VAL]
+               Specify a single input file format option in the form
+               of OPTION or OPTION=VALUE
+      --output-fmt FORMAT[,OPT[=VAL]]...
+               Specify output format (SAM, BAM, CRAM)
+      --output-fmt-option OPT[=VAL]
+               Specify a single output file format option in the form
+               of OPTION or OPTION=VALUE
+      --reference FILE
+               Reference sequence FASTA FILE [null]
+  -@, --threads INT
+               Number of additional threads to use [0]
+      --verbosity INT
+               Set level of verbosity

@@ -1,0 +1,5 @@
+Flag	Meaning	Sum
+1	Read paired	1
+32	Mate reverse strand	33
+64	First in pair	97
+2048	Supplementary alignment	2145

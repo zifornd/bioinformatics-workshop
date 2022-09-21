@@ -1,0 +1,39 @@
+
+Usage: samtools ampliconstats [options] primers.bed *.bam > astats.txt
+
+Options:
+  -f, --required-flag STR|INT
+               Only include reads with all of the FLAGs present [0x0]
+  -F, --filter-flag STR|INT
+               Only include reads with none of the FLAGs present [0xB04]
+  -a, --max-amplicons INT
+               Change the maximum number of amplicons permitted [1000]
+  -l, --max-amplicon-length INT
+               Change the maximum length of an individual amplicon [1000]
+  -d, --min-depth INT[,INT]...
+               Minimum base depth(s) to consider position covered [1]
+  -m, --pos-margin INT
+               Margin of error for matching primer positions [30]
+  -o, --output FILE
+               Specify output file [stdout if unset]
+  -s, --use-sample-name
+               Use the sample name from the first @RG header line
+  -t, --tlen-adjust INT
+               Add/subtract from TLEN; use when clipping but no fixmate step
+  -b, --tcoord-bin INT
+               Bin template start,end positions into multiples of INT[1]
+  -c, --tcoord-min-count INT
+               Minimum template start,end frequency for recording [10]
+  -D, --depth-bin FRACTION
+               Merge FDP values within +/- FRACTION together
+  -S, --single-ref
+               Force single-ref (<=1.12) output format
+  -I, --input-fmt FORMAT[,OPT[=VAL]]...
+               Specify input format (SAM, BAM, CRAM)
+      --input-fmt-option OPT[=VAL]
+               Specify a single input file format option in the form
+               of OPTION or OPTION=VALUE
+      --reference FILE
+               Reference sequence FASTA FILE [null]
+  -@, --threads INT
+               Number of additional threads to use [0]

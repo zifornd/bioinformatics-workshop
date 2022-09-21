@@ -1,0 +1,78 @@
+COMMANDS = [
+	"",
+	"dict",
+	"faidx",
+	"fqidx",
+	"index",
+	"calmd",
+	"fixmate",
+	"reheader",
+	"targetcut",
+	"addreplacerg",
+	"markdup",
+	"ampliconclip",
+	"collate",
+	"cat",
+	"merge",
+	"mpileup",
+	"sort",
+	"split",
+	"quickcheck",
+	"fastq",
+	"fasta",
+	"import",
+	"bedcov",
+	"coverage",
+	"depth",
+	"flagstat",
+	"idxstats",
+	"phase",
+	"stats",
+	"ampliconstats",
+	"flags",
+	"tview",
+	"view",
+	"depad",
+	"samples",
+	"help",
+	"version"
+]
+
+wildcard_constraints:
+	command = "|".join(COMMANDS)
+
+rule all:
+	input:
+		expand("{command}.png", command = COMMANDS)
+
+rule samtools:
+	output:
+		txt = "{command}.txt"
+	conda:
+		"samtools.yaml"
+	shell:
+		"samtools {wildcards.command} >> {output.txt} 2>&1 || :" # always return 0 exit code
+
+rule head:
+	input:
+		txt = "{command}.txt"
+	output:
+		txt = temp("{command}.head.txt")
+	shell:
+		"head -n 1000 {input.txt} > {output.txt}"
+
+rule silicon:
+	input:
+		txt = "{command}.head.txt"
+	output:
+		png = temp("{command}.temp.png")
+	shell:
+		"silicon --no-line-number --background '#fff0' --output {output.png} {input.txt}"
+
+rule trimws:
+	input:
+		png = "{command}.temp.png"
+	output:
+		png = "{command}.png"
+	shell:
+		"convert {input.png} -trim {output.png}"

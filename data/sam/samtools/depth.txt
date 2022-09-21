@@ -1,0 +1,26 @@
+Usage: samtools depth [options] in.bam [in.bam ...]
+
+Options:
+  -a           Output all positions (including zero depth)
+  -a -a, -aa   Output absolutely all positions, including unused ref seqs
+  -r REG       Specify a region in chr or chr:from-to syntax
+  -b FILE      Use bed FILE for list of regions
+  -f FILE      Specify list of input BAM/SAM/CRAM filenames
+  -X           Use custom index files (in -X *.bam *.bam.bai order)
+  -g INT       Remove specified flags from default flag filter
+  -G INT       Add specified flags to the default flag filter
+  -H           Print a file header line
+  -l INT       Minimum read length [0]
+  -o FILE      Write output to FILE [stdout]
+  -q INT       Minimum base quality [0]
+  -Q INT       Minimum mapping quality [0]
+  -H           Print a file header
+  -J           Include reads with deletions in depth computation
+  -s           Do not count overlapping reads within a template
+      --input-fmt-option OPT[=VAL]
+               Specify a single input file format option in the form
+               of OPTION or OPTION=VALUE
+  -@, --threads INT
+               Number of additional threads to use [0]
+      --verbosity INT
+               Set level of verbosity

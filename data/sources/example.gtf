@@ -1,0 +1,5 @@
+X	.	exon	24191	24191	42	.	.	hid=trf; hstart=1; hend=21
+X	.	exon	24191	24194	250	-	.	hid=AluSx; hstart=1; hend=303
+X	.	exon	24191	24191	0	.	.	hid=dust; hstart=2419108; hend=2419128
+X	.	mRNA	24166	24187	450	-	2	genscan=GENSCAN00000019335
+X	.	exon	24134	24134	.	+	.	

@@ -1,0 +1,10 @@
+Usage: samtools reheader [-P] in.header.sam in.bam > out.bam
+   or  samtools reheader [-P] -i in.header.sam file.cram
+   or  samtools reheader -c CMD in.bam
+   or  samtools reheader -c CMD in.cram
+
+Options:
+    -P, --no-PG         Do not generate a @PG header line.
+    -i, --in-place      Modify the CRAM file directly, if possible.
+                        (Defaults to outputting to stdout.)
+    -c, --command CMD   Pass the header in SAM format to external program CMD.

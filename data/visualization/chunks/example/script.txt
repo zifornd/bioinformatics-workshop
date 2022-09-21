@@ -1,0 +1,5 @@
+new
+genome hg19
+goto chr12:7,939,997-7,953,742
+snapshot data/example/snapshot.png
+exit

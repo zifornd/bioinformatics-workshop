@@ -1,0 +1,77 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job stats:
+job        count    min threads    max threads
+-------  -------  -------------  -------------
+all            1              1              1
+silicon        2              1              1
+trim           2              1              1
+total          5              1              1
+
+Select jobs to execute...
+
+[Sun Dec 12 16:39:00 2021]
+rule silicon:
+    input: chimeric.txt
+    output: chimeric.temp.png
+    jobid: 4
+    wildcards: alignment=chimeric
+    resources: tmpdir=/var/folders/03/vd5mdrh57cl6cj3qcm73qy5r0000gn/T
+
+
+[Sun Dec 12 16:39:00 2021]
+rule silicon:
+    input: multiple.txt
+    output: multiple.temp.png
+    jobid: 6
+    wildcards: alignment=multiple
+    resources: tmpdir=/var/folders/03/vd5mdrh57cl6cj3qcm73qy5r0000gn/T
+
+[Sun Dec 12 16:39:00 2021]
+Finished job 6.
+1 of 5 steps (20%) done
+Select jobs to execute...
+
+[Sun Dec 12 16:39:00 2021]
+rule trim:
+    input: multiple.temp.png
+    output: multiple.png
+    jobid: 5
+    wildcards: alignment=multiple
+    resources: tmpdir=/var/folders/03/vd5mdrh57cl6cj3qcm73qy5r0000gn/T
+
+[Sun Dec 12 16:39:00 2021]
+Finished job 4.
+2 of 5 steps (40%) done
+Select jobs to execute...
+
+[Sun Dec 12 16:39:00 2021]
+rule trim:
+    input: chimeric.temp.png
+    output: chimeric.png
+    jobid: 3
+    wildcards: alignment=chimeric
+    resources: tmpdir=/var/folders/03/vd5mdrh57cl6cj3qcm73qy5r0000gn/T
+
+Removing temporary output file multiple.temp.png.
+[Sun Dec 12 16:39:00 2021]
+Finished job 5.
+3 of 5 steps (60%) done
+Removing temporary output file chimeric.temp.png.
+[Sun Dec 12 16:39:00 2021]
+Finished job 3.
+4 of 5 steps (80%) done
+Select jobs to execute...
+
+[Sun Dec 12 16:39:00 2021]
+localrule all:
+    input: linear.png, chimeric.png, multiple.png
+    jobid: 0
+    resources: tmpdir=/var/folders/03/vd5mdrh57cl6cj3qcm73qy5r0000gn/T
+
+[Sun Dec 12 16:39:00 2021]
+Finished job 0.
+5 of 5 steps (100%) done
+Complete log: /Users/James/GitHub/samtools-lesson/images/terminology/.snakemake/log/2021-12-12T163900.150230.snakemake.log

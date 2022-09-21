@@ -1,0 +1,39 @@
+Usage: samtools ampliconclip -b BED file <input.bam> -o <output.bam>
+
+Option: 
+ -b  FILE            BED file of regions (eg amplicon primers) to be removed.
+ -o  FILE            output file name (default stdout).
+ -f  FILE            write stats to file name (default stderr)
+ -u                  Output uncompressed data
+ --soft-clip         soft clip amplicon primers from reads (default)
+ --hard-clip         hard clip amplicon primers from reads.
+ --both-ends         clip on both 5' and 3' ends.
+ --strand            use strand data from BED file to match read direction.
+ --clipped           only output clipped reads.
+ --fail              mark unclipped, mapped reads as QCFAIL.
+ --filter-len INT    do not output reads INT size or shorter.
+ --fail-len   INT    mark as QCFAIL reads INT size or shorter.
+ --no-excluded       do not write excluded reads (unmapped or QCFAIL).
+ --rejects-file FILE file to write filtered reads.
+ --original          for clipped entries add an OA tag with original data.
+ --keep-tag          for clipped entries keep the old NM and MD tags.
+ --tolerance         match region within this number of bases, default 5.
+ --no-PG             do not add an @PG line.
+      --input-fmt-option OPT[=VAL]
+               Specify a single input file format option in the form
+               of OPTION or OPTION=VALUE
+  -O, --output-fmt FORMAT[,OPT[=VAL]]...
+               Specify output format (SAM, BAM, CRAM)
+      --output-fmt-option OPT[=VAL]
+               Specify a single output file format option in the form
+               of OPTION or OPTION=VALUE
+      --reference FILE
+               Reference sequence FASTA FILE [null]
+  -@, --threads INT
+               Number of additional threads to use [0]
+      --verbosity INT
+               Set level of verbosity
+
+About: Soft clips read alignments where they match BED file defined regions.
+Default clipping is only on the 5' end.
+

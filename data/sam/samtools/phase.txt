@@ -1,0 +1,24 @@
+
+Usage:   samtools phase [options] <in.bam>
+
+Options: -k INT    block length [13]
+         -b STR    prefix of BAMs to output [null]
+         -q INT    min het phred-LOD [37]
+         -Q INT    min base quality in het calling [13]
+         -D INT    max read depth [256]
+         -F        do not attempt to fix chimeras
+         -A        drop reads with ambiguous phase
+         --no-PG   do not add a PG line
+
+      --input-fmt-option OPT[=VAL]
+               Specify a single input file format option in the form
+               of OPTION or OPTION=VALUE
+      --output-fmt FORMAT[,OPT[=VAL]]...
+               Specify output format (SAM, BAM, CRAM)
+      --output-fmt-option OPT[=VAL]
+               Specify a single output file format option in the form
+               of OPTION or OPTION=VALUE
+      --reference FILE
+               Reference sequence FASTA FILE [null]
+      --verbosity INT
+               Set level of verbosity
