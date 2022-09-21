@@ -1,0 +1,100 @@
+name: bioinformatics
+# output directory used on gh-pages branch. format: YYMM
+output_dir: 2210
+# location options are linkoping, lund, umea, uppsala or online
+location: uppsala
+assistants:
+ - "JA: James Ashmore"
+ - "BS: Benjamin Southgate"
+ - "VR: Valentino Ruggieri"
+ - "SC: Subarna Chakraborty"
+ - "HK: Haris Khan"
+ - "MK: Mohamed Kassam"
+ - "RS: Ragavi Shanmugam"
+ - "RN: Radesh Nattamai Malli Pooranachandhiran"
+
+favicon: assets/favicon.png
+exclude: ["docs","README.md","schedule.csv","LICENSE","LICENSE.md","scripts","tmprepo"]
+navbar:
+  title: '<img src="assets/logo.svg" id="logo" style="height:20px;margin:0;"/>'
+  type: default
+  logo:
+    image: "assets/logo.svg"
+    href: https://royfrancis.github.io/workshop-template-rmd-travis
+  right:
+    - text: Home
+      href: index.html
+    - text: Schedule
+      href: home_schedule.html
+    - text: Content
+      href: home_content.html
+    - text: Precourse
+      href: home_precourse.html
+    - text: Info
+      href: home_info.html
+
+output:
+  bookdown::html_document2:
+    highlight: textmate
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+      print: false
+    toc_depth: 4
+    number_sections: true
+    df_print: default
+    code_folding: none
+    self_contained: false
+    keep_md: false
+    encoding: 'UTF-8'
+    css: "assets/lab.css"
+    include:
+      after_body: assets/footer-lab.html
+# r packages needed for the workshop
+# used in home_precourse.Rmd
+# split into cran and bioc packages
+# if a package is needed by students and repo, add to _student
+# if a package is only needed for repo (build, rendering etc), add to _repo
+packages:
+ packages_cran_student:
+  - BiocManager
+  - remotes
+  - dplyr
+  - ggplot2
+  - stringr
+  - tidyr
+ packages_bioc_student:
+  - biomaRt
+ packages_github_student:
+ packages_cran_repo:
+  - bookdown
+  - captioner
+  - dygraphs
+  - DT
+  - formattable
+  - ggiraph
+  - highcharter
+  - kableExtra
+  - knitr
+  - leaflet
+  - lubridate
+  - markdown
+  - pagedown
+  - networkD3
+  - plotly
+  - rmarkdown
+  - xaringan
+  - yaml
+  - vembedr
+  - reticulate
+  - tufte
+ packages_bioc_repo:
+  - Biostrings
+  - ShortRead
+  - Rsubread
+  - DESeq2
+  - AnnotationDbi
+  - org.Hs.eg.db
+ packages_github_repo:
+  - rstudio/fontawesome
