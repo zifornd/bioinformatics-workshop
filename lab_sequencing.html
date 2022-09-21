@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>SRA Toolkit and EDirect</title>
+
+<script src="lab_sequencing_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lab_sequencing_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="lab_sequencing_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lab_sequencing_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lab_sequencing_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="lab_sequencing_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="lab_sequencing_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="lab_sequencing_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="lab_sequencing_files/navigation-1.1/tabsets.js"></script>
+<link href="lab_sequencing_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="lab_sequencing_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="lab_sequencing_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="lab_sequencing_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="lab_sequencing_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+#TOC {
+  display: none !important;
+}
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img src="assets/logo.svg" id="logo" style="height:20px;margin:0;"/></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="home_schedule.html">Schedule</a>
+</li>
+<li>
+  <a href="home_content.html">Content</a>
+</li>
+<li>
+  <a href="home_precourse.html">Precourse</a>
+</li>
+<li>
+  <a href="home_info.html">Info</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">SRA Toolkit and EDirect</h1>
+<h4 class="date">21 September, 2022</h4>
+
+</div>
+
+
+<!-- rmd lab header -->
+<p><br></p>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>The <a href="https://www.ncbi.nlm.nih.gov/sra">Sequence Read Archive (SRA)</a> is the largest publicly available repository of high throughput sequencing data. The archive accepts data from all branches of life as well as metagenomic and environmental studies. The SRA stores raw sequencing data and alignment information to enhance reproducibility and facilitate new discoveries through data analysis. The SRA stores sequencing data in a <a href="https://www.ncbi.nlm.nih.gov/sra/docs/submitmeta">hierarchical structure</a>. There are four levels to this hierarchy, each of which represents a particular aspect of the data:</p>
+<ul>
+<li><strong>Project</strong> - The research project (SRP)</li>
+<li><strong>Sample</strong> - The biological sample (SRS)</li>
+<li><strong>Experiment</strong> - The sequencing experiment (SRX)</li>
+<li><strong>Run</strong> - The sequencing run (SRR)</li>
+</ul>
+<p>This hierarchy is useful because it explicitly models the relationship between data files. For example, all those generated from a single sample will have the same SRS accession number. The <a href="https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc">SRA Toolkit</a> from NCBI is a collection of tools and libraries for downloading data from the SRA using accession numbers.</p>
+<p><a href="https://www.ncbi.nlm.nih.gov">Entrez</a> is NCBI’s primary text search and retrieval system that integrates the PubMed database of biomedical literature with 38 other literature and molecular databases including DNA and protein sequence, structure, gene, genome, genetic variation and gene expression. <a href="https://www.ncbi.nlm.nih.gov/books/NBK179288/">Entrez Direct (EDirect)</a> provides access to the NCBI’s suite of interconnected databases (publication, sequence, structure, gene, variation, expression, etc.) from a Unix terminal window. Search terms are entered as command line arguments. Individual operations are connected with Unix pipes to construct multi-step queries. Selected records can then be retrieved in a variety of formats.</p>
+</div>
+<div id="objectives" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Objectives</h1>
+<ul>
+<li><a href="#install-sra-toolkit">Install SRA Toolkit</a></li>
+<li><a href="#install-edirect">Install EDirect</a></li>
+<li><a href="#prefetch-sra-data">Prefetch SRA data</a></li>
+<li><a href="#dump-fastq-data">Dump FASTQ data</a></li>
+<li><a href="#fetch-sra-metadata">Fetch SRA metadata</a></li>
+</ul>
+</div>
+<div id="tutorial" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Tutorial</h1>
+<p>In this tutorial we are going to learn how to use the SRA Toolkit and EDirect to query and download public sequencing data. The first thing to do is create a directory to store all the tutorial data. It is good practice to create a new directory for each project you work on, this ensures files do not get mixed up and all the results are self-contained. Additionally we will create an installation directory where all of the conda environments we are going to use are stored.</p>
+<p>Create a ‘tutorial’ directory to store output files:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>mkdir tutorial</code></pre>
+</div>
+<div id="install-sra-toolkit" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Install SRA Toolkit</h2>
+<p>The software we are going to use in this tutorial can be installed using the conda package manager. Please refer to the previous conda workshop for details on installing software and creating conda environments. The first software package we need to install is the SRA Toolkit. This allows you to download sequencing data from the SRA database on the command line.</p>
+<p>Create a new environment with the SRA Toolkit installed:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda create --yes --name sra-tools sra-tools=2.11.0=pl5262h37d2149_1 # only this version works currently (21/09/2022)</code></pre>
+<pre><code>## Collecting package metadata (current_repodata.json): ...working... done
+## Solving environment: ...working... failed with repodata from current_repodata.json, will retry with next repodata source.
+## Collecting package metadata (repodata.json): ...working... done
+## Solving environment: ...working... done
+## 
+## ## Package Plan ##
+## 
+##   environment location: /opt/miniconda3/envs/sra-tools
+## 
+##   added / updated specs:
+##     - sra-tools==2.11.0=pl5262h37d2149_1
+## 
+## 
+## The following NEW packages will be INSTALLED:
+## 
+##   c-ares             conda-forge/osx-64::c-ares-1.18.1-h0d85af4_0
+##   ca-certificates    conda-forge/osx-64::ca-certificates-2022.9.14-h033912b_0
+##   curl               conda-forge/osx-64::curl-7.83.1-h23f1065_0
+##   hdf5               conda-forge/osx-64::hdf5-1.10.6-nompi_haae91d6_101
+##   icu                conda-forge/osx-64::icu-70.1-h96cf925_0
+##   krb5               conda-forge/osx-64::krb5-1.19.3-hb98e516_0
+##   libcurl            conda-forge/osx-64::libcurl-7.83.1-h23f1065_0
+##   libcxx             conda-forge/osx-64::libcxx-14.0.6-hccf4f1f_0
+##   libedit            conda-forge/osx-64::libedit-3.1.20191231-h0678c8f_2
+##   libev              conda-forge/osx-64::libev-4.33-haf1e3a3_1
+##   libgfortran        conda-forge/osx-64::libgfortran-4.0.0-7_5_0_h1a10cd1_23
+##   libgfortran4       conda-forge/osx-64::libgfortran4-7.5.0-h1a10cd1_23
+##   libiconv           conda-forge/osx-64::libiconv-1.16-haf1e3a3_0
+##   libnghttp2         conda-forge/osx-64::libnghttp2-1.47.0-h5aae05b_1
+##   libssh2            conda-forge/osx-64::libssh2-1.10.0-h47af595_3
+##   libxml2            conda-forge/osx-64::libxml2-2.9.14-hea49891_4
+##   libzlib            conda-forge/osx-64::libzlib-1.2.12-hfd90126_3
+##   llvm-openmp        conda-forge/osx-64::llvm-openmp-14.0.4-ha654fa7_0
+##   ncbi-ngs-sdk       bioconda/osx-64::ncbi-ngs-sdk-2.11.2-h247ad82_0
+##   ncurses            conda-forge/osx-64::ncurses-6.3-h96cf925_1
+##   openssl            conda-forge/osx-64::openssl-3.0.5-hfd90126_2
+##   ossuuid            conda-forge/osx-64::ossuuid-1.6.2-h0a44026_1000
+##   perl               conda-forge/osx-64::perl-5.26.2-hbcb3906_1008
+##   perl-uri           bioconda/osx-64::perl-uri-1.71-pl526_3
+##   perl-xml-libxml    bioconda/osx-64::perl-xml-libxml-2.0132-pl526h08abf6f_1
+##   perl-xml-namespac~ bioconda/osx-64::perl-xml-namespacesupport-1.11-pl526_1
+##   perl-xml-sax       bioconda/osx-64::perl-xml-sax-0.99-pl526_1
+##   perl-xml-sax-base  bioconda/osx-64::perl-xml-sax-base-1.09-pl526_0
+##   sra-tools          bioconda/osx-64::sra-tools-2.11.0-pl5262h37d2149_1
+##   xz                 conda-forge/osx-64::xz-5.2.6-h775f41a_0
+##   zlib               conda-forge/osx-64::zlib-1.2.12-hfd90126_3
+## 
+## 
+## Preparing transaction: ...working... done
+## Verifying transaction: ...working... done
+## Executing transaction: ...working... done
+## #
+## # To activate this environment, use
+## #
+## #     $ conda activate sra-tools
+## #
+## # To deactivate an active environment, use
+## #
+## #     $ conda deactivate
+## 
+## Retrieving notices: ...working... done</code></pre>
+</div>
+<p>Activate the new environment to use it:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate sra-tools</code></pre>
+</div>
+<p>Test that the <code>fastq-dump</code> command is available:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>which fastq-dump</code></pre>
+<pre><code>## /opt/miniconda3/envs/sra-tools/bin/fastq-dump</code></pre>
+</div>
+</div>
+<div id="install-edirect" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Install EDirect</h2>
+<p>The second software package we need to install is the EDirect package. This allows you to search all of the NCBI databases using a text query. We are going to use it to search for public sequencing data and download the metadata associated with the sequencing libraries.</p>
+<p>Create a new environment with EDirect installed:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda create --yes --name entrez-direct entrez-direct</code></pre>
+<pre><code>## Collecting package metadata (current_repodata.json): ...working... done
+## Solving environment: ...working... done
+## 
+## ## Package Plan ##
+## 
+##   environment location: /opt/miniconda3/envs/entrez-direct
+## 
+##   added / updated specs:
+##     - entrez-direct
+## 
+## 
+## The following NEW packages will be INSTALLED:
+## 
+##   ca-certificates    conda-forge/osx-64::ca-certificates-2022.9.14-h033912b_0
+##   entrez-direct      bioconda/osx-64::entrez-direct-16.2-h193322a_1
+##   gettext            conda-forge/osx-64::gettext-0.19.8.1-hd1a6beb_1008
+##   libffi             conda-forge/osx-64::libffi-3.4.2-h0d85af4_5
+##   libiconv           conda-forge/osx-64::libiconv-1.16-haf1e3a3_0
+##   libidn2            conda-forge/osx-64::libidn2-2.3.3-hac89ed1_0
+##   libunistring       conda-forge/osx-64::libunistring-0.9.10-h0d85af4_0
+##   libzlib            conda-forge/osx-64::libzlib-1.2.12-hfd90126_3
+##   openssl            conda-forge/osx-64::openssl-3.0.5-hfd90126_2
+##   wget               conda-forge/osx-64::wget-1.20.3-hd3787cc_1
+##   zlib               conda-forge/osx-64::zlib-1.2.12-hfd90126_3
+## 
+## 
+## Preparing transaction: ...working... done
+## Verifying transaction: ...working... done
+## Executing transaction: ...working... done
+## #
+## # To activate this environment, use
+## #
+## #     $ conda activate entrez-direct
+## #
+## # To deactivate an active environment, use
+## #
+## #     $ conda deactivate
+## 
+## Retrieving notices: ...working... done</code></pre>
+</div>
+<!-- Download xtract for Apple Silicon -->
+<p>Activate the new environment to use it:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate entrez-direct</code></pre>
+</div>
+<p>Test that the <code>esearch</code> command is available:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>which esearch</code></pre>
+<pre><code>## /opt/miniconda3/envs/entrez-direct/bin/esearch</code></pre>
+</div>
+</div>
+<div id="prefetch-sra-data" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Prefetch SRA data</h2>
+<p>Prefetch is a command that is part of the SRA toolkit. This program downloads runs (sequence files in the compressed SRA format) and all additional data necessary to convert the run from the SRA format to a more commonly used format like FASTA or FASTQ files. Prefetch can also be used to correct and finish an incomplete run download. This is really helpful when you have an unstable connection as it prevents you from needing to re-download the same data repeatedly.</p>
+<p>For this example we are going to download the run with accession SRR4413906 from the SRA database. Below is the SRA webpage listing all of the run information:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+Output
+</div>
+<iframe src="https://trace.ncbi.nlm.nih.gov/Traces/sra/?run=SRR4413906" width="100%" height="600px" data-external="1">
+</iframe>
+</div>
+<p>The SRA webpage provides some useful information about the sequencing run:</p>
+<ul>
+<li>The SPOTS field lists how many reads were sequenced for this library (7.3M)</li>
+<li>The PLATFORM field lists the type of sequencing machine (Illumina)</li>
+<li>The STRATEGY field lists the type of sequencing assay (ChIP-Seq)</li>
+<li>The LAYOUT field lists the type of sequencing layout (Paired-end)</li>
+</ul>
+<p>To fetch the sequencing data, we will use the <code>prefetch</code> command from the EDirect software package. This command has a lot of different parameters and we advise you to look through these before continuing.</p>
+<p>Activate the <code>sra-tools</code> environment:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate sra-tools</code></pre>
+</div>
+<p>Print the help information for the <code>prefetch</code> command:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>prefetch -h</code></pre>
+<pre><code>## 
+## Usage: prefetch [ options ] [ accessions(s)... ]
+## 
+## Parameters:
+## 
+##   accessions(s)                    list of accessions to process
+## 
+## 
+## Options:
+## 
+##   -T|--type &lt;file-type&gt;            Specify file type to download. Default: sra
+##   -N|--min-size &lt;size&gt;             Minimum file size to download in KB
+##                                      (inclusive).
+##   -X|--max-size &lt;size&gt;             Maximum file size to download in KB
+##                                      (exclusive). Default: 20G
+##   -f|--force &lt;no|yes|all|ALL&gt;      Force object download - one of: no, yes,
+##                                      all, ALL. no [default]: skip download if
+##                                      the object if found and complete; yes:
+##                                      download it even if it is found and is
+##                                      complete; all: ignore lock files (stale
+##                                      locks or it is being downloaded by
+##                                      another process - use at your own
+##                                      risk!); ALL: ignore lock files, restart
+##                                      download from beginning
+##   -p|--progress                    Show progress
+##   -r|--resume &lt;yes|no&gt;             Resume partial downloads - one of: no, yes
+##                                      [default]
+##   -C|--verify &lt;yes|no&gt;             Verify after download - one of: no, yes
+##                                      [default]
+##   -c|--check-all                   Double-check all refseqs
+##   -o|--output-file &lt;file&gt;          Write file to &lt;file&gt; when downloading
+##                                      single file
+##   -O|--output-directory &lt;directory&gt;
+##                                    Save files to &lt;directory&gt;/
+##      --ngc &lt;path&gt;                  &lt;path&gt; to ngc file
+##      --perm &lt;path&gt;                 &lt;path&gt; to permission file
+##      --location &lt;location&gt;         location in cloud
+##      --cart &lt;path&gt;                 &lt;path&gt; to cart file
+##   -V|--version                     Display the version of the program
+##   -v|--verbose                     Increase the verbosity of the program
+##                                      status messages. Use multiple times for
+##                                      more verbosity.
+##   -L|--log-level &lt;level&gt;           Logging level as number or enum string.
+##                                      One of
+##                                      (fatal|sys|int|err|warn|info|debug) or
+##                                      (0-6) Current/default is warn
+##      --option-file file            Read more options and parameters from the
+##                                      file.
+##   -h|--help                        print this message
+## 
+## &quot;prefetch&quot; version 2.11.0</code></pre>
+</div>
+<p>Next, use the <code>prefetch</code> command to download the SRR4413906 run in SRA format:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># Save files to tutorial directory
+prefetch --output-directory tutorial SRR4413906</code></pre>
+<pre><code>## 
+## 2022-09-21T08:42:35 prefetch.2.11.0: 1) Downloading &#39;SRR4413906&#39;...
+## 2022-09-21T08:42:35 prefetch.2.11.0:  Downloading via HTTPS...
+## 2022-09-21T08:44:26 prefetch.2.11.0:  HTTPS download succeed
+## 2022-09-21T08:44:27 prefetch.2.11.0:  &#39;SRR4413906&#39; is valid
+## 2022-09-21T08:44:27 prefetch.2.11.0: 1) &#39;SRR4413906&#39; was downloaded successfully
+## 2022-09-21T08:44:27 prefetch.2.11.0: &#39;SRR4413906&#39; has 0 unresolved dependencies</code></pre>
+</div>
+<p>Display the contents of the tutorial directory:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>ls tutorial</code></pre>
+<pre><code>## SRR4413906</code></pre>
+</div>
+<p>The SRA file is saved in a directory named by the run accession. It is important not to move this directory as the toolkit will no longer know that we have previously downloaded the file. The toolkit keeps track of what files have been downloaded by creating an internal database of what files have been downloaded and to which location on disk.</p>
+<p>Public sequencing data usually contains lots of runs. Multiple SRA files can be download by either providing list of run accession numbers on the command line:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># Do not run
+prefetch --output-directory tutorial SRR4413817 SRR4413816 SRR4413888</code></pre>
+</div>
+<p>Or providing a text file with a run accession number on each line:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># Do not run
+prefetch --output-directory tutorial --option-file accessions.txt</code></pre>
+</div>
+<p>Deactivate the current environment:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda deactivate</code></pre>
+</div>
+</div>
+<div id="dump-fastq-data" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Dump FASTQ data</h2>
+<p>Once the SRA file has been downloaded, we can then covert it to a more commonly used format like a FASTQ file. The <code>fastq-dump</code> command is used to extract FASTQ files from SRA files. Again, this command has a lot of parameters and we suggest you read through them before continuing.</p>
+<p>Activate the <code>sra-tools</code> environment:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate sra-tools</code></pre>
+</div>
+<p>Print the help information for the <code>fastq-dump</code> command:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>fastq-dump -h</code></pre>
+<pre><code>## 
+## Usage: fastq-dump [ options ] [ accessions(s)... ]
+## 
+## Parameters:
+## 
+##   accessions(s)                    list of accessions to process
+## 
+## 
+## Options:
+## 
+##   -A|--accession &lt;accession&gt;       Replaces accession derived from &lt;path&gt; in
+##                                      filename(s) and deflines (only for
+##                                      single table dump)
+##      --table &lt;table-name&gt;          Table name within cSRA object, default is
+##                                      &quot;SEQUENCE&quot;
+##      --split-spot                  Split spots into individual reads
+##   -N|--minSpotId &lt;rowid&gt;           Minimum spot id
+##   -X|--maxSpotId &lt;rowid&gt;           Maximum spot id
+##      --spot-groups &lt;[list]&gt;[,...]  Filter by SPOT_GROUP (member): name[,...]
+##   -W|--clip                        Remove adapter sequences from reads
+##   -M|--minReadLen &lt;len&gt;            Filter by sequence length &gt;= &lt;len&gt;
+##   -R|--read-filter &lt;filter&gt;        Split into files by READ_FILTER value
+##                                      [split], optionally filter by value:
+##                                      [pass|reject|criteria|redacted]
+##   -E|--qual-filter                 Filter used in early 1000 Genomes data: no
+##                                      sequences starting or ending with &gt;= 10N
+##      --qual-filter-1               Filter used in current 1000 Genomes data
+##      --aligned                     Dump only aligned sequences
+##      --unaligned                   Dump only unaligned sequences
+##      --aligned-region &lt;name[:from-to]&gt;
+##                                    Filter by position on genome. Name can
+##                                      eiter by accession.version (ex:
+##                                      NC_000001.10) or file specific name (ex:
+##                                      &quot;chr1&quot; or &quot;1&quot;. &quot;from&quot; and &quot;to&quot; are
+##                                      1-based coordinates
+##      --matepair_distance &lt;from-to|unknown&gt;
+##                                    Filter by distance between matepairs. Use
+##                                      &quot;unknown&quot; to find matepairs split
+##                                      between the references. Use from-to to
+##                                      limit matepair distance on the same
+##                                      reference
+##      --skip-technical              Dump only biological reads
+##   -O|--outdir &lt;path&gt;               Output directory, default is working
+##                                      directory &#39;.&#39;
+##   -Z|--stdout                      Output to stdout, all split data become
+##                                      joined into single stream
+##      --gzip                        Compress output using gzip: deprecated,
+##                                      not recommended
+##      --bzip2                       Compress output using bzip2: deprecated,
+##                                      not recommended
+##      --split-files                 Write reads into separate files. Read
+##                                      number will be suffixed to the file
+##                                      name. NOTE! The `--split-3` option is
+##                                      recommended. In cases where not all
+##                                      spots have the same number of reads,
+##                                      this option will produce files that WILL
+##                                      CAUSE ERRORS in most programs which
+##                                      process split pair fastq files.
+##      --split-3                     3-way splitting for mate-pairs. For each
+##                                      spot, if there are two biological reads
+##                                      satisfying filter conditions, the first
+##                                      is placed in the `*_1.fastq` file, and
+##                                      the second is placed in the `*_2.fastq`
+##                                      file. If there is only one biological
+##                                      read satisfying the filter conditions,
+##                                      it is placed in the `*.fastq` file.All
+##                                      other reads in the spot are ignored.
+##   -G|--spot-group                  Split into files by SPOT_GROUP (member
+##                                      name)
+##   -T|--group-in-dirs               Split into subdirectories instead of files
+##   -K|--keep-empty-files            Do not delete empty files
+##   -C|--dumpcs &lt;cskey&gt;              Formats sequence using color space
+##                                      (default for SOLiD), &quot;cskey&quot; may be
+##                                      specified for translation or else
+##                                      specify &quot;dflt&quot; to use the default value
+##   -B|--dumpbase                    Formats sequence using base space (default
+##                                      for other than SOLiD).
+##   -Q|--offset &lt;integer             Offset to use for quality conversion,
+##                                      default is 33
+##      --fasta &lt;line-width&gt;          FASTA only, no qualities, with can be
+##                                      &quot;default&quot; or &quot;0&quot; for no wrapping
+##      --suppress-qual-for-cskey     suppress quality-value for cskey
+##   -F|--origfmt                     Defline contains only original sequence
+##                                      name
+##   -I|--readids                     Append read id after spot id as
+##                                      &#39;accession.spot.readid&#39; on defline
+##      --helicos                     Helicos style defline
+##      --defline-seq &lt;fmt&gt;           Defline format specification for sequence.
+##      --defline-qual &lt;fmt&gt;          Defline format specification for quality.
+##                                      &lt;fmt&gt; is string of characters and/or
+##                                      variables. The variables can be one of:
+##                                      $ac - accession, $si spot id, $sn spot
+##                                      name, $sg spot group (barcode), $sl spot
+##                                      length in bases, $ri read number, $rn
+##                                      read name, $rl read length in bases.
+##                                      &#39;[]&#39; could be used for an optional
+##                                      output: if all vars in [] yield empty
+##                                      values whole group is not printed. Empty
+##                                      value is empty string or for numeric
+##                                      variables. Ex: @$sn[_$rn]/$ri &#39;_$rn&#39; is
+##                                      omitted if name is empty
+##      --ngc &lt;path&gt;                  &lt;path&gt; to ngc file
+##      --perm &lt;path&gt;                 &lt;path&gt; to permission file
+##      --location &lt;location&gt;         location in cloud
+##      --cart &lt;path&gt;                 &lt;path&gt; to cart file
+##      --disable-multithreading      disable multithreading
+##   -V|--version                     Display the version of the program
+##   -v|--verbose                     Increase the verbosity of the program
+##                                      status messages. Use multiple times for
+##                                      more verbosity.
+##   -L|--log-level &lt;level&gt;           Logging level as number or enum string.
+##                                      One of
+##                                      (fatal|sys|int|err|warn|info|debug) or
+##                                      (0-6) Current/default is warn
+##      --option-file file            Read more options and parameters from the
+##                                      file.
+##   -h|--help                        print this message
+## 
+## &quot;fastq-dump&quot; version 2.11.0</code></pre>
+</div>
+<p>There are a few important parameters to highlight here:</p>
+<ul>
+<li><p>The <code>--minSpotId</code> and <code>--maxSpotId</code> parameters are used to download a subset of the sequencing reads. For example, setting –maxSpotId to 100 will download just the first 100 reads of a library. Setting the <code>--minSpotId</code> to 10 and the <code>--maxSpotId</code> 80 will download reads 20 to 80 of the library.</p></li>
+<li><p>The <code>--split-files</code> parameter will write reads into separate files. Paired-end libraries produce two reads, one from the start and end of each DNA fragment which is sequenced. These reads need to be placed in separate files for most downstream analyses. The reads are placed in files ending with ’_1’ and ’_2’, respectively. Single-end libraries do not require you to set this parameter.</p></li>
+</ul>
+<p>Next, convert the prefetched file from SRA format to FASTQ format:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># Convert first 100 paired-end reads
+fastq-dump --maxSpotId 100 --outdir tutorial/SRR4413906 --split-files tutorial/SRR4413906/SRR4413906.sra</code></pre>
+<pre><code>## Read 100 spots for tutorial/SRR4413906/SRR4413906.sra
+## Written 100 spots for tutorial/SRR4413906/SRR4413906.sra</code></pre>
+</div>
+<p>Display the contents of the output directory:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>ls tutorial/SRR4413906</code></pre>
+<pre><code>## SRR4413906.sra
+## SRR4413906_1.fastq
+## SRR4413906_2.fastq</code></pre>
+</div>
+<p>As expected, two FASTQ files are extracted from the SRA file because the sequencing was paired-end. Each file should have the same number of reads, one from each end of the sequenced DNA fragment.</p>
+<p>Deactivate the current environment:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda deactivate</code></pre>
+</div>
+</div>
+<div id="fetch-sra-metadata" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span> Fetch SRA metadata</h2>
+<p>When handling lots of sequencing data, it is often easier to programmatically retrieve all of the associated metadata. Entrez Direct (EDirect) can be used to access this and other information from the NCBI databases. In particular, the <code>efetch</code> command can return formatted data records for a list of input accession numbers. As usual, this command has a lot of parameters and we suggest you read through them before continuing.</p>
+<p>Activate the <code>entrez-direct</code> environment:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate entrez-direct</code></pre>
+</div>
+<p>Print the help information for the <code>efetch</code> command:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>efetch -h</code></pre>
+<pre><code>## efetch 16.2
+## 
+## Format Selection
+## 
+##   -format        Format of record or report
+##   -mode          text, xml, asn.1, json
+##   -style         master, conwithfeat
+## 
+## Direct Record Selection
+## 
+##   -db            Database name
+##   -id            Unique identifier or accession number
+##   -input         Read identifier(s) from file instead of stdin
+## 
+## Sequence Range
+## 
+##   -seq_start     First sequence position to retrieve
+##   -seq_stop      Last sequence position to retrieve
+##   -strand        1 = forward DNA strand, 2 = reverse complement
+##                    (otherwise strand minus is set if start &gt; stop)
+##   -forward       Force strand 1
+##   -revcomp       Force strand 2
+## 
+## Gene Range
+## 
+##   -chr_start     Sequence range from 0-based coordinates
+##   -chr_stop        in gene docsum GenomicInfoType object
+## 
+## Sequence Flags
+## 
+##   -complexity    0 = default, 1 = bioseq, 3 = nuc-prot set
+##   -extend        Extend sequence retrieval in both directions
+##   -extrafeat     Bit flag specifying extra features
+##   -showgaps      Propagate component gaps
+## 
+## Subset Retrieval
+## 
+##   -start         First record to fetch
+##   -stop          Last record to fetch
+## 
+## Miscellaneous
+## 
+##   -raw           Skip database-specific XML modifications
+##   -express       Direct sequence retrieval in groups of 5 
+##   -immediate     Express mode on a single record at a time 
+## 
+## Format Examples
+## 
+##   -db            -format            -mode    Report Type
+##   ___            _______            _____    ___________
+## 
+##   (all)
+##                  docsum                      DocumentSummarySet XML
+##                  docsum             json     DocumentSummarySet JSON
+##                  full                        Same as native except for mesh
+##                  uid                         Unique Identifier List
+##                  url                         Entrez URL
+##                  xml                         Same as -format full -mode xml
+## 
+##   bioproject
+##                  native                      BioProject Report
+##                  native             xml      RecordSet XML
+## 
+##   biosample
+##                  native                      BioSample Report
+##                  native             xml      BioSampleSet XML
+## 
+##   biosystems
+##                  native             xml      Sys-set XML
+## 
+##   clinvar
+##                  variation                   Older Format
+##                  variationid                 Transition Format
+##                  vcv                         VCV Report
+##                  clinvarset                  RCV Report
+## 
+##   gds
+##                  native             xml      RecordSet XML
+##                  summary                     Summary
+## 
+##   gene
+##                  full_report                 Detailed Report
+##                  gene_table                  Gene Table
+##                  native                      Gene Report
+##                  native             asn.1    Entrezgene ASN.1
+##                  native             xml      Entrezgene-Set XML
+##                  tabular                     Tabular Report
+## 
+##   homologene
+##                  alignmentscores             Alignment Scores
+##                  fasta                       FASTA
+##                  homologene                  Homologene Report
+##                  native                      Homologene List
+##                  native             asn.1    HG-Entry ASN.1
+##                  native             xml      Entrez-Homologene-Set XML
+## 
+##   mesh
+##                  full                        Full Record
+##                  native                      MeSH Report
+##                  native             xml      RecordSet XML
+## 
+##   nlmcatalog
+##                  native                      Full Record
+##                  native             xml      NLMCatalogRecordSet XML
+## 
+##   pmc
+##                  bioc                        PubTator Central BioC XML
+##                  medline                     MEDLINE
+##                  native             xml      pmc-articleset XML
+## 
+##   pubmed
+##                  abstract                    Abstract
+##                  bioc                        PubTator Central BioC XML
+##                  medline                     MEDLINE
+##                  native             asn.1    Pubmed-entry ASN.1
+##                  native             xml      PubmedArticleSet XML
+## 
+##   (sequences)
+##                  acc                         Accession Number
+##                  est                         EST Report
+##                  fasta                       FASTA
+##                  fasta              xml      TinySeq XML
+##                  fasta_cds_aa                FASTA of CDS Products
+##                  fasta_cds_na                FASTA of Coding Regions
+##                  ft                          Feature Table
+##                  gb                          GenBank Flatfile
+##                  gb                 xml      GBSet XML
+##                  gbc                xml      INSDSet XML
+##                  gene_fasta                  FASTA of Gene
+##                  gp                          GenPept Flatfile
+##                  gp                 xml      GBSet XML
+##                  gpc                xml      INSDSet XML
+##                  gss                         GSS Report
+##                  ipg                         Identical Protein Report
+##                  ipg                xml      IPGReportSet XML
+##                  native             text     Seq-entry ASN.1
+##                  native             xml      Bioseq-set XML
+##                  seqid                       Seq-id ASN.1
+## 
+##   snp
+##                  json                        Reference SNP Report
+## 
+##   sra
+##                  native             xml      EXPERIMENT_PACKAGE_SET XML
+##                  runinfo            xml      SraRunInfo XML
+## 
+##   structure
+##                  mmdb                        Ncbi-mime-asn1 strucseq ASN.1
+##                  native                      MMDB Report
+##                  native             xml      RecordSet XML
+## 
+##   taxonomy
+##                  native                      Taxonomy List
+##                  native             xml      TaxaSet XML
+## 
+## Examples
+## 
+##   efetch -db pubmed -id 6271474,5685784,4882854,6243420 -format xml |
+##   xtract -pattern PubmedArticle -element MedlineCitation/PMID &quot;#Author&quot; \
+##     -block Author -position first -sep &quot; &quot; -element Initials,LastName \
+##     -block Article -element ArticleTitle
+## 
+##   efetch -db nuccore -id CM000177.6 -format gb -style conwithfeat -showgaps
+## 
+##   efetch -db nuccore -id 1121073309 -format gbc -style master
+## 
+##   efetch -db nuccore -id JABRPF010000000 -format gb
+## 
+##   efetch -db nuccore -id JABRPF010000001 -format gb
+## 
+##   efetch -db protein -id 3OQZ_a -format fasta
+## 
+##   esearch -db protein -query &quot;conotoxin AND mat_peptide [FKEY]&quot; |
+##   efetch -format gpc |
+##   xtract -insd complete mat_peptide &quot;%peptide&quot; product mol_wt peptide |
+##   grep -i conotoxin | sort -t $&#39;\t&#39; -u -k 2,2n | head -n 8
+## 
+##   esearch -db gene -query &quot;DDT [GENE] AND mouse [ORGN]&quot; |
+##   efetch -format docsum |
+##   xtract -pattern GenomicInfoType -element ChrAccVer ChrStart ChrStop |
+##   xargs -n 3 sh -c &#39;efetch -db nuccore -format gb \
+##     -id &quot;$0&quot; -chr_start &quot;$1&quot; -chr_stop &quot;$2&quot;&#39;</code></pre>
+</div>
+<p>Again, there are a few important parameters to highlight here:</p>
+<ul>
+<li><p>The <code>-format</code> parameter decides what format to retrieve the data. Each NCBI databse supports multiple formats so you need to specify which format you would like.</p></li>
+<li><p>The <code>-db</code> parameter decided which NCBI database you will search for the associated metadata. The accession number you use must be compatible with the chosen database. Here we are using SRA accession numbers so we must specify the SRA database.</p></li>
+<li><p>The <code>-id</code> parameter is the unique identifier or accession number you are using as a query. This accession number must be in the same format as the database you are searching. Again, since we are searching the SRA database, we need to use an SRA accession number.</p></li>
+</ul>
+<p>If you look back at the SRA webpage for the SRR4413906 run, you will see an SRA Study field near the bottom. This accession number (SRP091443) can be used to find all of the sequencing libraries associated with that given study.</p>
+<p>Fetch run information for all runs in a given study:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>efetch -format runinfo -db sra -id SRP091443 &gt; tutorial/runinfo.csv</code></pre>
+</div>
+<p>Display the contents of the run information file:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>cat tutorial/runinfo.csv</code></pre>
+<pre><code>## Run,ReleaseDate,LoadDate,spots,bases,spots_with_mates,avgLength,size_MB,AssemblyName,download_path,Experiment,LibraryName,LibraryStrategy,LibrarySelection,LibrarySource,LibraryLayout,InsertSize,InsertDev,Platform,Model,SRAStudy,BioProject,Study_Pubmed_id,ProjectID,Sample,BioSample,SampleType,TaxID,ScientificName,SampleName,g1k_pop_code,source,g1k_analysis_group,Subject_ID,Sex,Disease,Tumor,Affection_Status,Analyte_Type,Histological_Type,Body_Site,CenterName,Submission,dbgap_study_accession,Consent,RunHash,ReadHash
+## SRR4413836,2017-03-13 16:26:12,2016-10-11 12:04:14,10453611,784315801,10453611,75,312,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413836.sralite.1,SRX2236907,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738020,SAMN05894757,simple,10090,Mus musculus,GSM2341284,,,,,,,no,,,,,GEO,SRA483374,,public,7C407137062FCA75F46916F7D6801218,6058D500A9A62F05BCF6D0D58891064D
+## SRR4413837,2017-03-13 16:26:12,2016-10-11 12:04:57,12829832,962659197,12829832,75,396,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413837.sralite.1,SRX2236907,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738020,SAMN05894757,simple,10090,Mus musculus,GSM2341284,,,,,,,no,,,,,GEO,SRA483374,,public,E6DB950A86FE4DAD14C73E25888D131F,6734B4DC23B6634851E574012695E474
+## SRR4413838,2017-03-13 16:26:12,2016-10-11 12:05:44,11966150,897716683,11966150,75,358,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413838.sralite.1,SRX2236908,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738021,SAMN05894767,simple,10090,Mus musculus,GSM2341285,,,,,,,no,,,,,GEO,SRA483374,,public,20C7BFC5266F062437BF64ACE3BF1165,DCC4DF84A8ABD91A4B0EF419BF2C7D0B
+## SRR4413839,2017-03-13 16:26:12,2016-10-11 12:05:46,14752324,1106774587,14752324,75,457,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413839.sralite.1,SRX2236908,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738021,SAMN05894767,simple,10090,Mus musculus,GSM2341285,,,,,,,no,,,,,GEO,SRA483374,,public,F4B65AC04944019F49B6F0F9C69A9470,A0D476D8107F72D960DBC82F038BD8B3
+## SRR4413840,2017-03-13 16:26:12,2016-10-11 12:04:02,10247757,768961951,10247757,75,306,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413840.sralite.1,SRX2236909,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738022,SAMN05894768,simple,10090,Mus musculus,GSM2341286,,,,,,,no,,,,,GEO,SRA483374,,public,D2EBD277377781915EA9ADCD2CAF0E4D,6C812C3EF5F35A9C6047656001A295A2
+## SRR4413841,2017-03-13 16:26:12,2016-10-11 12:04:50,12572395,943426387,12572395,75,389,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR441/3841/SRR4413841.sralite.1,SRX2236909,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738022,SAMN05894768,simple,10090,Mus musculus,GSM2341286,,,,,,,no,,,,,GEO,SRA483374,,public,A802BB340EDF5F3AA9FD51EC6268BE77,580EA08FA204C4904A1CF0BFB393CA77
+## SRR4413842,2017-03-13 16:26:12,2016-10-11 12:09:59,10936374,820558359,10936374,75,323,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413842.sralite.1,SRX2236910,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738023,SAMN05894760,simple,10090,Mus musculus,GSM2341287,,,,,,,no,,,,,GEO,SRA483374,,public,B821A81A218F7B566B0636EC7A579CA5,8735995D9426B6259E77DBF61E9F7AFC
+## SRR4413843,2017-03-13 16:26:12,2016-10-11 12:05:09,13541604,1016078140,13541604,75,415,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413843.sralite.1,SRX2236910,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738023,SAMN05894760,simple,10090,Mus musculus,GSM2341287,,,,,,,no,,,,,GEO,SRA483374,,public,D4AE30A11A96D5E4394CBC07FD352153,895B6421372CB3763C8C4927F408C886
+## SRR4413844,2017-03-13 16:26:12,2016-10-11 12:04:30,12101772,907866428,12101772,75,358,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413844.sralite.1,SRX2236911,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738024,SAMN05894759,simple,10090,Mus musculus,GSM2341288,,,,,,,no,,,,,GEO,SRA483374,,public,6DC02BD4D88806747B17ADD4565F0D0F,5FC07FCDB4437A4FDF7A6648C2BB93CF
+## SRR4413845,2017-03-13 16:26:12,2016-10-11 12:04:44,14871363,1115688067,14871363,75,457,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR441/3845/SRR4413845.sralite.1,SRX2236911,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738024,SAMN05894759,simple,10090,Mus musculus,GSM2341288,,,,,,,no,,,,,GEO,SRA483374,,public,EC569116668D2CD9878C2F7FFF131CDE,EE1581748314196F4707FC58003D700C
+## SRR4413846,2017-03-13 16:26:12,2016-10-11 12:03:44,8727101,654719767,8727101,75,260,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413846.sralite.1,SRX2236912,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738025,SAMN05894758,simple,10090,Mus musculus,GSM2341289,,,,,,,no,,,,,GEO,SRA483374,,public,4B03AB7DB80F430654BC723C5798B5B7,E7AAF6D8BFBF1E3D2A0B61C8E7FC57BC
+## SRR4413847,2017-03-13 16:26:12,2016-10-11 12:04:24,10786677,809266394,10786677,75,334,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413847.sralite.1,SRX2236912,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738025,SAMN05894758,simple,10090,Mus musculus,GSM2341289,,,,,,,no,,,,,GEO,SRA483374,,public,CA01CCB01A7DCA09CC572C4953AF29BF,525C790EAF6AADEF7D4B4BB6139C9CC7
+## SRR4413848,2017-03-13 16:26:12,2016-10-11 12:05:45,12655644,949534177,12655644,75,381,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413848.sralite.1,SRX2236913,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738026,SAMN05894756,simple,10090,Mus musculus,GSM2341290,,,,,,,no,,,,,GEO,SRA483374,,public,7C93401222853CF39EC107C2316DAA3B,91FC15694C48A40BF127779C050844EB
+## SRR4413849,2017-03-13 16:26:12,2016-10-11 12:06:13,15302722,1148192105,15302722,75,476,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413849.sralite.1,SRX2236913,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738026,SAMN05894756,simple,10090,Mus musculus,GSM2341290,,,,,,,no,,,,,GEO,SRA483374,,public,E0BF5946244178DE4AD10A474D8D9C6C,C8E063FAE967AFDE02728B32F19EC487
+## SRR4413850,2017-03-13 16:26:12,2016-10-11 12:03:51,9791702,734673728,9791702,75,296,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413850.sralite.1,SRX2236914,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738027,SAMN05894755,simple,10090,Mus musculus,GSM2341291,,,,,,,no,,,,,GEO,SRA483374,,public,AC08DCB5C15BA49C40CF1B9EB0266B8C,827637E98B668A0B6C301007F5BC1409
+## SRR4413851,2017-03-13 16:26:12,2016-10-11 12:04:31,11804657,885748535,11804657,75,369,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR441/3851/SRR4413851.sralite.1,SRX2236914,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738027,SAMN05894755,simple,10090,Mus musculus,GSM2341291,,,,,,,no,,,,,GEO,SRA483374,,public,B360E76BED622A49147EDD118BC69502,921C610BCE99E69E7529E2C11763B2BC
+## SRR4413852,2017-03-13 16:26:12,2016-10-11 12:04:12,10517837,789024963,10517837,75,314,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413852.sralite.1,SRX2236915,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738028,SAMN05894754,simple,10090,Mus musculus,GSM2341292,,,,,,,no,,,,,GEO,SRA483374,,public,606B83AF50D3BFEBA22CC7F385EE8246,ADC86570A4C13CED27952D35CF058ABE
+## SRR4413853,2017-03-13 16:26:12,2016-10-11 12:04:55,12807335,960824201,12807335,75,396,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR441/3853/SRR4413853.sralite.1,SRX2236915,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738028,SAMN05894754,simple,10090,Mus musculus,GSM2341292,,,,,,,no,,,,,GEO,SRA483374,,public,AC587EE00F6C90DA17BAA92BDFCCFEC8,4DDC433FC86F8FCB6DCB7C0A3AD9BDDB
+## SRR4413854,2017-03-13 16:26:12,2016-10-11 12:03:37,8432141,632561001,8432141,75,252,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413854.sralite.1,SRX2236916,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738029,SAMN05894753,simple,10090,Mus musculus,GSM2341293,,,,,,,no,,,,,GEO,SRA483374,,public,F349A1FA3F6F26B1B3D5E8AB7C7F18EE,4C5A1CAB7FBA5F288F019B9158B6B286
+## SRR4413855,2017-03-13 16:26:12,2016-10-11 12:04:08,10353231,776694263,10353231,75,321,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413855.sralite.1,SRX2236916,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738029,SAMN05894753,simple,10090,Mus musculus,GSM2341293,,,,,,,no,,,,,GEO,SRA483374,,public,A9E967CA4BA8C099609B8C3CE1740529,B403FAA2140B4BEE8771C292FE376964
+## SRR4413856,2017-03-13 16:26:12,2016-10-11 12:04:30,11349739,851623523,11349739,75,341,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413856.sralite.1,SRX2236917,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738030,SAMN05894752,simple,10090,Mus musculus,GSM2341294,,,,,,,no,,,,,GEO,SRA483374,,public,86E01E20EFF10D90FC590AD512E6BBAB,AECAC51D36EC56865951282209446E1C
+## SRR4413857,2017-03-13 16:26:12,2016-10-11 12:05:52,13779128,1033946800,13779128,75,429,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413857.sralite.1,SRX2236917,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738030,SAMN05894752,simple,10090,Mus musculus,GSM2341294,,,,,,,no,,,,,GEO,SRA483374,,public,7AF8DF6408B1CB065853BE8027513AFE,E59E32746E0A49E7EA0E7C9AA97D875F
+## SRR4413858,2017-03-13 16:26:12,2016-10-11 12:04:47,10239543,768312336,10239543,75,308,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413858.sralite.1,SRX2236918,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738031,SAMN05894789,simple,10090,Mus musculus,GSM2341295,,,,,,,no,,,,,GEO,SRA483374,,public,CD5D3108CBCFF972CB4732CF7495D0FA,108AA073ABCD4824C3E77CA3C93F6FB9
+## SRR4413859,2017-03-13 16:26:12,2016-10-11 12:05:45,12356513,927216282,12356513,75,385,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413859.sralite.1,SRX2236918,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738031,SAMN05894789,simple,10090,Mus musculus,GSM2341295,,,,,,,no,,,,,GEO,SRA483374,,public,0BFE9A4A4C7964F714196BF66BF65802,B480C02A0CCB8148522F1AD246108DBF
+## SRR4413860,2017-03-13 16:26:12,2016-10-11 12:04:50,10732786,804531265,10732786,74,322,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413860.sralite.1,SRX2236919,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738032,SAMN05894788,simple,10090,Mus musculus,GSM2341296,,,,,,,no,,,,,GEO,SRA483374,,public,8A4460F2C19A749F577EB519A08EFDA8,BBD08892E0E20FC5EC4273D24BCE0D5D
+## SRR4413861,2017-03-13 16:26:12,2016-10-11 12:05:45,13137657,984881985,13137657,74,407,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413861.sralite.1,SRX2236919,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738032,SAMN05894788,simple,10090,Mus musculus,GSM2341296,,,,,,,no,,,,,GEO,SRA483374,,public,E1606F7B10A480D7CF795B525F79DBA4,E7959D9775239BC14A516C26C09E4D68
+## SRR4413862,2017-03-13 16:26:12,2016-10-11 12:04:59,10505117,787154275,10505117,74,315,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413862.sralite.1,SRX2236920,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738033,SAMN05894787,simple,10090,Mus musculus,GSM2341297,,,,,,,no,,,,,GEO,SRA483374,,public,BB723BDE1276E7311E939D2D76CE9693,B1524BF405DEBFEECD4CA70DEA13A758
+## SRR4413863,2017-03-13 16:26:12,2016-10-11 12:05:47,12878682,965120869,12878682,74,399,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413863.sralite.1,SRX2236920,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738033,SAMN05894787,simple,10090,Mus musculus,GSM2341297,,,,,,,no,,,,,GEO,SRA483374,,public,0175BB5F46685062AD9B19ADB4074A5E,3A9D6B706A0947CFAB3849DFDB712082
+## SRR4413864,2017-03-13 16:26:12,2016-10-11 12:04:40,9381749,703453617,9381749,74,283,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR441/3864/SRR4413864.sralite.1,SRX2236921,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738034,SAMN05894786,simple,10090,Mus musculus,GSM2341298,,,,,,,no,,,,,GEO,SRA483374,,public,7FC4A272734AF4BECD9144080541B504,534601AFE41F27A62F92F8F357BD224A
+## SRR4413865,2017-03-13 16:26:12,2016-10-11 12:04:59,11276368,845595383,11276368,74,351,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413865.sralite.1,SRX2236921,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738034,SAMN05894786,simple,10090,Mus musculus,GSM2341298,,,,,,,no,,,,,GEO,SRA483374,,public,7370A3737F9EC3F57FCDEFF000DC073B,9465D083BEE0A3CC14315D01916CBCBA
+## SRR4413866,2017-03-13 16:26:12,2016-10-11 12:04:44,10084058,755841207,10084058,74,306,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR441/3866/SRR4413866.sralite.1,SRX2236922,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738035,SAMN05894785,simple,10090,Mus musculus,GSM2341299,,,,,,,no,,,,,GEO,SRA483374,,public,3B1C4EC768E44A56BE60401E9C2DE390,F0FD76E3126A4C03729628853022720F
+## SRR4413867,2017-03-13 16:26:12,2016-10-11 12:11:46,12113918,908058586,12113918,74,379,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413867.sralite.1,SRX2236922,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738035,SAMN05894785,simple,10090,Mus musculus,GSM2341299,,,,,,,no,,,,,GEO,SRA483374,,public,9891DF48DA3A45C056F6D8301AEE26B2,B57013092D6365E8736082139602A12B
+## SRR4413868,2017-03-13 16:26:12,2016-10-11 12:07:29,12205895,915453136,12205895,75,367,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR441/3868/SRR4413868.sralite.1,SRX2236923,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738036,SAMN05894784,simple,10090,Mus musculus,GSM2341300,,,,,,,no,,,,,GEO,SRA483374,,public,9EB0D7283376A3B226CAF53DB60E1B96,B847A31996ECB4853556A4ADFEBAE91C
+## SRR4413869,2017-03-13 16:26:12,2016-10-11 12:14:01,14883414,1116280658,14883414,75,462,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413869.sralite.1,SRX2236923,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738036,SAMN05894784,simple,10090,Mus musculus,GSM2341300,,,,,,,no,,,,,GEO,SRA483374,,public,25DC87E41436265214463C2AE5EFE6F1,05FEE5C9D54AC75ED9763FAFA65410BE
+## SRR4413870,2017-03-13 16:26:12,2016-10-11 12:05:45,12007505,900813395,12007505,75,362,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413870.sralite.1,SRX2236924,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738037,SAMN05894783,simple,10090,Mus musculus,GSM2341301,,,,,,,no,,,,,GEO,SRA483374,,public,2D3A9F31EF6EF0A283FA153D21AF9CDE,9268D559159B437993EBD539A1C9CC2A
+## SRR4413871,2017-03-13 16:26:12,2016-10-11 12:05:54,14572359,1093275492,14572359,75,454,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413871.sralite.1,SRX2236924,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738037,SAMN05894783,simple,10090,Mus musculus,GSM2341301,,,,,,,no,,,,,GEO,SRA483374,,public,F4035D4EDC2221E3A5727AEBCB20FD55,CC79D992863DFC0D18AB026414E0B44E
+## SRR4413872,2017-03-13 16:26:12,2016-10-11 12:07:13,11454777,859721234,11454777,75,343,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413872.sralite.1,SRX2236925,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738038,SAMN05894782,simple,10090,Mus musculus,GSM2341302,,,,,,,no,,,,,GEO,SRA483374,,public,52905380D97DDF4610054F46837A02EC,B9A8EC05C40C15F4DC5408C9B1741A03
+## SRR4413873,2017-03-13 16:26:12,2016-10-11 12:10:42,13871130,1041096843,13871130,75,430,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413873.sralite.1,SRX2236925,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738038,SAMN05894782,simple,10090,Mus musculus,GSM2341302,,,,,,,no,,,,,GEO,SRA483374,,public,EDFBE79085D774B9A2D456A4343F8469,3B1F0A61FE3508B567304395001BB1D9
+## SRR4413874,2017-03-13 16:26:12,2016-10-11 12:04:51,9959294,747393864,9959294,75,298,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR441/3874/SRR4413874.sralite.1,SRX2236926,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738040,SAMN05894781,simple,10090,Mus musculus,GSM2341303,,,,,,,no,,,,,GEO,SRA483374,,public,CF7EF5D4B4649823088D99B5D1044F1B,25BD67E62877A8665835425355E1A0A2
+## SRR4413875,2017-03-13 16:26:12,2016-10-11 12:05:10,12224882,917427209,12224882,75,378,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413875.sralite.1,SRX2236926,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738040,SAMN05894781,simple,10090,Mus musculus,GSM2341303,,,,,,,no,,,,,GEO,SRA483374,,public,86BCB05C949B488BE18C6E85EE7BC05D,1E9C4B58324D1EF534B6010DFBA97969
+## SRR4413876,2017-03-13 16:26:12,2016-10-11 12:10:13,9966107,746657752,9966107,74,297,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413876.sralite.1,SRX2236927,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738039,SAMN05894780,simple,10090,Mus musculus,GSM2341304,,,,,,,no,,,,,GEO,SRA483374,,public,B020721262E5B97F4C153102D99BE207,F5A6262B70682D299D06BBEDAAB67B03
+## SRR4413877,2017-03-13 16:26:12,2016-10-11 12:05:56,12299977,921598607,12299977,74,379,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413877.sralite.1,SRX2236927,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738039,SAMN05894780,simple,10090,Mus musculus,GSM2341304,,,,,,,no,,,,,GEO,SRA483374,,public,5B232CFF3319D87A1E4AAA0ABC5A2CBC,6F8DBFAA81710811725E017B9F554036
+## SRR4413878,2017-03-13 16:26:12,2016-10-11 12:05:43,10003562,750225523,10003562,74,297,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413878.sralite.1,SRX2236928,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738041,SAMN05894779,simple,10090,Mus musculus,GSM2341305,,,,,,,no,,,,,GEO,SRA483374,,public,AD9271DF071AE162BD838ADFCB42FA88,0ED9C7BB839117611F8D1D312D6BD9C2
+## SRR4413879,2017-03-13 16:26:12,2016-10-11 12:05:44,12359677,926977134,12359677,75,380,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413879.sralite.1,SRX2236928,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738041,SAMN05894779,simple,10090,Mus musculus,GSM2341305,,,,,,,no,,,,,GEO,SRA483374,,public,790F611310A5B99F79F59BA6F9518438,A8D28BE07CB0608E8691EFCA56CC0297
+## SRR4413880,2017-03-13 16:26:12,2016-10-11 12:04:53,10588358,793720369,10588358,74,315,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR441/3880/SRR4413880.sralite.1,SRX2236929,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738042,SAMN05894778,simple,10090,Mus musculus,GSM2341306,,,,,,,no,,,,,GEO,SRA483374,,public,AED98B82ECE69AC41583CE355FA9224A,1E838DC90B1657BEFA3046962D3FD672
+## SRR4413881,2017-03-13 16:26:12,2016-10-11 12:06:17,13080477,980610316,13080477,74,402,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413881.sralite.1,SRX2236929,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738042,SAMN05894778,simple,10090,Mus musculus,GSM2341306,,,,,,,no,,,,,GEO,SRA483374,,public,2B6A8F91FF74496451A35EAF290143B4,3CE8E08F67BFC1F11E1E68A6E44824C6
+## SRR4413882,2017-03-13 16:26:12,2016-10-11 12:06:05,10559109,791539025,10559109,74,316,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413882.sralite.1,SRX2236930,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738044,SAMN05894777,simple,10090,Mus musculus,GSM2341307,,,,,,,no,,,,,GEO,SRA483374,,public,296A7D8833DF5B07864293A34333C177,D3A70A1F8C7A3A47EC594F86CE261E0B
+## SRR4413883,2017-03-13 16:26:12,2016-10-11 12:06:46,12967195,972151983,12967195,74,402,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413883.sralite.1,SRX2236930,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738044,SAMN05894777,simple,10090,Mus musculus,GSM2341307,,,,,,,no,,,,,GEO,SRA483374,,public,3A955F566E2A35169749691D5A2AD59E,5DB58040704B6719DD15990FE63C126C
+## SRR4413884,2017-03-13 16:26:12,2016-10-11 12:06:52,12614385,946051489,12614385,74,372,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413884.sralite.1,SRX2236931,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738045,SAMN05894776,simple,10090,Mus musculus,GSM2341308,,,,,,,no,,,,,GEO,SRA483374,,public,95739DF9E5AB5F6E6591D347AAC9F685,519B3DFF5A8258E6DA7B85AF2D30C9F4
+## SRR4413885,2017-03-13 16:26:13,2016-10-11 12:08:19,15716600,1178747269,15716600,75,481,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413885.sralite.1,SRX2236931,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738045,SAMN05894776,simple,10090,Mus musculus,GSM2341308,,,,,,,no,,,,,GEO,SRA483374,,public,B752ADF9EB9A54750C3A5940CFBB17E8,B43DE43C0E2E041B1D4D44202C9952E1
+## SRR4413886,2017-03-13 16:26:13,2016-10-11 12:05:45,8779904,658636900,8779904,75,265,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413886.sralite.1,SRX2236932,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738043,SAMN05894775,simple,10090,Mus musculus,GSM2341309,,,,,,,no,,,,,GEO,SRA483374,,public,BB10DB5775C5237E05EDAD9C31F75BA2,5CCD06E1D83EA548AAF8CEBD8DBDFD46
+## SRR4413887,2017-03-13 16:26:13,2016-10-11 12:06:22,10746226,806161521,10746226,75,335,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413887.sralite.1,SRX2236932,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738043,SAMN05894775,simple,10090,Mus musculus,GSM2341309,,,,,,,no,,,,,GEO,SRA483374,,public,EBCC7DBE946E4B58BE244E2F42FDAF68,AC484167DB7A8E9FEE940D9001173065
+## SRR4413888,2017-03-13 16:26:13,2016-10-11 12:06:46,8311946,623504261,8311946,75,250,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413888.sralite.1,SRX2236933,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738046,SAMN05894774,simple,10090,Mus musculus,GSM2341310,,,,,,,no,,,,,GEO,SRA483374,,public,690806DC9A5510BE628137EDEE5FAC1D,BD1DEE51D901BD6AF828A41031603C04
+## SRR4413889,2017-03-13 16:26:13,2016-10-11 12:06:05,10194817,764807993,10194817,75,317,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413889.sralite.1,SRX2236933,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738046,SAMN05894774,simple,10090,Mus musculus,GSM2341310,,,,,,,no,,,,,GEO,SRA483374,,public,9BE1320A4596959FC52F1D9BD42A1E58,91D5D96B5876CF7238017CC05FA0A3F1
+## SRR4413890,2017-03-13 16:26:13,2016-10-11 12:06:03,8961079,672237633,8961079,75,272,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413890.sralite.1,SRX2236934,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738047,SAMN05894773,simple,10090,Mus musculus,GSM2341311,,,,,,,no,,,,,GEO,SRA483374,,public,384983C8233395954EE48E826EA97B62,5FB3961D3E4C22F879FEF1814163734B
+## SRR4413891,2017-03-13 16:26:13,2016-10-11 12:06:12,10772877,808182638,10772877,75,337,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413891.sralite.1,SRX2236934,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738047,SAMN05894773,simple,10090,Mus musculus,GSM2341311,,,,,,,no,,,,,GEO,SRA483374,,public,FE35F5C062EB2E5735B1194BDB283800,9DA53200E69E1635910FA8E1DE9EB8BB
+## SRR4413892,2017-03-13 16:26:13,2016-10-11 12:05:49,9051074,679023968,9051074,75,273,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413892.sralite.1,SRX2236935,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738048,SAMN05894772,simple,10090,Mus musculus,GSM2341312,,,,,,,no,,,,,GEO,SRA483374,,public,34B1D6666F70D770F167D8ADB5520A56,B81111DA70E08A9448FBB3A3D5B64F88
+## SRR4413893,2017-03-13 16:26:13,2016-10-11 12:10:06,11057025,829565407,11057025,75,345,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413893.sralite.1,SRX2236935,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738048,SAMN05894772,simple,10090,Mus musculus,GSM2341312,,,,,,,no,,,,,GEO,SRA483374,,public,A9755F7FB817A150826D04111B23333F,47623713DF06C7A13DFE25E16EF39623
+## SRR4413894,2017-03-13 16:26:13,2016-10-11 12:10:13,9038668,678558678,9038668,75,272,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413894.sralite.1,SRX2236936,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738049,SAMN05894771,simple,10090,Mus musculus,GSM2341313,,,,,,,no,,,,,GEO,SRA483374,,public,E73039B4A8F4445AD926F9463A2FA9BE,87885658724770434E58F55E02B359E5
+## SRR4413895,2017-03-13 16:26:13,2016-10-11 12:06:24,11026745,827838504,11026745,75,343,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413895.sralite.1,SRX2236936,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738049,SAMN05894771,simple,10090,Mus musculus,GSM2341313,,,,,,,no,,,,,GEO,SRA483374,,public,44F38143238CDFD4483F0B1A272E71B8,E082539DAFC2D3794A6575C456288DEE
+## SRR4413896,2017-03-13 16:26:13,2016-10-11 12:07:13,11027843,828254467,11027843,75,336,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413896.sralite.1,SRX2236937,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738050,SAMN05894770,simple,10090,Mus musculus,GSM2341314,,,,,,,no,,,,,GEO,SRA483374,,public,3191921210B6E61A1C06A9CD5AF78EB5,3B92F3C8557251682630E62C76A72F36
+## SRR4413897,2017-03-13 16:26:13,2016-10-11 12:07:56,13329955,1001185683,13329955,75,418,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR441/3897/SRR4413897.sralite.1,SRX2236937,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738050,SAMN05894770,simple,10090,Mus musculus,GSM2341314,,,,,,,no,,,,,GEO,SRA483374,,public,AD05028CFB0D71BEE15FB1EE3FC00642,BC554F796FF01A0885126BA6CF1E2BEC
+## SRR4413898,2017-03-13 16:26:13,2016-10-11 12:06:58,9926540,744879452,9926540,75,296,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413898.sralite.1,SRX2236938,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738051,SAMN05894769,simple,10090,Mus musculus,GSM2341315,,,,,,,no,,,,,GEO,SRA483374,,public,1EA4F3C6ABA0D301E25D24CF3AB7B2EB,AAAAAED62FFAE7AB090ECB0DB6889AFA
+## SRR4413899,2017-03-13 16:26:13,2016-10-11 12:07:10,12201059,915574301,12201059,75,377,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413899.sralite.1,SRX2236938,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738051,SAMN05894769,simple,10090,Mus musculus,GSM2341315,,,,,,,no,,,,,GEO,SRA483374,,public,FD4AC60ABD9264BB6CE0E54525FA2BF6,C4615B1A52AB49CA357E3802E6B666BA
+## SRR4413900,2017-03-13 16:26:13,2016-10-11 12:06:46,9404245,705804022,9404245,75,283,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413900.sralite.1,SRX2236939,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738053,SAMN05894766,simple,10090,Mus musculus,GSM2341316,,,,,,,no,,,,,GEO,SRA483374,,public,1D5B4D5E4CB00AE0E72191912AFC5824,6E9750EE11751CA1BC76BC7DE3F233B5
+## SRR4413901,2017-03-13 16:26:13,2016-10-11 12:07:27,11474818,861229384,11474818,75,357,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR441/3901/SRR4413901.sralite.1,SRX2236939,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738053,SAMN05894766,simple,10090,Mus musculus,GSM2341316,,,,,,,no,,,,,GEO,SRA483374,,public,B49BE017011113F1E415ABD1D4DDD63F,BDF1C756B75EB9E661D93D42634169D6
+## SRR4413902,2017-03-13 16:26:13,2016-10-11 12:06:31,8612170,646758002,8612170,75,263,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413902.sralite.1,SRX2236940,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738052,SAMN05894765,simple,10090,Mus musculus,GSM2341317,,,,,,,no,,,,,GEO,SRA483374,,public,525B7AF7171793EFBAF50DD93A32209A,17A48866558667F33660A8091C23E67C
+## SRR4413903,2017-03-13 16:26:13,2016-10-11 12:07:26,10362564,778209492,10362564,75,326,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413903.sralite.1,SRX2236940,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738052,SAMN05894765,simple,10090,Mus musculus,GSM2341317,,,,,,,no,,,,,GEO,SRA483374,,public,24602FC93D6E7CFDCF452B9F1AFB2C0E,2D46D476D84FAA4B633FA1A1A6EBC2FE
+## SRR4413904,2017-03-13 16:26:13,2016-10-11 12:08:17,9708959,728672641,9708959,75,293,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413904.sralite.1,SRX2236941,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738055,SAMN05894764,simple,10090,Mus musculus,GSM2341318,,,,,,,no,,,,,GEO,SRA483374,,public,F8745F74C181D90429A38F7817D3E828,027FAE7CB559A960B34199628A0FB688
+## SRR4413905,2017-03-13 16:26:13,2016-10-11 12:09:22,11828727,887853912,11828727,75,369,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR441/3905/SRR4413905.sralite.1,SRX2236941,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738055,SAMN05894764,simple,10090,Mus musculus,GSM2341318,,,,,,,no,,,,,GEO,SRA483374,,public,24D59F8BD924444C69724B4A405D7C8A,632024C8C2B4F53090CC8A8CF1BE21E9
+## SRR4413906,2017-03-13 16:26:13,2016-10-11 12:07:14,7322468,549911382,7322468,75,222,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413906.sralite.1,SRX2236942,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738054,SAMN05894763,simple,10090,Mus musculus,GSM2341319,,,,,,,no,,,,,GEO,SRA483374,,public,CE7FD7C81DB8FED9C080B0A204A399A6,5D64E25CEDB15409B96F9E45350E5467
+## SRR4413907,2017-03-13 16:26:13,2016-10-11 12:06:47,8829601,663093221,8829601,75,276,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413907.sralite.1,SRX2236942,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738054,SAMN05894763,simple,10090,Mus musculus,GSM2341319,,,,,,,no,,,,,GEO,SRA483374,,public,A3EF276B512C8E35093BA4133A2EAAD5,3363E7DF27F9B73E77B4BEC88C9C8099
+## SRR4413908,2017-03-13 16:26:13,2016-10-11 12:07:50,8241390,619285594,8241390,75,250,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-11/SRR004/413/SRR4413908.sralite.1,SRX2236943,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738056,SAMN05894762,simple,10090,Mus musculus,GSM2341320,,,,,,,no,,,,,GEO,SRA483374,,public,82A29A796213CC4760E6715F92228852,8ECD5BC841D603ED047025B1D781C8F3
+## SRR4413909,2017-03-13 16:26:13,2016-10-11 12:08:15,10009739,752135532,10009739,75,313,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413909.sralite.1,SRX2236943,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738056,SAMN05894762,simple,10090,Mus musculus,GSM2341320,,,,,,,no,,,,,GEO,SRA483374,,public,3F4E255C3F148B0B9F8587A97D05C5BD,9F5B5D5C22175C3EC10D0588F025BE24
+## SRR4413910,2017-03-13 16:26:13,2016-10-11 12:09:00,12434411,932948608,12434411,75,370,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413910.sralite.1,SRX2236944,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738057,SAMN05894761,simple,10090,Mus musculus,GSM2341321,,,,,,,no,,,,,GEO,SRA483374,,public,96D9C8C420411479FFA30348B0BD7AAA,7BC31F04BB67F91E342F4011C028FDE3
+## SRR4413911,2017-03-13 16:26:13,2016-10-11 12:09:37,15393816,1154996857,15393816,75,474,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR004/413/SRR4413911.sralite.1,SRX2236944,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS1738057,SAMN05894761,simple,10090,Mus musculus,GSM2341321,,,,,,,no,,,,,GEO,SRA483374,,public,0AB4D3C2727E41F44FD7FA0E5D7F7868,A1E76D75584CEF3CEAA9E5D93D97537F
+## SRR5312162,2017-03-13 16:26:13,2017-03-03 16:05:25,67051064,5030467734,67051064,75,1927,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312162.sralite.1,SRX2612038,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022636,SAMN06475095,simple,10090,Mus musculus,GSM2521508,,,,,,,no,,,,,GEO,SRA483374,,public,78BA1792D4C6D8794AF3943AB1EFFED3,3CBE1F93ED1B21117B514A88DE7C0F4D
+## SRR5312163,2017-03-13 16:26:13,2017-03-03 15:56:23,41452608,3109924248,41452608,75,1200,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312163.sralite.1,SRX2612039,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022637,SAMN06475112,simple,10090,Mus musculus,GSM2521509,,,,,,,no,,,,,GEO,SRA483374,,public,1C531F963E48FFA47609DC03FF3168EB,A30E49913B19141A1DDD66E19BDC5ED1
+## SRR5312164,2017-03-13 16:26:13,2017-03-03 15:53:09,40334588,3026244869,40334588,75,1189,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312164.sralite.1,SRX2612040,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022638,SAMN06475111,simple,10090,Mus musculus,GSM2521510,,,,,,,no,,,,,GEO,SRA483374,,public,75014A0ACA15E23B41B82470C58A6B74,BF50C3ACD7B4A95EAD20F0C079D3C888
+## SRR5312165,2017-03-13 16:26:13,2017-03-03 15:56:47,44950455,3372385607,44950455,75,1309,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312165.sralite.1,SRX2612041,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022639,SAMN06475110,simple,10090,Mus musculus,GSM2521511,,,,,,,no,,,,,GEO,SRA483374,,public,D3CCE4AC5771773D463C520C171E6FE4,730772DB0CFBE137F6681B86A8690717
+## SRR5312166,2017-03-13 16:26:13,2017-03-03 15:53:30,40858234,3065390049,40858234,75,1176,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312166.sralite.1,SRX2612042,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022640,SAMN06475109,simple,10090,Mus musculus,GSM2521512,,,,,,,no,,,,,GEO,SRA483374,,public,EF822220F66A80880D528AE20BC70698,1E3CE226BE21ABE59091E7B278EA2E20
+## SRR5312167,2017-03-13 16:26:13,2017-03-03 15:53:59,38782648,2910013346,38782648,75,1161,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312167.sralite.1,SRX2612043,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022641,SAMN06475108,simple,10090,Mus musculus,GSM2521513,,,,,,,no,,,,,GEO,SRA483374,,public,FDC49DC9022B64175D464BD18ACEDA07,13478FCC923E0D4E4153A5C5A95205B6
+## SRR5312168,2017-03-13 16:26:13,2017-03-03 15:38:38,9695587,727436597,9695587,75,291,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312168.sralite.1,SRX2612044,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022642,SAMN06475107,simple,10090,Mus musculus,GSM2521514,,,,,,,no,,,,,GEO,SRA483374,,public,82BB2AAD1D3D26B13E00133986574D07,56C1C33FDFC8E590086C13B8EC92E4C6
+## SRR5312169,2017-03-13 16:26:13,2017-03-03 15:38:18,11696039,877552968,11696039,75,363,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312169.sralite.1,SRX2612044,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022642,SAMN06475107,simple,10090,Mus musculus,GSM2521514,,,,,,,no,,,,,GEO,SRA483374,,public,2B64503DDA82FC2F56528BD998F4242E,B8946E680A2FA5396CF5480ECB99DFC4
+## SRR5312170,2017-03-13 16:26:13,2017-03-03 15:38:49,9978608,748685791,9978608,75,302,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312170.sralite.1,SRX2612045,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022643,SAMN06475106,simple,10090,Mus musculus,GSM2521515,,,,,,,no,,,,,GEO,SRA483374,,public,C464852A5CEC6829297D8B57F9A47AA7,0987816CE2573B020F3AB31103C36687
+## SRR5312171,2017-03-13 16:26:13,2017-03-03 15:40:05,11915809,894064840,11915809,75,373,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312171.sralite.1,SRX2612045,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022643,SAMN06475106,simple,10090,Mus musculus,GSM2521515,,,,,,,no,,,,,GEO,SRA483374,,public,FB44103F981ABCC2FF8D44180CB2F15A,901F879085B33BED7597D41CCC8B28D9
+## SRR5312172,2017-03-13 16:26:13,2017-03-03 15:40:09,10363907,777580044,10363907,75,310,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312172.sralite.1,SRX2612046,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022644,SAMN06475105,simple,10090,Mus musculus,GSM2521516,,,,,,,no,,,,,GEO,SRA483374,,public,AEFCEA27C2781E1D6D0995E1E1C35F0A,349D39F859D7D6BCDE9695603A307E74
+## SRR5312173,2017-03-13 16:26:13,2017-03-03 15:38:37,12505618,938290857,12505618,75,388,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312173.sralite.1,SRX2612046,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022644,SAMN06475105,simple,10090,Mus musculus,GSM2521516,,,,,,,no,,,,,GEO,SRA483374,,public,B88A593848DEE9AD1754B599BD382226,35E88642D9F991423C28CD77DCF04FFD
+## SRR5312174,2017-03-13 16:26:13,2017-03-03 15:39:53,11737644,880656082,11737644,75,354,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312174.sralite.1,SRX2612047,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022645,SAMN06475104,simple,10090,Mus musculus,GSM2521517,,,,,,,no,,,,,GEO,SRA483374,,public,C15B654C93BBB3C57896363F71B66575,A1DFAAB5B21A0509FFA0B684ED3A94A2
+## SRR5312175,2017-03-13 16:26:13,2017-03-03 15:39:43,14118510,1059316666,14118510,75,441,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312175.sralite.1,SRX2612047,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022645,SAMN06475104,simple,10090,Mus musculus,GSM2521517,,,,,,,no,,,,,GEO,SRA483374,,public,58B4F6A1DBEA3E974FA8F598AD4842AE,D339B21BAB747392A35F760CB93EAB0B
+## SRR5312176,2017-03-13 16:26:13,2017-03-03 15:40:52,13747724,1031679464,13747724,75,416,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312176.sralite.1,SRX2612037,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022635,SAMN06475103,simple,10090,Mus musculus,GSM2521518,,,,,,,no,,,,,GEO,SRA483374,,public,0ACD99DD70CBD623C83FDF76B31CFD15,119E9DFFDFFB4EC1B4CA7C18195501BB
+## SRR5312177,2017-03-13 16:26:13,2017-03-03 15:41:02,16392023,1230162717,16392023,75,513,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312177.sralite.1,SRX2612037,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022635,SAMN06475103,simple,10090,Mus musculus,GSM2521518,,,,,,,no,,,,,GEO,SRA483374,,public,FED242D0FE6EA5C2B9D7ECDAED2DF264,8F1C8D4860C47005905222E7A7727FDF
+## SRR5312178,2017-03-13 16:26:13,2017-03-03 15:39:35,10494589,787429894,10494589,75,315,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312178.sralite.1,SRX2612048,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022646,SAMN06475102,simple,10090,Mus musculus,GSM2521519,,,,,,,no,,,,,GEO,SRA483374,,public,DAB5E609E71E4F9AFA616B5735AE64E9,B3ECA788FB69BDBB6D068F04EBEAEB84
+## SRR5312179,2017-03-13 16:26:13,2017-03-03 15:39:02,12666962,950450488,12666962,75,393,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312179.sralite.1,SRX2612048,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022646,SAMN06475102,simple,10090,Mus musculus,GSM2521519,,,,,,,no,,,,,GEO,SRA483374,,public,244A22E43B70C6B450D9997716837DAC,124B116CF1453604A67A789EBACB97EA
+## SRR5312180,2017-03-13 16:26:13,2017-03-03 15:53:28,42968571,3223420642,42968571,75,1225,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312180.sralite.1,SRX2612049,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022647,SAMN06475101,simple,10090,Mus musculus,GSM2521520,,,,,,,no,,,,,GEO,SRA483374,,public,E4F8F60DE03194DA59E1AEB0D634E914,E1F004B5AFFF18C9712D85204AD73F25
+## SRR5312181,2017-03-13 16:26:13,2017-03-03 15:56:41,50229719,3767981322,50229719,75,1438,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312181.sralite.1,SRX2612050,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022648,SAMN06475100,simple,10090,Mus musculus,GSM2521521,,,,,,,no,,,,,GEO,SRA483374,,public,D0B8557CAF706217BBF366D7EEF48879,DCAF59EED6C58F22711E4E12424C8A11
+## SRR5312182,2017-03-13 16:26:13,2017-03-03 15:50:23,39319287,2950007522,39319287,75,1140,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312182.sralite.1,SRX2612051,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022649,SAMN06475099,simple,10090,Mus musculus,GSM2521522,,,,,,,no,,,,,GEO,SRA483374,,public,FC0D3571E1B9CC0A6425795938DA16A1,9BD9EB2F7C5F8F62293C3341F5FC2EEB
+## SRR5312183,2017-03-13 16:26:13,2017-03-03 15:48:33,35821402,2687303534,35821402,75,1027,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312183.sralite.1,SRX2612052,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022650,SAMN06475098,simple,10090,Mus musculus,GSM2521523,,,,,,,no,,,,,GEO,SRA483374,,public,0EF97B891D04F69C3B2A36FE15ED5281,07CBAFBB7F50F4A3DA13A30A8A59A916
+## SRR5312184,2017-03-13 16:26:13,2017-03-03 15:52:07,44930408,3370670751,44930408,75,1288,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312184.sralite.1,SRX2612053,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022651,SAMN06475097,simple,10090,Mus musculus,GSM2521524,,,,,,,no,,,,,GEO,SRA483374,,public,499FB4CDC506F7D6D73D58E89A584870,AE368D46A58E8E7E297CE2B8173E20CB
+## SRR5312185,2017-03-13 16:26:13,2017-03-03 15:57:54,42204949,3166581377,42204949,75,1217,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos5/sra-pub-zq-14/SRR005/312/SRR5312185.sralite.1,SRX2612054,,ChIP-Seq,ChIP,GENOMIC,PAIRED,0,0,ILLUMINA,NextSeq 500,SRP091443,PRJNA347885,2,347885,SRS2022652,SAMN06475096,simple,10090,Mus musculus,GSM2521525,,,,,,,no,,,,,GEO,SRA483374,,public,06660C75A27CA7D6D7B5527EDAB18C3A,81CC086337BDFB826E66BD126D352B80</code></pre>
+</div>
+<p>The run information file contains all of the metadata about each run in the given study. Some fields contain information on the sequencing itself (e.g., Number of reads, Average read length, and Library layout) and others contain information about the sample the run was prepared from (e.g. Sex, Disease, Tumor).</p>
+</div>
+</div>
+<div id="exercises" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Exercises</h1>
+<p>The exercises below are intended to test your knowledge of querying and downloading sequencing data. The solution to each exercise is blurred, only after attempting to solve the exercise yourself should you look at the solution. Should you need any help, please ask one of the instructors.</p>
+<p>Create a directory to store the output files from each exercise:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>mkdir exercises
+mkdir exercises/ex1
+mkdir exercises/ex2
+mkdir exercises/ex3</code></pre>
+</div>
+<div id="exercise-1" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Exercise 1</h2>
+<p>Use the <a href="https://www.ncbi.nlm.nih.gov/sra">SRA website</a> to search for an SRA study with accession number SRP094580. Once you have found the study, send all of the runs to the ‘Run Selector’. Then answer the following questions:</p>
+<ol style="list-style-type: decimal">
+<li>What is the total number of runs in this study?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+verbatim
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="default"><code>119</code></pre>
+</div>
+</div>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>What organism and strain was this study performed on?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+verbatim
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="default"><code>Mus musculus (mouse) and 129SV/Jae/C57BL6J</code></pre>
+</div>
+</div>
+</div>
+<ol start="3" style="list-style-type: decimal">
+<li>Which run has the largest number of bases?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+verbatim
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="default"><code>SRR5077666</code></pre>
+</div>
+</div>
+</div>
+<ol start="4" style="list-style-type: decimal">
+<li>Use the <code>efetch</code> command to download and save the run information into a file called <code>runinfo.csv</code> in the <code>exercises/ex1</code> directory:</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>efetch -format runinfo -db sra -id SRP094580 &gt; exercises/ex1/runinfo.csv</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="exercise-2" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Exercise 2</h2>
+<ol style="list-style-type: decimal">
+<li>Use the <code>efetch</code> command to download and save the run information from SRA study SRP000002 into a file called <code>runinfo.csv</code> in the <code>exercises/ex2</code> directory:</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>efetch -format runinfo -db sra -id SRP000002 &gt; exercises/ex2/runinfo.csv</code></pre>
+</div>
+</div>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>Create a file called <code>runids.txt</code> in the <code>exercises/ex2</code> directory with the SRR accession number of all the runs in the study. You can do this manually by looking at the file, or you can try to solve the problem using command line tools (e.g., sort, cut):</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>cat exercises/ex2/runinfo.csv | # Print the contents of the file to the standard output
+cut -d &quot;,&quot; -f 1 |               # Cut out the 1st field of each line, using &quot;,&quot; as a field delimiter 
+tail -n +2 |                    # Print standard output beginning from line 2
+&gt; exercises/ex2/runids.txt      # Redirect standard output to a file</code></pre>
+</div>
+</div>
+</div>
+<!-- Run above command without comments -->
+<ol start="3" style="list-style-type: decimal">
+<li>Download all the SRA files listed in the study used the <code>prefetch</code> command:</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>prefetch --output-directory exercises/ex2 --option-file exercises/ex2/runids.txt </code></pre>
+<pre><code>## 
+## 2022-09-21T08:44:51 prefetch.2.11.0: 1) Downloading &#39;SRR000066&#39;...
+## 2022-09-21T08:44:51 prefetch.2.11.0:  Downloading via HTTPS...
+## 2022-09-21T08:46:25 prefetch.2.11.0:  HTTPS download succeed
+## 2022-09-21T08:46:26 prefetch.2.11.0:  &#39;SRR000066&#39; is valid
+## 2022-09-21T08:46:26 prefetch.2.11.0: 1) &#39;SRR000066&#39; was downloaded successfully
+## 
+## 2022-09-21T08:46:27 prefetch.2.11.0: 2) Downloading &#39;SRR000067&#39;...
+## 2022-09-21T08:46:27 prefetch.2.11.0:  Downloading via HTTPS...
+## 2022-09-21T08:47:49 prefetch.2.11.0:  HTTPS download succeed
+## 2022-09-21T08:47:50 prefetch.2.11.0:  &#39;SRR000067&#39; is valid
+## 2022-09-21T08:47:50 prefetch.2.11.0: 2) &#39;SRR000067&#39; was downloaded successfully</code></pre>
+</div>
+</div>
+</div>
+<ol start="4" style="list-style-type: decimal">
+<li>Convert the first 100 reads from each SRA format to FASTQ format. Remember to check whether the library is single or paired end.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>fastq-dump --maxSpotId 100 --outdir exercises/ex2/SRR000066 exercises/ex2/SRR000066/SRR000066.sra
+fastq-dump --maxSpotId 100 --outdir exercises/ex2/SRR000067 exercises/ex2/SRR000067/SRR000067.sra</code></pre>
+<pre><code>## Read 100 spots for exercises/ex2/SRR000066/SRR000066.sra
+## Written 100 spots for exercises/ex2/SRR000066/SRR000066.sra
+## Read 100 spots for exercises/ex2/SRR000067/SRR000067.sra
+## Written 100 spots for exercises/ex2/SRR000067/SRR000067.sra</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="exercise-3" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> Exercise 3</h2>
+<ol style="list-style-type: decimal">
+<li>Use the <code>efetch</code> command to download and save the run information from SRA study SRP000599 into a file called <code>runinfo.csv</code> in the <code>exercises/ex3</code> directory:</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>efetch -format runinfo -db sra -id SRP000599 &gt; exercises/ex3/runinfo.csv</code></pre>
+</div>
+</div>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>Create a file called <code>runids.txt</code> in the <code>exercises/ex3</code> directory with the SRR accession number of the run with the <strong>smallest</strong> number of reads. You can do this manually by looking at the file, or you can try to solve the problem using command line tools (e.g., sort, cut):</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>cat exercises/ex3/runinfo.csv |  # Print the contents of the file to the standard output
+sort -t &quot;,&quot; -k 4n |              # Sort by the 4th field of each line numerically, using &quot;,&quot; as a field delimiter
+cut -d &quot;,&quot; -f 1 |                # Cut out the 1st field of each line, using &quot;,&quot; as a field delimiter 
+tail -n +2 |                     # Print standard output beginning from line 2
+head -n 1 |                      # Print the first line of the standard output
+&gt; exercises/ex3/runids.txt       # Redirect standard output to a file</code></pre>
+</div>
+</div>
+</div>
+<!-- Run above command without comments -->
+<ol start="3" style="list-style-type: decimal">
+<li>Download the SRA file for the SRR accession number identified above:</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>prefetch --output-directory exercises/ex3 --option-file exercises/ex3/runids.txt</code></pre>
+<pre><code>## 
+## 2022-09-21T08:48:00 prefetch.2.11.0: 1) Downloading &#39;SRR013564&#39;...
+## 2022-09-21T08:48:00 prefetch.2.11.0:  Downloading via HTTPS...
+## 2022-09-21T08:48:05 prefetch.2.11.0:  HTTPS download succeed
+## 2022-09-21T08:48:05 prefetch.2.11.0:  &#39;SRR013564&#39; is valid
+## 2022-09-21T08:48:05 prefetch.2.11.0: 1) &#39;SRR013564&#39; was downloaded successfully</code></pre>
+</div>
+</div>
+</div>
+<ol start="4" style="list-style-type: decimal">
+<li>Convert reads 100-500 from SRA format to FASTQ format. Remember to check whether the library is single or paired end.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>fastq-dump --minSpotId 100 --maxSpotId 500 --outdir exercises/ex3/SRR013564 exercises/ex3/SRR013564/SRR013564.sra</code></pre>
+<pre><code>## Read 401 spots for exercises/ex3/SRR013564/SRR013564.sra
+## Written 401 spots for exercises/ex3/SRR013564/SRR013564.sra</code></pre>
+</div>
+</div>
+</div>
+<footer class="footer">
+<div class="container footer-container">
+<div class="row">
+<div class="col-sm-8" style="text-align:left;vertical-align:middle;">
+<p class="small" style="color:#bdbdbd;">
+<b>2022</b> • <a href="https://www.zifornd.com">Zifo</a>
+</p>
+</div>
+<div class="col-sm-4" style="text-align:right;vertical-align:middle;">
+<p style="color:#bdbdbd;">
+<span>
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://www.zifornd.com"><svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#bdbdbd;overflow:visible;position:relative;"><path d="M352 256C352 278.2 350.8 299.6 348.7 320H163.3C161.2 299.6 159.1 278.2 159.1 256C159.1 233.8 161.2 212.4 163.3 192H348.7C350.8 212.4 352 233.8 352 256zM503.9 192C509.2 212.5 512 233.9 512 256C512 278.1 509.2 299.5 503.9 320H380.8C382.9 299.4 384 277.1 384 256C384 234 382.9 212.6 380.8 192H503.9zM493.4 160H376.7C366.7 96.14 346.9 42.62 321.4 8.442C399.8 29.09 463.4 85.94 493.4 160zM344.3 160H167.7C173.8 123.6 183.2 91.38 194.7 65.35C205.2 41.74 216.9 24.61 228.2 13.81C239.4 3.178 248.7 0 256 0C263.3 0 272.6 3.178 283.8 13.81C295.1 24.61 306.8 41.74 317.3 65.35C328.8 91.38 338.2 123.6 344.3 160H344.3zM18.61 160C48.59 85.94 112.2 29.09 190.6 8.442C165.1 42.62 145.3 96.14 135.3 160H18.61zM131.2 192C129.1 212.6 127.1 234 127.1 256C127.1 277.1 129.1 299.4 131.2 320H8.065C2.8 299.5 0 278.1 0 256C0 233.9 2.8 212.5 8.065 192H131.2zM194.7 446.6C183.2 420.6 173.8 388.4 167.7 352H344.3C338.2 388.4 328.8 420.6 317.3 446.6C306.8 470.3 295.1 487.4 283.8 498.2C272.6 508.8 263.3 512 255.1 512C248.7 512 239.4 508.8 228.2 498.2C216.9 487.4 205.2 470.3 194.7 446.6H194.7zM190.6 503.6C112.2 482.9 48.59 426.1 18.61 352H135.3C145.3 415.9 165.1 469.4 190.6 503.6V503.6zM321.4 503.6C346.9 469.4 366.7 415.9 376.7 352H493.4C463.4 426.1 399.8 482.9 321.4 503.6V503.6z"/></svg></a>
+</span>
+<span class="footericon" style="padding-right:4px; padding-left:4px">
+<a href="https://twitter.com/zifornd"><svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#bdbdbd;overflow:visible;position:relative;"><path d="M459.4 151.7c.325 4.548 .325 9.097 .325 13.65 0 138.7-105.6 298.6-298.6 298.6-59.45 0-114.7-17.22-161.1-47.11 8.447 .974 16.57 1.299 25.34 1.299 49.06 0 94.21-16.57 130.3-44.83-46.13-.975-84.79-31.19-98.11-72.77 6.498 .974 12.99 1.624 19.82 1.624 9.421 0 18.84-1.3 27.61-3.573-48.08-9.747-84.14-51.98-84.14-102.1v-1.299c13.97 7.797 30.21 12.67 47.43 13.32-28.26-18.84-46.78-51.01-46.78-87.39 0-19.49 5.197-37.36 14.29-52.95 51.65 63.67 129.3 105.3 216.4 109.8-1.624-7.797-2.599-15.92-2.599-24.04 0-57.83 46.78-104.9 104.9-104.9 30.21 0 57.5 12.67 76.67 33.14 23.72-4.548 46.46-13.32 66.6-25.34-7.798 24.37-24.37 44.83-46.13 57.83 21.12-2.273 41.58-8.122 60.43-16.24-14.29 20.79-32.16 39.31-52.63 54.25z"/></svg></a>
+</span>
+<span class="footericon" style="padding-left:4px">
+<a href="https://www.linkedin.com/company/zifo-technologies"><svg aria-hidden="true" role="img" viewBox="0 0 448 512" style="height:1em;width:0.88em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#bdbdbd;overflow:visible;position:relative;"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
+</span>
+</span>
+</p>
+</div>
+</div>
+</div>
+</footer>
+</div>
+</div>
+
+
+<footer class="footer">
+<div class="container footer-container">
+<div class="row">
+
+<div class="footer-left col-sm-6">
+<p class="small">
+<b>2022</b> • <a href="https://www.zifornd.com">Zifo</a>
+</p>
+</div>
+
+<div class="footer-right col-sm-6">
+<p>
+<span>
+  <span class="footericon" style="padding-right:4px; padding-left:4px">
+    <a href="https://www.zifornd.com">
+      <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 496 512"><path d="M248 8C111.03 8 0 119.03 0 256s111.03 248 248 248 248-111.03 248-248S384.97 8 248 8zm82.29 357.6c-3.9 3.88-7.99 7.95-11.31 11.28-2.99 3-5.1 6.7-6.17 10.71-1.51 5.66-2.73 11.38-4.77 16.87l-17.39 46.85c-13.76 3-28 4.69-42.65 4.69v-27.38c1.69-12.62-7.64-36.26-22.63-51.25-6-6-9.37-14.14-9.37-22.63v-32.01c0-11.64-6.27-22.34-16.46-27.97-14.37-7.95-34.81-19.06-48.81-26.11-11.48-5.78-22.1-13.14-31.65-21.75l-.8-.72a114.792 114.792 0 0 1-18.06-20.74c-9.38-13.77-24.66-36.42-34.59-51.14 20.47-45.5 57.36-82.04 103.2-101.89l24.01 12.01C203.48 89.74 216 82.01 216 70.11v-11.3c7.99-1.29 16.12-2.11 24.39-2.42l28.3 28.3c6.25 6.25 6.25 16.38 0 22.63L264 112l-10.34 10.34c-3.12 3.12-3.12 8.19 0 11.31l4.69 4.69c3.12 3.12 3.12 8.19 0 11.31l-8 8a8.008 8.008 0 0 1-5.66 2.34h-8.99c-2.08 0-4.08.81-5.58 2.27l-9.92 9.65a8.008 8.008 0 0 0-1.58 9.31l15.59 31.19c2.66 5.32-1.21 11.58-7.15 11.58h-5.64c-1.93 0-3.79-.7-5.24-1.96l-9.28-8.06a16.017 16.017 0 0 0-15.55-3.1l-31.17 10.39a11.95 11.95 0 0 0-8.17 11.34c0 4.53 2.56 8.66 6.61 10.69l11.08 5.54c9.41 4.71 19.79 7.16 30.31 7.16s22.59 27.29 32 32h66.75c8.49 0 16.62 3.37 22.63 9.37l13.69 13.69a30.503 30.503 0 0 1 8.93 21.57 46.536 46.536 0 0 1-13.72 32.98zM417 274.25c-5.79-1.45-10.84-5-14.15-9.97l-17.98-26.97a23.97 23.97 0 0 1 0-26.62l19.59-29.38c2.32-3.47 5.5-6.29 9.24-8.15l12.98-6.49C440.2 193.59 448 223.87 448 256c0 8.67-.74 17.16-1.82 25.54L417 274.25z"></path>
+      </svg>
+    </a>
+    </span>
+    <span class="footericon" style="padding-right:4px; padding-left:4px">
+      <a href="https://twitter.com/zifornd"><svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path>
+    </svg>
+    </a>
+    </span>
+    <span class="footericon" style="padding-left:4px">
+      <a href="https://www.linkedin.com/company/zifo-technologies">
+        <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path>
+        </svg>
+    </a>
+    </span>
+  </span>
+</p>
+</div>
+
+</div>
+</div>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

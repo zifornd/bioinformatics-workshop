@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Analysis of RNA-seq data</title>
+
+<script src="lab_rnaseq_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lab_rnaseq_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="lab_rnaseq_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lab_rnaseq_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lab_rnaseq_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="lab_rnaseq_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="lab_rnaseq_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="lab_rnaseq_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="lab_rnaseq_files/navigation-1.1/tabsets.js"></script>
+<link href="lab_rnaseq_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="lab_rnaseq_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="lab_rnaseq_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="lab_rnaseq_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="lab_rnaseq_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+#TOC {
+  display: none !important;
+}
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img src="assets/logo.svg" id="logo" style="height:20px;margin:0;"/></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="home_schedule.html">Schedule</a>
+</li>
+<li>
+  <a href="home_content.html">Content</a>
+</li>
+<li>
+  <a href="home_precourse.html">Precourse</a>
+</li>
+<li>
+  <a href="home_info.html">Info</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Analysis of RNA-seq data</h1>
+<h4 class="date">21 September, 2022</h4>
+
+</div>
+
+
+<!-- rmd lab header -->
+<p><br></p>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>Here we walk through an end-to-end gene-level RNA-Seq differential expression workflow using command-line tools and Bioconductor packages. We will start from the FASTQ files, show how to align these to the reference genome, and prepare a count matrix which tallies the number of RNA-seq reads/fragments within each gene for each sample. We will perform exploratory data analysis (EDA) for quality assessment and to explore the relationship between samples, perform differential gene expression analysis, and visually explore the results.</p>
+<div id="analysis-workflow" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Analysis workflow</h2>
+<p>There are at least four distinct phases of analysis (Figure <a href="#fig:rnaseq-analysis-workflow-full">1.1</a>). The first phase takes the raw sequence reads generated by a sequencing platform and maps them to the genome or transcriptome. Phase 2 quantifies the number of reads associated with each gene or transcript (an expression matrix). This process may involve one or more distinct sub-stages of alignment, assembly and quantification, or it may holistically generate the expression matrix from read counts in a single step. Usually there is a third phase where the expression matrix is altered by filtering lowly expressed features, as well as the crucial step of normalizing the raw counts to account for technical differences between the samples. The final phase in DGE is statistical modelling of the sample groups and covariates, to calculate confidence statistics related to differential expression.</p>
+<div class="figure"><span style="display:block;" id="fig:rnaseq-analysis-workflow-full"></span>
+<img src="images/rnaseq-analysis-workflow-full.png" alt="" />
+<p class="caption">Figure 1.1:  RNA-seq data analysis workflow for differential gene expression</p>
+</div>
+<p>In this tutorial we will follow workflow A: aligners such as TopHat, STAR or HISAT2 use a reference genome to map reads to genomic locations, and then quantification tools, such as HTSeq and featureCounts, assign reads to features. After normalization (usually using methods embedded in the quantification or expression modelling tools, such as trimmed mean of M-values (TMM)), gene expression is modelled using tools such as edgeR, DESeq2 and limma+voom, and a list of differentially expressed genes or transcripts is generated for further visualization and interpretation.</p>
+</div>
+<div id="bioconductor-packages" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Bioconductor packages</h2>
+<p>Bioconductor is a free, open source and open development software project for the analysis and comprehension of genomic data generated by wet lab experiments in molecular biology. Bioconductor is based primarily on the statistical R programming language, but does contain contributions in other programming languages. It has two releases each year that follow the semiannual releases of R. At any one time there is a release version, which corresponds to the released version of R, and a development version, which corresponds to the development version of R. Most users will find the release version appropriate for their needs.</p>
+<p>Bioconductor has many packages which support analysis of high-throughput sequence data, including RNA sequencing (RNA-seq). The packages which we will cover in this tutorial include core packages maintained by the Bioconductor core team for importing and processing raw sequencing data and loading gene annotations. We will also cover contributed packages for statistical analysis and visualization of sequencing data. Through scheduled releases every 6 months, the Bioconductor project ensures that all the packages within a release will work together in harmony (hence the “conductor” metaphor).</p>
+<p>The packages used in this tutorial are loaded with the library function and can be installed by following the <a href="https://bioconductor.org/install/#install-bioconductor-packages">Bioconductor package installation instructions</a> or using the conda package manager. A list of all the packages loaded in this tutorial is included at the end, in the Session information section.</p>
+</div>
+</div>
+<div id="objectives" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Objectives</h1>
+<ul>
+<li><a href="#data-preparation">Data preparation</a></li>
+<li><a href="#software-installation">Software installation</a></li>
+<li><a href="#read-alignment">Read alignment</a></li>
+<li><a href="#gene-quantification">Gene quantification</a></li>
+<li><a href="#differential-expression">Differential expression</a></li>
+</ul>
+</div>
+<div id="tutorial" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Tutorial</h1>
+<p>The commands used in the tutorial should all be run from the Unix shell prompt within a terminal window up to the differential expression analysis, which is performed in the R environment. We encourage users to create a single directory (e.g., ‘tutorial’) in which to store all example data and files created by the analysis. The tutorial also includes small sections of code to be run in the R statistical computing environment. Commands meant to be executed from the Unix shell (e.g., bash or csh) have the chunk title ‘BASH’. Commands
+that are meant to be run from either an R script or at the R interactive shell have the chunk title ‘R’.</p>
+<p>Create a <em>tutorial</em> directory to store all data and output files:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>mkdir tutorial</code></pre>
+</div>
+<div id="data-preparation" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Data preparation</h2>
+<p>The tutorial is illustrated with an example experiment from chromosome 22 of <em>Homo sapiens</em> that you can use to familiarize yourself with the analysis of RNA-seq data. All of the data you will need are available in the file <em>griffith.tar.gz</em>, which you will have to download. The data consists of two commercially available RNA samples: Universal Human Reference (UHR) and Human Brain Reference (HBR). The UHR is total RNA isolated from a diverse set of 10 cancer cell lines. The HBR is total RNA isolated from the brains of 23 Caucasians, male and female, of varying age but mostly 60-80 years old.</p>
+<p>Download the data archive file into the <em>tutorial</em> directory.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>curl https://media.githubusercontent.com/media/zifornd/bioinformatics-workshop/main/data/rnaseq/griffith.tar.gz --output tutorial/griffith.tar.gz</code></pre>
+<pre><code>##   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+##                                  Dload  Upload   Total   Spent    Left  Speed
+## 
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:04 --:--:--     0
+  0  125M    0 1119k    0     0   231k      0  0:09:12  0:00:04  0:09:08  232k
+  2  125M    2 3263k    0     0   560k      0  0:03:48  0:00:05  0:03:43  710k
+  4  125M    4 5407k    0     0   792k      0  0:02:41  0:00:06  0:02:35 1179k
+  5  125M    5 7567k    0     0   967k      0  0:02:12  0:00:07  0:02:05 1651k
+  7  125M    7 9711k    0     0  1100k      0  0:01:56  0:00:08  0:01:48 2121k
+  9  125M    9 11.5M    0     0  1204k      0  0:01:46  0:00:09  0:01:37 2143k
+ 10  125M   10 13.6M    0     0  1291k      0  0:01:39  0:00:10  0:01:29 2144k
+ 12  125M   12 15.7M    0     0  1365k      0  0:01:33  0:00:11  0:01:22 2147k
+ 14  125M   14 17.8M    0     0  1426k      0  0:01:29  0:00:12  0:01:17 2143k
+ 15  125M   15 19.9M    0     0  1475k      0  0:01:26  0:00:13  0:01:13 2136k
+ 17  125M   17 22.0M    0     0  1520k      0  0:01:24  0:00:14  0:01:10 2141k
+ 19  125M   19 24.1M    0     0  1561k      0  0:01:22  0:00:15  0:01:07 2143k
+ 20  125M   20 26.2M    0     0  1595k      0  0:01:20  0:00:16  0:01:04 2141k
+ 22  125M   22 28.3M    0     0  1627k      0  0:01:18  0:00:17  0:01:01 2144k
+ 24  125M   24 30.4M    0     0  1654k      0  0:01:17  0:00:18  0:00:59 2150k
+ 25  125M   25 32.5M    0     0  1679k      0  0:01:16  0:00:19  0:00:57 2150k
+ 27  125M   27 34.6M    0     0  1701k      0  0:01:15  0:00:20  0:00:55 2147k
+ 29  125M   29 36.7M    0     0  1722k      0  0:01:14  0:00:21  0:00:53 2150k
+ 30  125M   30 38.8M    0     0  1741k      0  0:01:13  0:00:22  0:00:51 2147k
+ 32  125M   32 40.7M    0     0  1752k      0  0:01:13  0:00:23  0:00:50 2121k
+ 34  125M   34 42.8M    0     0  1765k      0  0:01:12  0:00:24  0:00:48 2108k
+ 35  125M   35 44.9M    0     0  1780k      0  0:01:12  0:00:25  0:00:47 2108k
+ 37  125M   37 46.9M    0     0  1794k      0  0:01:11  0:00:26  0:00:45 2105k
+ 39  125M   39 49.0M    0     0  1806k      0  0:01:10  0:00:27  0:00:43 2105k
+ 40  125M   40 51.2M    0     0  1818k      0  0:01:10  0:00:28  0:00:42 2134k
+ 42  125M   42 53.4M    0     0  1830k      0  0:01:10  0:00:29  0:00:41 2147k
+ 44  125M   44 55.3M    0     0  1840k      0  0:01:09  0:00:30  0:00:39 2148k
+ 45  125M   45 57.4M    0     0  1849k      0  0:01:09  0:00:31  0:00:38 2144k
+ 47  125M   47 59.5M    0     0  1857k      0  0:01:09  0:00:32  0:00:37 2137k
+ 49  125M   49 61.6M    0     0  1865k      0  0:01:08  0:00:33  0:00:35 2134k
+ 50  125M   50 63.7M    0     0  1874k      0  0:01:08  0:00:34  0:00:34 2138k
+ 52  125M   52 65.8M    0     0  1881k      0  0:01:08  0:00:35  0:00:33 2134k
+ 54  125M   54 67.7M    0     0  1883k      0  0:01:08  0:00:36  0:00:32 2102k
+ 55  125M   55 69.7M    0     0  1889k      0  0:01:07  0:00:37  0:00:30 2099k
+ 57  125M   57 71.8M    0     0  1896k      0  0:01:07  0:00:38  0:00:29 2102k
+ 59  125M   59 73.9M    0     0  1902k      0  0:01:07  0:00:39  0:00:28 2099k
+ 60  125M   60 76.0M    0     0  1908k      0  0:01:07  0:00:40  0:00:27 2105k
+ 62  125M   62 78.1M    0     0  1913k      0  0:01:07  0:00:41  0:00:26 2137k
+ 64  125M   64 80.2M    0     0  1918k      0  0:01:06  0:00:42  0:00:24 2140k
+ 65  125M   65 82.1M    0     0  1919k      0  0:01:06  0:00:43  0:00:23 2102k
+ 67  125M   67 84.2M    0     0  1924k      0  0:01:06  0:00:44  0:00:22 2099k
+ 68  125M   68 86.3M    0     0  1928k      0  0:01:06  0:00:45  0:00:21 2092k
+ 70  125M   70 88.3M    0     0  1933k      0  0:01:06  0:00:46  0:00:20 2092k
+ 72  125M   72 90.4M    0     0  1936k      0  0:01:06  0:00:47  0:00:19 2089k
+ 73  125M   73 92.5M    0     0  1940k      0  0:01:06  0:00:48  0:00:18 2124k
+ 75  125M   75 94.6M    0     0  1944k      0  0:01:05  0:00:49  0:00:16 2124k
+ 77  125M   77 96.6M    0     0  1948k      0  0:01:05  0:00:50  0:00:15 2125k
+ 78  125M   78 98.7M    0     0  1951k      0  0:01:05  0:00:51  0:00:14 2124k
+ 80  125M   80  100M    0     0  1955k      0  0:01:05  0:00:52  0:00:13 2134k
+ 82  125M   82  102M    0     0  1958k      0  0:01:05  0:00:53  0:00:12 2131k
+ 83  125M   83  105M    0     0  1962k      0  0:01:05  0:00:54  0:00:11 2137k
+ 85  125M   85  107M    0     0  1965k      0  0:01:05  0:00:55  0:00:10 2137k
+ 87  125M   87  109M    0     0  1965k      0  0:01:05  0:00:56  0:00:09 2108k
+ 88  125M   88  111M    0     0  1968k      0  0:01:05  0:00:57  0:00:08 2108k
+ 90  125M   90  113M    0     0  1971k      0  0:01:05  0:00:58  0:00:07 2112k
+ 92  125M   92  115M    0     0  1972k      0  0:01:04  0:00:59  0:00:05 2092k
+ 93  125M   93  117M    0     0  1973k      0  0:01:04  0:01:00  0:00:04 2066k
+ 94  125M   94  118M    0     0  1963k      0  0:01:05  0:01:01  0:00:04 1946k
+ 95  125M   95  119M    0     0  1942k      0  0:01:06  0:01:02  0:00:04 1641k
+ 96  125M   96  120M    0     0  1941k      0  0:01:06  0:01:03  0:00:03 1583k
+ 97  125M   97  122M    0     0  1937k      0  0:01:06  0:01:04  0:00:02 1516k
+ 99  125M   99  124M    0     0  1937k      0  0:01:06  0:01:05  0:00:01 1500k
+100  125M  100  125M    0     0  1938k      0  0:01:06  0:01:06 --:--:-- 1574k</code></pre>
+</div>
+<p>Extract the data archive file into the <em>tutorial</em> directory.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>tar xf tutorial/griffith.tar.gz --directory=tutorial</code></pre>
+</div>
+<p>Inspect the contents of the tutorial data.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>ls tutorial/data</code></pre>
+<pre><code>## conda.txt
+## genes
+## genome
+## samples
+## samples.tsv
+## targets.txt</code></pre>
+</div>
+<p>The data archive file expands to contain a single directory <em>data</em> with three directories:</p>
+<ul>
+<li>The <em>samples</em> directory contains paired-end RNA-seq reads from 6 samples, with 3 samples from each of two conditions, HBR (Human Brain Reference) and UHR (Universal Human Reference). For each condition there are three replicates. All sequencing data is in compressed ‘fastq’ format, which stores each read on four lines. Each sample in turn is contained in two files: one for read 1 and another for read 2 of each pair. Thus, for example, sample HBR_Rep1 is contained in files HBR_Rep1_1.fastq.gz and HBR_Rep1_2.fastq.gz.</li>
+</ul>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>ls tutorial/data/samples</code></pre>
+<pre><code>## HBR_Rep1_1.fastq.gz
+## HBR_Rep1_2.fastq.gz
+## HBR_Rep2_1.fastq.gz
+## HBR_Rep2_2.fastq.gz
+## HBR_Rep3_1.fastq.gz
+## HBR_Rep3_2.fastq.gz
+## UHR_Rep1_1.fastq.gz
+## UHR_Rep1_2.fastq.gz
+## UHR_Rep2_1.fastq.gz
+## UHR_Rep2_2.fastq.gz
+## UHR_Rep3_1.fastq.gz
+## UHR_Rep3_2.fastq.gz</code></pre>
+</div>
+<ul>
+<li>The <em>genome</em> directory contains one file, chr22.fa, which is the DNA sequence of human chromosome 22.</li>
+</ul>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>ls tutorial/data/genome</code></pre>
+<pre><code>## chr22.fa</code></pre>
+</div>
+<ul>
+<li>The <em>genes</em> directory contains one file, chr22.gtf, which is the gene annotations from human chromosome 22.</li>
+</ul>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>ls tutorial/data/genes</code></pre>
+<pre><code>## chr22.gtf</code></pre>
+</div>
+<p>The <em>data</em> directory also contains three text files:</p>
+<ul>
+<li>The <em>conda.txt</em> file contains the list of software required for the tutorial. This file can be used to create a conda environment.</li>
+</ul>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>cat tutorial/data/conda.txt</code></pre>
+<pre><code>## bioconductor-deseq2
+## bioconductor-rsubread
+## bioconductor-tximport
+## gffread
+## hisat2
+## kallisto
+## samtools</code></pre>
+</div>
+<ul>
+<li>The <em>targets.txt</em> file contains the sample names, one per line. This file will be used as input to for loops on the command line so you do not have to re-write the same command with each sample name.</li>
+</ul>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>cat tutorial/data/targets.txt</code></pre>
+<pre><code>## HBR_Rep1
+## HBR_Rep2
+## HBR_Rep3
+## UHR_Rep1
+## UHR_Rep2
+## UHR_Rep3</code></pre>
+</div>
+<ul>
+<li>The <em>samples.tsv</em> file contains the name and condition for each sample. This file will be used in the differential expression analysis to specify which samples belong to which condition.</li>
+</ul>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>cat tutorial/data/samples.tsv</code></pre>
+<pre><code>## sample   condition
+## HBR_Rep1 HBR
+## HBR_Rep2 HBR
+## HBR_Rep3 HBR
+## UHR_Rep1 UHR
+## UHR_Rep2 UHR
+## UHR_Rep3 UHR</code></pre>
+</div>
+<p>Normally you would create these files yourself in a text editor, but we provide them here for use as examples. Finally, create an output directory to store all the output files.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>rm -rf tutorial/output
+mkdir tutorial/output</code></pre>
+</div>
+</div>
+<div id="software-installation" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Software installation</h2>
+<p>All of the software required for this tutorial can be installed using the conda package manager. The <em>data</em> directory contains a text file called <em>conda.txt</em> which can be used to create a conda environment.</p>
+<p>Create a new environment from the <code>conda.txt</code> file.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda create --name rnaseq --yes --file tutorial/data/conda.txt</code></pre>
+<pre><code>## Collecting package metadata (current_repodata.json): ...working... done
+## Solving environment: ...working... failed with repodata from current_repodata.json, will retry with next repodata source.
+## Collecting package metadata (repodata.json): ...working... done
+## Solving environment: ...working... done
+## 
+## ## Package Plan ##
+## 
+##   environment location: /opt/miniconda3/envs/rnaseq
+## 
+##   added / updated specs:
+##     - bioconductor-deseq2
+##     - bioconductor-rsubread
+##     - bioconductor-tximport
+##     - gffread
+##     - hisat2
+##     - kallisto
+##     - samtools
+## 
+## 
+## The following NEW packages will be INSTALLED:
+## 
+##   _r-mutex           conda-forge/noarch::_r-mutex-1.0.1-anacondar_1
+##   bioconductor-anno~ bioconda/noarch::bioconductor-annotate-1.72.0-r41hdfd78af_0
+##   bioconductor-anno~ bioconda/noarch::bioconductor-annotationdbi-1.56.1-r41hdfd78af_0
+##   bioconductor-biob~ bioconda/osx-64::bioconductor-biobase-2.54.0-r41h3be46a4_2
+##   bioconductor-bioc~ bioconda/noarch::bioconductor-biocgenerics-0.40.0-r41hdfd78af_0
+##   bioconductor-bioc~ bioconda/osx-64::bioconductor-biocparallel-1.28.3-r41hb890f52_1
+##   bioconductor-bios~ bioconda/osx-64::bioconductor-biostrings-2.62.0-r41h3be46a4_2
+##   bioconductor-dela~ bioconda/osx-64::bioconductor-delayedarray-0.20.0-r41h3be46a4_2
+##   bioconductor-dese~ bioconda/osx-64::bioconductor-deseq2-1.34.0-r41h7cba510_1
+##   bioconductor-gene~ bioconda/osx-64::bioconductor-genefilter-1.76.0-r41h11fee41_1
+##   bioconductor-gene~ bioconda/noarch::bioconductor-geneplotter-1.72.0-r41hdfd78af_0
+##   bioconductor-geno~ bioconda/noarch::bioconductor-genomeinfodb-1.30.0-r41hdfd78af_0
+##   bioconductor-geno~ bioconda/noarch::bioconductor-genomeinfodbdata-1.2.7-r41hdfd78af_2
+##   bioconductor-geno~ bioconda/osx-64::bioconductor-genomicranges-1.46.1-r41h3be46a4_1
+##   bioconductor-iran~ bioconda/osx-64::bioconductor-iranges-2.28.0-r41h3be46a4_2
+##   bioconductor-kegg~ bioconda/noarch::bioconductor-keggrest-1.34.0-r41hdfd78af_0
+##   bioconductor-matr~ bioconda/noarch::bioconductor-matrixgenerics-1.6.0-r41hdfd78af_0
+##   bioconductor-rsub~ bioconda/osx-64::bioconductor-rsubread-2.8.1-r41haba8685_0
+##   bioconductor-s4ve~ bioconda/osx-64::bioconductor-s4vectors-0.32.4-r41h3be46a4_0
+##   bioconductor-summ~ bioconda/noarch::bioconductor-summarizedexperiment-1.24.0-r41hdfd78af_0
+##   bioconductor-txim~ bioconda/noarch::bioconductor-tximport-1.22.0-r41hdfd78af_0
+##   bioconductor-xvec~ bioconda/osx-64::bioconductor-xvector-0.34.0-r41h3be46a4_2
+##   bioconductor-zlib~ bioconda/osx-64::bioconductor-zlibbioc-1.40.0-r41h3be46a4_2
+##   bwidget            conda-forge/osx-64::bwidget-1.9.14-h694c41f_1
+##   bzip2              conda-forge/osx-64::bzip2-1.0.8-h0d85af4_4
+##   c-ares             conda-forge/osx-64::c-ares-1.18.1-h0d85af4_0
+##   ca-certificates    conda-forge/osx-64::ca-certificates-2022.9.14-h033912b_0
+##   cairo              conda-forge/osx-64::cairo-1.16.0-h904041c_1014
+##   cctools_osx-64     conda-forge/osx-64::cctools_osx-64-973.0.1-h2b95895_10
+##   clang              conda-forge/osx-64::clang-14.0.4-h694c41f_0
+##   clang-14           conda-forge/osx-64::clang-14-14.0.4-default_h55ffa42_0
+##   clang_osx-64       conda-forge/osx-64::clang_osx-64-14.0.4-h3a95cd4_2
+##   clangxx            conda-forge/osx-64::clangxx-14.0.4-default_h55ffa42_0
+##   clangxx_osx-64     conda-forge/osx-64::clangxx_osx-64-14.0.4-he1dbc44_2
+##   compiler-rt        conda-forge/osx-64::compiler-rt-14.0.4-h7fcd477_0
+##   compiler-rt_osx-64 conda-forge/noarch::compiler-rt_osx-64-14.0.4-h6df654d_0
+##   curl               conda-forge/osx-64::curl-7.83.1-h23f1065_0
+##   expat              conda-forge/osx-64::expat-2.4.9-hf0c8a7f_0
+##   font-ttf-dejavu-s~ conda-forge/noarch::font-ttf-dejavu-sans-mono-2.37-hab24e00_0
+##   font-ttf-inconsol~ conda-forge/noarch::font-ttf-inconsolata-3.000-h77eed37_0
+##   font-ttf-source-c~ conda-forge/noarch::font-ttf-source-code-pro-2.038-h77eed37_0
+##   font-ttf-ubuntu    conda-forge/noarch::font-ttf-ubuntu-0.83-hab24e00_0
+##   fontconfig         conda-forge/osx-64::fontconfig-2.14.0-h5bb23bf_1
+##   fonts-conda-ecosy~ conda-forge/noarch::fonts-conda-ecosystem-1-0
+##   fonts-conda-forge  conda-forge/noarch::fonts-conda-forge-1-0
+##   freetype           conda-forge/osx-64::freetype-2.12.1-h3f81eb7_0
+##   fribidi            conda-forge/osx-64::fribidi-1.0.10-hbcb3906_0
+##   gettext            conda-forge/osx-64::gettext-0.19.8.1-hd1a6beb_1008
+##   gffread            bioconda/osx-64::gffread-0.12.7-h6151dfb_1
+##   gfortran_impl_osx~ conda-forge/osx-64::gfortran_impl_osx-64-9.5.0-h2221f41_25
+##   gfortran_osx-64    conda-forge/osx-64::gfortran_osx-64-9.5.0-h18f7dce_0
+##   gmp                conda-forge/osx-64::gmp-6.2.1-h2e338ed_0
+##   graphite2          conda-forge/osx-64::graphite2-1.3.13-h2e338ed_1001
+##   gsl                conda-forge/osx-64::gsl-2.7-h93259b0_0
+##   harfbuzz           conda-forge/osx-64::harfbuzz-5.2.0-h52d05a2_0
+##   hdf5               conda-forge/osx-64::hdf5-1.12.1-nompi_h0aa1fa2_104
+##   hisat2             bioconda/osx-64::hisat2-2.2.1-h9722bc1_4
+##   htslib             bioconda/osx-64::htslib-1.16-h567f53e_0
+##   icu                conda-forge/osx-64::icu-70.1-h96cf925_0
+##   isl                conda-forge/osx-64::isl-0.22.1-hb1e8313_2
+##   jpeg               conda-forge/osx-64::jpeg-9e-hac89ed1_2
+##   kallisto           bioconda/osx-64::kallisto-0.48.0-h0504637_2
+##   krb5               conda-forge/osx-64::krb5-1.19.3-hb98e516_0
+##   ld64_osx-64        conda-forge/osx-64::ld64_osx-64-609-h1e06c2b_10
+##   lerc               conda-forge/osx-64::lerc-4.0.0-hb486fe8_0
+##   libblas            conda-forge/osx-64::libblas-3.9.0-16_osx64_openblas
+##   libcblas           conda-forge/osx-64::libcblas-3.9.0-16_osx64_openblas
+##   libclang-cpp14     conda-forge/osx-64::libclang-cpp14-14.0.4-default_h55ffa42_0
+##   libcurl            conda-forge/osx-64::libcurl-7.83.1-h23f1065_0
+##   libcxx             conda-forge/osx-64::libcxx-14.0.6-hccf4f1f_0
+##   libdeflate         conda-forge/osx-64::libdeflate-1.13-h775f41a_0
+##   libedit            conda-forge/osx-64::libedit-3.1.20191231-h0678c8f_2
+##   libev              conda-forge/osx-64::libev-4.33-haf1e3a3_1
+##   libffi             conda-forge/osx-64::libffi-3.4.2-h0d85af4_5
+##   libgfortran        conda-forge/osx-64::libgfortran-5.0.0-10_4_0_h97931a8_25
+##   libgfortran-devel~ conda-forge/noarch::libgfortran-devel_osx-64-9.5.0-hc2d6858_25
+##   libgfortran5       conda-forge/osx-64::libgfortran5-11.3.0-h082f757_25
+##   libglib            conda-forge/osx-64::libglib-2.72.1-hfbcb929_0
+##   libiconv           conda-forge/osx-64::libiconv-1.16-haf1e3a3_0
+##   liblapack          conda-forge/osx-64::liblapack-3.9.0-16_osx64_openblas
+##   libllvm14          conda-forge/osx-64::libllvm14-14.0.4-h41df66c_0
+##   libnghttp2         conda-forge/osx-64::libnghttp2-1.47.0-h5aae05b_1
+##   libopenblas        conda-forge/osx-64::libopenblas-0.3.21-openmp_h429af6e_3
+##   libpng             conda-forge/osx-64::libpng-1.6.38-ha978bb4_0
+##   libsqlite          conda-forge/osx-64::libsqlite-3.39.3-ha978bb4_0
+##   libssh2            conda-forge/osx-64::libssh2-1.10.0-h47af595_3
+##   libtiff            conda-forge/osx-64::libtiff-4.4.0-h5e0c7b4_3
+##   libwebp-base       conda-forge/osx-64::libwebp-base-1.2.4-h775f41a_0
+##   libxml2            conda-forge/osx-64::libxml2-2.9.14-hea49891_4
+##   libzlib            conda-forge/osx-64::libzlib-1.2.12-hfd90126_3
+##   llvm-openmp        conda-forge/osx-64::llvm-openmp-14.0.4-ha654fa7_0
+##   llvm-tools         conda-forge/osx-64::llvm-tools-14.0.4-h41df66c_0
+##   make               conda-forge/osx-64::make-4.3-h22f3db7_1
+##   mpc                conda-forge/osx-64::mpc-1.2.1-hbb51d92_0
+##   mpfr               conda-forge/osx-64::mpfr-4.1.0-h0f52abe_1
+##   ncurses            conda-forge/osx-64::ncurses-6.3-h96cf925_1
+##   openssl            conda-forge/osx-64::openssl-3.0.5-hfd90126_2
+##   pango              conda-forge/osx-64::pango-1.50.10-h1f197d0_0
+##   pcre               conda-forge/osx-64::pcre-8.45-he49afe7_0
+##   pcre2              conda-forge/osx-64::pcre2-10.37-h3f55489_1
+##   perl               conda-forge/osx-64::perl-5.32.1-2_h0d85af4_perl5
+##   pip                conda-forge/noarch::pip-22.2.2-pyhd8ed1ab_0
+##   pixman             conda-forge/osx-64::pixman-0.40.0-hbcb3906_0
+##   python             conda-forge/osx-64::python-3.10.6-hc14f532_0_cpython
+##   r-askpass          conda-forge/osx-64::r-askpass-1.1-r41h28b5c78_2
+##   r-backports        conda-forge/osx-64::r-backports-1.4.1-r41h28b5c78_0
+##   r-base             conda-forge/osx-64::r-base-4.1.3-h85fa70c_2
+##   r-bh               conda-forge/noarch::r-bh-1.78.0_0-r41hc72bb7e_0
+##   r-bit              conda-forge/osx-64::r-bit-4.0.4-r41h28b5c78_0
+##   r-bit64            conda-forge/osx-64::r-bit64-4.0.5-r41h28b5c78_0
+##   r-bitops           conda-forge/osx-64::r-bitops-1.0_7-r41h67d6963_0
+##   r-blob             conda-forge/noarch::r-blob-1.2.3-r41hc72bb7e_0
+##   r-brio             conda-forge/osx-64::r-brio-1.1.3-r41h28b5c78_0
+##   r-cachem           conda-forge/osx-64::r-cachem-1.0.6-r41h28b5c78_0
+##   r-callr            conda-forge/noarch::r-callr-3.7.2-r41hc72bb7e_0
+##   r-cli              conda-forge/osx-64::r-cli-3.4.0-r41h49197e3_0
+##   r-colorspace       conda-forge/osx-64::r-colorspace-2.0_3-r41h0f1d5c4_0
+##   r-crayon           conda-forge/noarch::r-crayon-1.5.1-r41hc72bb7e_0
+##   r-curl             conda-forge/osx-64::r-curl-4.3.2-r41h28b5c78_0
+##   r-dbi              conda-forge/noarch::r-dbi-1.1.3-r41hc72bb7e_0
+##   r-desc             conda-forge/noarch::r-desc-1.4.2-r41hc72bb7e_0
+##   r-diffobj          conda-forge/osx-64::r-diffobj-0.3.5-r41h28b5c78_0
+##   r-digest           conda-forge/osx-64::r-digest-0.6.29-r41h9951f98_0
+##   r-ellipsis         conda-forge/osx-64::r-ellipsis-0.3.2-r41h28b5c78_0
+##   r-evaluate         conda-forge/noarch::r-evaluate-0.16-r41hc72bb7e_0
+##   r-fansi            conda-forge/osx-64::r-fansi-1.0.3-r41h0f1d5c4_0
+##   r-farver           conda-forge/osx-64::r-farver-2.1.1-r41h8619c4b_0
+##   r-fastmap          conda-forge/osx-64::r-fastmap-1.1.0-r41h9951f98_0
+##   r-formatr          conda-forge/noarch::r-formatr-1.12-r41hc72bb7e_0
+##   r-fs               conda-forge/osx-64::r-fs-1.5.2-r41hc4bb905_1
+##   r-futile.logger    conda-forge/noarch::r-futile.logger-1.4.3-r41hc72bb7e_1003
+##   r-futile.options   conda-forge/noarch::r-futile.options-1.0.1-r41hc72bb7e_1002
+##   r-ggplot2          conda-forge/noarch::r-ggplot2-3.3.6-r41hc72bb7e_0
+##   r-glue             conda-forge/osx-64::r-glue-1.6.2-r41h0f1d5c4_0
+##   r-gtable           conda-forge/noarch::r-gtable-0.3.1-r41hc72bb7e_0
+##   r-httr             conda-forge/noarch::r-httr-1.4.4-r41hc72bb7e_0
+##   r-isoband          conda-forge/osx-64::r-isoband-0.2.5-r41h9951f98_0
+##   r-jsonlite         conda-forge/osx-64::r-jsonlite-1.8.0-r41h0f1d5c4_0
+##   r-labeling         conda-forge/noarch::r-labeling-0.4.2-r41hc72bb7e_1
+##   r-lambda.r         conda-forge/noarch::r-lambda.r-1.2.4-r41hc72bb7e_1
+##   r-lattice          conda-forge/osx-64::r-lattice-0.20_45-r41h28b5c78_0
+##   r-lifecycle        conda-forge/noarch::r-lifecycle-1.0.2-r41hc72bb7e_0
+##   r-locfit           conda-forge/osx-64::r-locfit-1.5_9.6-r41h67d6963_0
+##   r-magrittr         conda-forge/osx-64::r-magrittr-2.0.3-r41h0f1d5c4_0
+##   r-mass             conda-forge/osx-64::r-mass-7.3_58.1-r41hef1f586_0
+##   r-matrix           conda-forge/osx-64::r-matrix-1.4_1-r41ha2825d1_0
+##   r-matrixstats      conda-forge/osx-64::r-matrixstats-0.62.0-r41h0f1d5c4_0
+##   r-memoise          conda-forge/noarch::r-memoise-2.0.1-r41hc72bb7e_0
+##   r-mgcv             conda-forge/osx-64::r-mgcv-1.8_40-r41h60b693f_0
+##   r-mime             conda-forge/osx-64::r-mime-0.12-r41h28b5c78_0
+##   r-munsell          conda-forge/noarch::r-munsell-0.5.0-r41hc72bb7e_1004
+##   r-nlme             conda-forge/osx-64::r-nlme-3.1_159-r41h225c1e1_0
+##   r-openssl          conda-forge/osx-64::r-openssl-2.0.3-r41hfeb9312_0
+##   r-pillar           conda-forge/noarch::r-pillar-1.8.1-r41hc72bb7e_0
+##   r-pkgconfig        conda-forge/noarch::r-pkgconfig-2.0.3-r41hc72bb7e_1
+##   r-pkgload          conda-forge/noarch::r-pkgload-1.3.0-r41hc72bb7e_0
+##   r-plogr            conda-forge/noarch::r-plogr-0.2.0-r41hc72bb7e_1003
+##   r-png              conda-forge/osx-64::r-png-0.1_7-r41h28b5c78_1004
+##   r-praise           conda-forge/noarch::r-praise-1.0.0-r41hc72bb7e_1005
+##   r-processx         conda-forge/osx-64::r-processx-3.7.0-r41h67d6963_0
+##   r-ps               conda-forge/osx-64::r-ps-1.7.1-r41h67d6963_0
+##   r-r6               conda-forge/noarch::r-r6-2.5.1-r41hc72bb7e_0
+##   r-rcolorbrewer     conda-forge/noarch::r-rcolorbrewer-1.1_3-r41h785f33e_0
+##   r-rcpp             conda-forge/osx-64::r-rcpp-1.0.9-r41h49197e3_1
+##   r-rcpparmadillo    conda-forge/osx-64::r-rcpparmadillo-0.11.2.3.1-r41hf5e6a41_0
+##   r-rcurl            conda-forge/osx-64::r-rcurl-1.98_1.8-r41h67d6963_0
+##   r-rematch2         conda-forge/noarch::r-rematch2-2.1.2-r41hc72bb7e_1
+##   r-rlang            conda-forge/osx-64::r-rlang-1.0.5-r41h49197e3_0
+##   r-rprojroot        conda-forge/noarch::r-rprojroot-2.0.3-r41hc72bb7e_0
+##   r-rsqlite          conda-forge/osx-64::r-rsqlite-2.2.8-r41h9951f98_0
+##   r-scales           conda-forge/noarch::r-scales-1.2.1-r41hc72bb7e_0
+##   r-snow             conda-forge/noarch::r-snow-0.4_4-r41hc72bb7e_0
+##   r-survival         conda-forge/osx-64::r-survival-3.4_0-r41hef1f586_0
+##   r-sys              conda-forge/osx-64::r-sys-3.4-r41h28b5c78_0
+##   r-testthat         conda-forge/osx-64::r-testthat-3.1.4-r41h8619c4b_0
+##   r-tibble           conda-forge/osx-64::r-tibble-3.1.8-r41h67d6963_0
+##   r-utf8             conda-forge/osx-64::r-utf8-1.2.2-r41h28b5c78_0
+##   r-vctrs            conda-forge/osx-64::r-vctrs-0.4.1-r41hc4bb905_0
+##   r-viridislite      conda-forge/noarch::r-viridislite-0.4.1-r41hc72bb7e_0
+##   r-waldo            conda-forge/noarch::r-waldo-0.4.0-r41hc72bb7e_0
+##   r-withr            conda-forge/noarch::r-withr-2.5.0-r41hc72bb7e_0
+##   r-xml              conda-forge/osx-64::r-xml-3.99_0.10-r41h67d6963_0
+##   r-xtable           conda-forge/noarch::r-xtable-1.8_4-r41hc72bb7e_3
+##   readline           conda-forge/osx-64::readline-8.1.2-h3899abd_0
+##   samtools           bioconda/osx-64::samtools-1.15.1-h7e39424_1
+##   setuptools         conda-forge/noarch::setuptools-65.3.0-pyhd8ed1ab_1
+##   sigtool            conda-forge/osx-64::sigtool-0.1.3-h88f4db0_0
+##   tapi               conda-forge/osx-64::tapi-1100.0.11-h9ce4665_0
+##   tk                 conda-forge/osx-64::tk-8.6.12-h5dbffcc_0
+##   tktable            conda-forge/osx-64::tktable-2.10-h49f0cf7_3
+##   tzdata             conda-forge/noarch::tzdata-2022c-h191b570_0
+##   wheel              conda-forge/noarch::wheel-0.37.1-pyhd8ed1ab_0
+##   xz                 conda-forge/osx-64::xz-5.2.6-h775f41a_0
+##   zlib               conda-forge/osx-64::zlib-1.2.12-hfd90126_3
+##   zstd               conda-forge/osx-64::zstd-1.5.2-hfa58983_4
+## 
+## 
+## Preparing transaction: ...working... done
+## Verifying transaction: ...working... 
+## SafetyError: The package for r-base located at /opt/miniconda3/pkgs/r-base-4.1.3-h85fa70c_2
+## appears to be corrupted. The path &#39;lib/R/doc/html/packages.html&#39;
+## has an incorrect size.
+##   reported size: 3061 bytes
+##   actual size: 37023 bytes
+## 
+## 
+## done
+## Executing transaction: ...working... done
+## #
+## # To activate this environment, use
+## #
+## #     $ conda activate rnaseq
+## #
+## # To deactivate an active environment, use
+## #
+## #     $ conda deactivate
+## 
+## Retrieving notices: ...working... done</code></pre>
+</div>
+<p>Activate the new environment.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate rnaseq</code></pre>
+</div>
+<p>Verify that the new environment was installed correctly.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda env list</code></pre>
+<pre><code>## # conda environments:
+## #
+##                          /Users/James/GitHub/array/.tests/integration/.snakemake/conda/19447c9d83fc6a16df8285b6af34bd39
+##                          /Users/James/GitHub/array/.tests/integration/.snakemake/conda/e983188723b3b36090d186b4259c200b
+##                          /Users/James/GitHub/array/.tests/integration/resources/bioconductor/annotation
+##                          /Users/James/GitHub/array/.tests/integration/resources/bioconductor/organism
+##                          /Users/James/GitHub/array/.tests/integration/resources/bioconductor/platform
+##                          /Users/James/Library/Caches/org.R-project.R/R/basilisk/1.6.0/0
+##                          /Users/James/Library/Caches/org.R-project.R/R/basilisk/1.6.0/velociraptor/1.4.0/env
+##                          /Users/James/miniconda
+## base                  *  /opt/miniconda3
+## DiasTailbudData          /opt/miniconda3/envs/DiasTailbudData
+## alignment                /opt/miniconda3/envs/alignment
+## aspera-cli               /opt/miniconda3/envs/aspera-cli
+## bio-align                /opt/miniconda3/envs/bio-align
+## bio-qc                   /opt/miniconda3/envs/bio-qc
+## bio-quant2               /opt/miniconda3/envs/bio-quant2
+## bioconductor-rsconnect     /opt/miniconda3/envs/bioconductor-rsconnect
+## bioinfo                  /opt/miniconda3/envs/bioinfo
+## bioinfo-copy             /opt/miniconda3/envs/bioinfo-copy
+## cutadapt                 /opt/miniconda3/envs/cutadapt
+## entrez-direct            /opt/miniconda3/envs/entrez-direct
+## fastqc                   /opt/miniconda3/envs/fastqc
+## ffq                      /opt/miniconda3/envs/ffq
+## genomepy                 /opt/miniconda3/envs/genomepy
+## igvtools                 /opt/miniconda3/envs/igvtools
+## kb-python                /opt/miniconda3/envs/kb-python
+## nextflow                 /opt/miniconda3/envs/nextflow
+## nf-core                  /opt/miniconda3/envs/nf-core
+## openjdk                  /opt/miniconda3/envs/openjdk
+## parallel                 /opt/miniconda3/envs/parallel
+## pyenv                    /opt/miniconda3/envs/pyenv
+## rnaseq                   /opt/miniconda3/envs/rnaseq
+## seqkit                   /opt/miniconda3/envs/seqkit
+## seqtk                    /opt/miniconda3/envs/seqtk
+## sevenbridges-python      /opt/miniconda3/envs/sevenbridges-python
+## snakemake                /opt/miniconda3/envs/snakemake
+## sra-tools                /opt/miniconda3/envs/sra-tools</code></pre>
+</div>
+</div>
+<div id="read-alignment" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Read alignment</h2>
+<p>After sequencing has been completed, the starting point for analysis is the data files, which contain base-called sequencing reads, usually in the form of FASTQ files. The most common first step in processing these files is to map sequence reads to a known transcriptome (or annotated genome, converting each sequence read to one or more genomic coordinates. This process has traditionally been accomplished using distinct alignment tools, such as TopHat, STAR or HISAT, which rely on a reference genome. Because the sequenced cDNA is derived from RNA, which may span exon boundaries, these tools perform a spliced alignment allowing for gaps in the reads when compared to the reference genome (which contains introns as well as exons). In this step of the workflow we will use HISAT2, the second major release of the HISAT splice-aware aligner.</p>
+<p>Create a directory to store HISAT2 output files.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>mkdir tutorial/output/hisat2</code></pre>
+</div>
+<p>Build the HISAT2 index.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate rnaseq
+hisat2-build tutorial/data/genome/chr22.fa tutorial/output/hisat2/chr22.fa</code></pre>
+<pre><code>## Settings:
+##   Output files: &quot;tutorial/output/hisat2/chr22.fa.*.ht2&quot;
+##   Line rate: 6 (line is 64 bytes)
+##   Lines per side: 1 (side is 64 bytes)
+##   Offset rate: 4 (one in 16)
+##   FTable chars: 10
+##   Strings: unpacked
+##   Local offset rate: 3 (one in 8)
+##   Local fTable chars: 6
+##   Local sequence length: 57344
+##   Local sequence overlap between two consecutive indexes: 1024
+##   Endianness: little
+##   Actual local endianness: little
+##   Sanity checking: disabled
+##   Assertions: disabled
+##   Random seed: 0
+##   Sizeofs: void*:8, int:4, long:8, size_t:8
+## Input files DNA, FASTA:
+##   tutorial/data/genome/chr22.fa
+## Reading reference sizes
+##   Time reading reference sizes: 00:00:01
+## Calculating joined length
+## Writing header
+## Reserving space for joined string
+## Joining reference sequences
+##   Time to join reference sequences: 00:00:00
+##   Time to read SNPs and splice sites: 00:00:00
+## Using parameters --bmax 7342458 --dcv 1024
+##   Doing ahead-of-time memory usage test
+##   Passed!  Constructing with these parameters: --bmax 7342458 --dcv 1024
+## Constructing suffix-array element generator
+## Building DifferenceCoverSample
+##   Building sPrime
+##   Building sPrimeOrder
+##   V-Sorting samples
+##   V-Sorting samples time: 00:00:00
+##   Allocating rank array
+##   Ranking v-sort output
+##   Ranking v-sort output time: 00:00:01
+##   Invoking Larsson-Sadakane on ranks
+##   Invoking Larsson-Sadakane on ranks time: 00:00:00
+##   Sanity-checking and returning
+## Building samples
+## Reserving space for 12 sample suffixes
+## Generating random suffixes
+## QSorting 12 sample offsets, eliminating duplicates
+## QSorting sample offsets, eliminating duplicates time: 00:00:00
+## Multikey QSorting 12 samples
+##   (Using difference cover)
+##   Multikey QSorting samples time: 00:00:00
+## Calculating bucket sizes
+## Splitting and merging
+##   Splitting and merging time: 00:00:00
+## Avg bucket size: 4.89497e+06 (target: 7342457)
+## Converting suffix-array elements to index image
+## Allocating ftab, absorbFtab
+## Entering GFM loop
+## Getting block 1 of 8
+##   Reserving size (7342458) for bucket 1
+##   Calculating Z arrays for bucket 1
+##   Entering block accumulator loop for bucket 1:
+##   bucket 1: 10%
+##   bucket 1: 20%
+##   bucket 1: 30%
+##   bucket 1: 40%
+##   bucket 1: 50%
+##   bucket 1: 60%
+##   bucket 1: 70%
+##   bucket 1: 80%
+##   bucket 1: 90%
+##   bucket 1: 100%
+##   Sorting block of length 6109124 for bucket 1
+##   (Using difference cover)
+##   Sorting block time: 00:00:01
+## Returning block of 6109125 for bucket 1
+## Getting block 2 of 8
+##   Reserving size (7342458) for bucket 2
+##   Calculating Z arrays for bucket 2
+##   Entering block accumulator loop for bucket 2:
+##   bucket 2: 10%
+##   bucket 2: 20%
+##   bucket 2: 30%
+##   bucket 2: 40%
+##   bucket 2: 50%
+##   bucket 2: 60%
+##   bucket 2: 70%
+##   bucket 2: 80%
+##   bucket 2: 90%
+##   bucket 2: 100%
+##   Sorting block of length 4162165 for bucket 2
+##   (Using difference cover)
+##   Sorting block time: 00:00:01
+## Returning block of 4162166 for bucket 2
+## Getting block 3 of 8
+##   Reserving size (7342458) for bucket 3
+##   Calculating Z arrays for bucket 3
+##   Entering block accumulator loop for bucket 3:
+##   bucket 3: 10%
+##   bucket 3: 20%
+##   bucket 3: 30%
+##   bucket 3: 40%
+##   bucket 3: 50%
+##   bucket 3: 60%
+##   bucket 3: 70%
+##   bucket 3: 80%
+##   bucket 3: 90%
+##   bucket 3: 100%
+##   Sorting block of length 3242487 for bucket 3
+##   (Using difference cover)
+##   Sorting block time: 00:00:01
+## Returning block of 3242488 for bucket 3
+## Getting block 4 of 8
+##   Reserving size (7342458) for bucket 4
+##   Calculating Z arrays for bucket 4
+##   Entering block accumulator loop for bucket 4:
+##   bucket 4: 10%
+##   bucket 4: 20%
+##   bucket 4: 30%
+##   bucket 4: 40%
+##   bucket 4: 50%
+##   bucket 4: 60%
+##   bucket 4: 70%
+##   bucket 4: 80%
+##   bucket 4: 90%
+##   bucket 4: 100%
+##   Sorting block of length 5059508 for bucket 4
+##   (Using difference cover)
+##   Sorting block time: 00:00:01
+## Returning block of 5059509 for bucket 4
+## Getting block 5 of 8
+##   Reserving size (7342458) for bucket 5
+##   Calculating Z arrays for bucket 5
+##   Entering block accumulator loop for bucket 5:
+##   bucket 5: 10%
+##   bucket 5: 20%
+##   bucket 5: 30%
+##   bucket 5: 40%
+##   bucket 5: 50%
+##   bucket 5: 60%
+##   bucket 5: 70%
+##   bucket 5: 80%
+##   bucket 5: 90%
+##   bucket 5: 100%
+##   Sorting block of length 2717729 for bucket 5
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 2717730 for bucket 5
+## Getting block 6 of 8
+##   Reserving size (7342458) for bucket 6
+##   Calculating Z arrays for bucket 6
+##   Entering block accumulator loop for bucket 6:
+##   bucket 6: 10%
+##   bucket 6: 20%
+##   bucket 6: 30%
+##   bucket 6: 40%
+##   bucket 6: 50%
+##   bucket 6: 60%
+##   bucket 6: 70%
+##   bucket 6: 80%
+##   bucket 6: 90%
+##   bucket 6: 100%
+##   Sorting block of length 6052533 for bucket 6
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 6052534 for bucket 6
+## Getting block 7 of 8
+##   Reserving size (7342458) for bucket 7
+##   Calculating Z arrays for bucket 7
+##   Entering block accumulator loop for bucket 7:
+##   bucket 7: 10%
+##   bucket 7: 20%
+##   bucket 7: 30%
+##   bucket 7: 40%
+##   bucket 7: 50%
+##   bucket 7: 60%
+##   bucket 7: 70%
+##   bucket 7: 80%
+##   bucket 7: 90%
+##   bucket 7: 100%
+##   Sorting block of length 6696876 for bucket 7
+##   (Using difference cover)
+##   Sorting block time: 00:00:01
+## Returning block of 6696877 for bucket 7
+## Getting block 8 of 8
+##   Reserving size (7342458) for bucket 8
+##   Calculating Z arrays for bucket 8
+##   Entering block accumulator loop for bucket 8:
+##   bucket 8: 10%
+##   bucket 8: 20%
+##   bucket 8: 30%
+##   bucket 8: 40%
+##   bucket 8: 50%
+##   bucket 8: 60%
+##   bucket 8: 70%
+##   bucket 8: 80%
+##   bucket 8: 90%
+##   bucket 8: 100%
+##   Sorting block of length 5119348 for bucket 8
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 5119349 for bucket 8
+## Exited GFM loop
+## fchr[A]: 0
+## fchr[C]: 10382214
+## fchr[G]: 19542866
+## fchr[T]: 28789052
+## fchr[$]: 39159777
+## Exiting GFM::buildToDisk()
+## Returning from initFromVector
+## Wrote 17248367 bytes to primary GFM file: tutorial/output/hisat2/chr22.fa.1.ht2
+## Wrote 9789952 bytes to secondary GFM file: tutorial/output/hisat2/chr22.fa.2.ht2
+## Re-opening _in1 and _in2 as input streams
+## Returning from GFM constructor
+## Returning from initFromVector
+## Wrote 17349465 bytes to primary GFM file: tutorial/output/hisat2/chr22.fa.5.ht2
+## Wrote 9969772 bytes to secondary GFM file: tutorial/output/hisat2/chr22.fa.6.ht2
+## Re-opening _in5 and _in5 as input streams
+## Returning from HGFM constructor
+## Headers:
+##     len: 39159777
+##     gbwtLen: 39159778
+##     nodes: 39159778
+##     sz: 9789945
+##     gbwtSz: 9789945
+##     lineRate: 6
+##     offRate: 4
+##     offMask: 0xfffffff0
+##     ftabChars: 10
+##     eftabLen: 0
+##     eftabSz: 0
+##     ftabLen: 1048577
+##     ftabSz: 4194308
+##     offsLen: 2447487
+##     offsSz: 9789948
+##     lineSz: 64
+##     sideSz: 64
+##     sideGbwtSz: 48
+##     sideGbwtLen: 192
+##     numSides: 203958
+##     numLines: 203958
+##     gbwtTotLen: 13053312
+##     gbwtTotSz: 13053312
+##     reverse: 0
+##     linearFM: Yes
+## Total time for call to driver() for forward index: 00:00:16</code></pre>
+</div>
+<p>Map the reads for each sample to the reference genome.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate rnaseq
+while read SAMPLE; do
+
+  IDX=tutorial/output/hisat2/chr22.fa
+  FQ1=tutorial/data/samples/${SAMPLE}_1.fastq.gz
+  FQ2=tutorial/data/samples/${SAMPLE}_2.fastq.gz
+  SAM=tutorial/output/hisat2/${SAMPLE}.sam
+
+  hisat2 $IDX -1 $FQ1 -2 $FQ2 -S $SAM
+
+done &lt; tutorial/data/targets.txt</code></pre>
+<pre><code>## 118571 reads; of these:
+##   118571 (100.00%) were paired; of these:
+##     56230 (47.42%) aligned concordantly 0 times
+##     61769 (52.09%) aligned concordantly exactly 1 time
+##     572 (0.48%) aligned concordantly &gt;1 times
+##     ----
+##     56230 pairs aligned concordantly 0 times; of these:
+##       173 (0.31%) aligned discordantly 1 time
+##     ----
+##     56057 pairs aligned 0 times concordantly or discordantly; of these:
+##       112114 mates make up the pairs; of these:
+##         112061 (99.95%) aligned 0 times
+##         48 (0.04%) aligned exactly 1 time
+##         5 (0.00%) aligned &gt;1 times
+## 52.75% overall alignment rate
+## 144826 reads; of these:
+##   144826 (100.00%) were paired; of these:
+##     69045 (47.67%) aligned concordantly 0 times
+##     74997 (51.78%) aligned concordantly exactly 1 time
+##     784 (0.54%) aligned concordantly &gt;1 times
+##     ----
+##     69045 pairs aligned concordantly 0 times; of these:
+##       241 (0.35%) aligned discordantly 1 time
+##     ----
+##     68804 pairs aligned 0 times concordantly or discordantly; of these:
+##       137608 mates make up the pairs; of these:
+##         137563 (99.97%) aligned 0 times
+##         43 (0.03%) aligned exactly 1 time
+##         2 (0.00%) aligned &gt;1 times
+## 52.51% overall alignment rate
+## 129786 reads; of these:
+##   129786 (100.00%) were paired; of these:
+##     61609 (47.47%) aligned concordantly 0 times
+##     67528 (52.03%) aligned concordantly exactly 1 time
+##     649 (0.50%) aligned concordantly &gt;1 times
+##     ----
+##     61609 pairs aligned concordantly 0 times; of these:
+##       168 (0.27%) aligned discordantly 1 time
+##     ----
+##     61441 pairs aligned 0 times concordantly or discordantly; of these:
+##       122882 mates make up the pairs; of these:
+##         122825 (99.95%) aligned 0 times
+##         53 (0.04%) aligned exactly 1 time
+##         4 (0.00%) aligned &gt;1 times
+## 52.68% overall alignment rate
+## 227392 reads; of these:
+##   227392 (100.00%) were paired; of these:
+##     119012 (52.34%) aligned concordantly 0 times
+##     105470 (46.38%) aligned concordantly exactly 1 time
+##     2910 (1.28%) aligned concordantly &gt;1 times
+##     ----
+##     119012 pairs aligned concordantly 0 times; of these:
+##       164 (0.14%) aligned discordantly 1 time
+##     ----
+##     118848 pairs aligned 0 times concordantly or discordantly; of these:
+##       237696 mates make up the pairs; of these:
+##         236899 (99.66%) aligned 0 times
+##         656 (0.28%) aligned exactly 1 time
+##         141 (0.06%) aligned &gt;1 times
+## 47.91% overall alignment rate
+## 162373 reads; of these:
+##   162373 (100.00%) were paired; of these:
+##     79555 (49.00%) aligned concordantly 0 times
+##     80277 (49.44%) aligned concordantly exactly 1 time
+##     2541 (1.56%) aligned concordantly &gt;1 times
+##     ----
+##     79555 pairs aligned concordantly 0 times; of these:
+##       246 (0.31%) aligned discordantly 1 time
+##     ----
+##     79309 pairs aligned 0 times concordantly or discordantly; of these:
+##       158618 mates make up the pairs; of these:
+##         158276 (99.78%) aligned 0 times
+##         293 (0.18%) aligned exactly 1 time
+##         49 (0.03%) aligned &gt;1 times
+## 51.26% overall alignment rate
+## 185442 reads; of these:
+##   185442 (100.00%) were paired; of these:
+##     98885 (53.32%) aligned concordantly 0 times
+##     84215 (45.41%) aligned concordantly exactly 1 time
+##     2342 (1.26%) aligned concordantly &gt;1 times
+##     ----
+##     98885 pairs aligned concordantly 0 times; of these:
+##       257 (0.26%) aligned discordantly 1 time
+##     ----
+##     98628 pairs aligned 0 times concordantly or discordantly; of these:
+##       197256 mates make up the pairs; of these:
+##         196792 (99.76%) aligned 0 times
+##         376 (0.19%) aligned exactly 1 time
+##         88 (0.04%) aligned &gt;1 times
+## 46.94% overall alignment rate</code></pre>
+</div>
+<p>Sort and convert the SAM files to BAM.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate rnaseq
+while read SAMPLE; do
+
+  SAM=tutorial/output/hisat2/${SAMPLE}.sam
+  BAM=tutorial/output/hisat2/${SAMPLE}.bam
+  
+  samtools sort -o $BAM $SAM
+
+done &lt; tutorial/data/targets.txt</code></pre>
+</div>
+<p>Index the BAM files.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate rnaseq
+while read SAMPLE; do
+
+  BAM=tutorial/output/hisat2/${SAMPLE}.bam
+    
+  samtools index $BAM
+
+done &lt; tutorial/data/targets.txt</code></pre>
+</div>
+<p>Note, the above commands could have been run in the same for-loop, however for ease of understanding we have split them into separate chunks. This is also useful when an error occurs and it is not obvious which of the commands was responsible for the error. For example, the samtools sort command may have throw an error, but it could have been caused by an empty SAM file created by the aligner. The cause of the problem would not have been immediatley obvious if all of the commands were run together.</p>
+<p>Inspect the contents of the <em>hisat2</em> output folder.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>ls tutorial/output/hisat2</code></pre>
+<pre><code>## HBR_Rep1.bam
+## HBR_Rep1.bam.bai
+## HBR_Rep1.sam
+## HBR_Rep2.bam
+## HBR_Rep2.bam.bai
+## HBR_Rep2.sam
+## HBR_Rep3.bam
+## HBR_Rep3.bam.bai
+## HBR_Rep3.sam
+## UHR_Rep1.bam
+## UHR_Rep1.bam.bai
+## UHR_Rep1.sam
+## UHR_Rep2.bam
+## UHR_Rep2.bam.bai
+## UHR_Rep2.sam
+## UHR_Rep3.bam
+## UHR_Rep3.bam.bai
+## UHR_Rep3.sam
+## chr22.fa.1.ht2
+## chr22.fa.2.ht2
+## chr22.fa.3.ht2
+## chr22.fa.4.ht2
+## chr22.fa.5.ht2
+## chr22.fa.6.ht2
+## chr22.fa.7.ht2
+## chr22.fa.8.ht2</code></pre>
+</div>
+</div>
+<div id="gene-quantification" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Gene quantification</h2>
+<p>Once reads have been mapped to genomic locations, the next step in the analysis process is to assign them to genes, to determine abundance measures. The quantification of read abundances for individual genes (that is, all transcript isoforms for that gene) relies on counting sequence reads that overlap known genes, using a transcriptome annotation. Quantification tools in common use include RSEM, HTSeq133, and featureCounts. The results of the quantification step are usually combined into an expression matrix, with a row for each gene and a column for each sample, with the values being actual read counts. In this step of the workflow we will use featureCounts by calling it from R using the Rsubread package.</p>
+<p>First, we need to load the sample table in R. An example file called <em>samples.tsv</em> is included with the
+data files for this tutorial. In general, you will have to create this file yourself. It contains information about your RNA-seq samples, formatted as illustrated in the tsv (tab-separated values) file. Each sample should
+be described on one row of the file, and each column should contain one variable. To read this file into R, we use the command <code>read.delim</code>.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>samples &lt;- read.delim(&quot;tutorial/data/samples.tsv&quot;)
+samples</code></pre>
+<pre><code>##     sample condition
+## 1 HBR_Rep1       HBR
+## 2 HBR_Rep2       HBR
+## 3 HBR_Rep3       HBR
+## 4 UHR_Rep1       UHR
+## 5 UHR_Rep2       UHR
+## 6 UHR_Rep3       UHR</code></pre>
+</div>
+<p>Construct path to BAM files created by the read alignment step.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>files &lt;- file.path(&quot;tutorial/output/hisat2&quot;, paste0(samples$sample, &quot;.bam&quot;))
+files</code></pre>
+<pre><code>## [1] &quot;tutorial/output/hisat2/HBR_Rep1.bam&quot; &quot;tutorial/output/hisat2/HBR_Rep2.bam&quot; &quot;tutorial/output/hisat2/HBR_Rep3.bam&quot; &quot;tutorial/output/hisat2/UHR_Rep1.bam&quot;
+## [5] &quot;tutorial/output/hisat2/UHR_Rep2.bam&quot; &quot;tutorial/output/hisat2/UHR_Rep3.bam&quot;</code></pre>
+</div>
+<p>Load the Rsubread package which contains the <em>featureCounts</em> function.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>library(Rsubread)</code></pre>
+</div>
+<p>Inspect the documentation for the <em>featureCounts</em> function.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code># This will open the help page in your R console
+help(featureCounts)</code></pre>
+</div>
+<p>Assign mapped sequencing reads to genes.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>output &lt;- featureCounts(
+  files,
+  annot.ext = &quot;tutorial/data/genes/chr22.gtf&quot;,
+  isGTFAnnotationFile = TRUE,
+  isPairedEnd = TRUE,
+  countReadPairs = TRUE
+)</code></pre>
+<pre><code>## 
+##         ==========     _____ _    _ ____  _____  ______          _____  
+##         =====         / ____| |  | |  _ \|  __ \|  ____|   /\   |  __ \ 
+##           =====      | (___ | |  | | |_) | |__) | |__     /  \  | |  | |
+##             ====      \___ \| |  | |  _ &lt;|  _  /|  __|   / /\ \ | |  | |
+##               ====    ____) | |__| | |_) | | \ \| |____ / ____ \| |__| |
+##         ==========   |_____/ \____/|____/|_|  \_\______/_/    \_\_____/
+##        Rsubread 2.10.5
+## 
+## //========================== featureCounts setting ===========================\\
+## ||                                                                            ||
+## ||             Input files : 6 BAM files                                      ||
+## ||                                                                            ||
+## ||                           HBR_Rep1.bam                                     ||
+## ||                           HBR_Rep2.bam                                     ||
+## ||                           HBR_Rep3.bam                                     ||
+## ||                           UHR_Rep1.bam                                     ||
+## ||                           UHR_Rep2.bam                                     ||
+## ||                           UHR_Rep3.bam                                     ||
+## ||                                                                            ||
+## ||              Paired-end : yes                                              ||
+## ||        Count read pairs : yes                                              ||
+## ||              Annotation : chr22.gtf (GTF)                                  ||
+## ||      Dir for temp files : .                                                ||
+## ||                 Threads : 1                                                ||
+## ||                   Level : meta-feature level                               ||
+## ||      Multimapping reads : counted                                          ||
+## || Multi-overlapping reads : not counted                                      ||
+## ||   Min overlapping bases : 1                                                ||
+## ||                                                                            ||
+## \\============================================================================//
+## 
+## //================================= Running ==================================\\
+## ||                                                                            ||
+## || Load annotation file chr22.gtf ...                                         ||
+## ||    Features : 26087                                                        ||
+## ||    Meta-features : 1371                                                    ||
+## ||    Chromosomes/contigs : 1                                                 ||
+## ||                                                                            ||
+## || Process BAM file HBR_Rep1.bam...                                           ||
+## ||    Paired-end reads are included.                                          ||
+## ||    Total alignments : 119475                                               ||
+## ||    Successfully assigned alignments : 40229 (33.7%)                        ||
+## ||    Running time : 0.00 minutes                                             ||
+## ||                                                                            ||
+## || Process BAM file HBR_Rep2.bam...                                           ||
+## ||    Paired-end reads are included.                                          ||
+## ||    Total alignments : 146011                                               ||
+## ||    Successfully assigned alignments : 49422 (33.8%)                        ||
+## ||    Running time : 0.01 minutes                                             ||
+## ||                                                                            ||
+## || Process BAM file HBR_Rep3.bam...                                           ||
+## ||    Paired-end reads are included.                                          ||
+## ||    Total alignments : 130797                                               ||
+## ||    Successfully assigned alignments : 43689 (33.4%)                        ||
+## ||    Running time : 0.00 minutes                                             ||
+## ||                                                                            ||
+## || Process BAM file UHR_Rep1.bam...                                           ||
+## ||    Paired-end reads are included.                                          ||
+## ||    Total alignments : 231149                                               ||
+## ||    Successfully assigned alignments : 71297 (30.8%)                        ||
+## ||    Running time : 0.01 minutes                                             ||
+## ||                                                                            ||
+## || Process BAM file UHR_Rep2.bam...                                           ||
+## ||    Paired-end reads are included.                                          ||
+## ||    Total alignments : 165729                                               ||
+## ||    Successfully assigned alignments : 47412 (28.6%)                        ||
+## ||    Running time : 0.01 minutes                                             ||
+## ||                                                                            ||
+## || Process BAM file UHR_Rep3.bam...                                           ||
+## ||    Paired-end reads are included.                                          ||
+## ||    Total alignments : 188584                                               ||
+## ||    Successfully assigned alignments : 56818 (30.1%)                        ||
+## ||    Running time : 0.01 minutes                                             ||
+## ||                                                                            ||
+## || Write the final count table.                                               ||
+## || Write the read assignment summary.                                         ||
+## ||                                                                            ||
+## \\============================================================================//</code></pre>
+</div>
+<p>Inspect the first few rows of the count matrix.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>head(output$counts)</code></pre>
+<pre><code>##                   HBR_Rep1.bam HBR_Rep2.bam HBR_Rep3.bam UHR_Rep1.bam UHR_Rep2.bam UHR_Rep3.bam
+## ENSG00000277248.1            0            0            0            0            0            0
+## ENSG00000274237.1            0            0            0            0            0            0
+## ENSG00000280363.1            0            0            0            0            0            0
+## ENSG00000279973.1            0            0            0            0            0            0
+## ENSG00000226444.2            0            0            0            0            1            0
+## ENSG00000276871.1            0            0            0            0            0            0</code></pre>
+</div>
+<p>In the count matrix, each row represents a gene, each column a sample, and the values give the raw numbers of fragments that were uniquely assigned to the respective gene in each sample.</p>
+</div>
+<div id="differential-expression" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span> Differential expression</h2>
+<p>Once sequence reads have been processed into an expression matrix, the experiment can be modelled to determine which genes are likely to have changed their level of expression between conditions. Several tools are commonly used to accomplish this; some model read counts of gene-level expression, whereas others rely on transcript-level estimates. Gene-level tools typically rely on aligned read counts and use generalized linear models that enable complex experimental set-ups to be evaluated. These include tools such as edgeR, DESeq2 and limma+voom, which are computationally efficient and provide comparable results. In this step of the workflow we will use DESeq2, a package to perform differential gene expression analysis based on the negative binomial distribution.</p>
+<p>Load the DESeq2 package.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>library(DESeq2)</code></pre>
+</div>
+<div id="the-deseqdataset-object" class="section level3" number="3.5.1">
+<h3><span class="header-section-number">3.5.1</span> The <em>DESeqDataset</em> object</h3>
+<p>In this section we will show how to create the data object used by DESeq2. The object class used by the DESeq2 package to store the read counts and the intermediate estimated quantities during statistical analysis is the <em>DESeqDataSet</em>, which will usually be represented in the code here as an object <code>dds</code>.</p>
+<p>A DESeqDataSet object must have an associated design formula. The design formula expresses the variables which will be used in modeling. The formula should be a tilde (~) followed by the variables with plus signs between them (it will be coerced into an formula if it is not already). The design can be changed later, however then all differential analysis steps should be repeated, as the design formula is used to estimate the dispersions and to estimate the log2 fold changes of the model.</p>
+<p>The simplest design formula for differential expression would be <code>~ condition</code>, where <code>condition</code> is a column in the <code>colData</code> that specifies which of two (or more groups) the samples belong to. For this experiment, we will specify <code>~ condition</code> meaning that we want to test for the effect of condition.</p>
+<p>To construct a <em>DESeqDataSet</em> object from a matrix of counts and the sample information table, we use the <em>DESeqDataSetFromMatrix</em> function.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>dds &lt;- DESeqDataSetFromMatrix(countData = output$counts, colData = samples, design = ~ condition)
+dds</code></pre>
+<pre><code>## class: DESeqDataSet 
+## dim: 1371 6 
+## metadata(1): version
+## assays(1): counts
+## rownames(1371): ENSG00000277248.1 ENSG00000274237.1 ... ENSG00000184319.15 ENSG00000079974.17
+## rowData names(0):
+## colnames(6): HBR_Rep1.bam HBR_Rep2.bam ... UHR_Rep2.bam UHR_Rep3.bam
+## colData names(2): sample condition</code></pre>
+</div>
+<p>The <em>DEseqDataSet</em> object class is built on top of the <em>SummarizedExperiment</em> class (Figure <a href="#fig:summarized-experiment-class">3.1</a>). The <em>SummarizedExperiment</em> class is used to store rectangular matrices of experimental results, which are commonly produced by sequencing and microarray experiments. Each object stores observations of one or more samples, along with additional meta-data describing both the observations (features) and samples (phenotypes). A key aspect of the SummarizedExperiment class is the coordination of the meta-data and assays when subsetting. For example, if you want to exclude a given sample you can do for both the meta-data and assay in one operation, which ensures the meta-data and observed data will remain in sync. For further information, refer to the <em>SummarizedExperiment</em> <a href="https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html">documentation</a></p>
+<div class="figure"><span style="display:block;" id="fig:summarized-experiment-class"></span>
+<img src="images/summarized-experiment-class.svg" style="width:75.0%" alt="" />
+<p class="caption">Figure 3.1:  Schematic of the SummarizedExperiment class</p>
+</div>
+</div>
+<div id="pre-filtering-the-dataset" class="section level3" number="3.5.2">
+<h3><span class="header-section-number">3.5.2</span> Pre-filtering the dataset</h3>
+<p>While it is not necessary to pre-filter low count genes before running the DESeq2 functions, there are two reasons which make pre-filtering useful: by removing rows in which there are very few reads, we reduce the memory size of the data object, and we increase the speed of the transformation and testing functions within DESeq2. Here we perform a minimal pre-filtering to keep only rows that have at least 10 reads total.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>keep &lt;- rowSums(counts(dds)) &gt;= 10
+dds &lt;- dds[keep, ]</code></pre>
+</div>
+</div>
+<div id="running-the-differential-expression-pipeline" class="section level3" number="3.5.3">
+<h3><span class="header-section-number">3.5.3</span> Running the differential expression pipeline</h3>
+<p>As we have already specified an experimental design when we created the <em>DESeqDataSet</em>, we can run the differential expression pipeline on the raw counts with a single call to the function DESeq.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>dds &lt;- DESeq(dds)</code></pre>
+</div>
+<p>This function will print out a message for the various steps it performs. These are described in the manual page for <em>DESeq</em>, which can be accessed by typing <code>?DESeq</code>. Complete details and motivations for the statistical procedures that occur within the <em>DESeq</em> function are described in the <em>DESeq2</em> article. Briefly these steps are:</p>
+<ol style="list-style-type: decimal">
+<li><p>The estimation of size factors, controlling for differences in the counts due varying sequencing depth of the samples.</p></li>
+<li><p>The estimation of dispersion values. The dispersion parameter captures how much the counts for the samples will vary around an expected value. Note that the expected value takes into consideration the sequencing depth and differences that can be attributed to variables in the design formula.</p></li>
+<li><p>Fitting a final generalized linear model using the size factors and dispersion values estimated above, which gives estimates of the log fold changes.</p></li>
+</ol>
+<p>A <em>DESeqDataSet</em> is returned that contains all the fitted parameters within it, and the following section describes how to extract out results tables of interest from this object.</p>
+</div>
+<div id="building-the-results-table" class="section level3" number="3.5.4">
+<h3><span class="header-section-number">3.5.4</span> Building the results table</h3>
+<p>In general, the results for a comparison of any two levels of a variable can be extracted using the <code>contrast</code> argument to <em>results</em>. The user should specify three values: the name of the variable, the name of the level for the numerator, and the name of the level for the denominator. Here we extract results for the log2 of the fold change of one cell line over another.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>res &lt;- results(dds, contrast = c(&quot;condition&quot;, &quot;HBR&quot;, &quot;UHR&quot;))
+res</code></pre>
+<pre><code>## log2 fold change (MLE): condition HBR vs UHR 
+## Wald test p-value: condition HBR vs UHR 
+## DataFrame with 596 rows and 6 columns
+##                     baseMean log2FoldChange     lfcSE      stat       pvalue        padj
+##                    &lt;numeric&gt;      &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;    &lt;numeric&gt;   &lt;numeric&gt;
+## ENSG00000198062.14   4.28703       -4.28589  1.391617  -3.07979  2.07147e-03 5.58641e-03
+## ENSG00000206195.10  78.27301       -4.10683  0.366725 -11.19864  4.14037e-29 8.22554e-28
+## ENSG00000271127.1    6.21682       -4.85879  1.334809  -3.64007  2.72568e-04 8.46098e-04
+## ENSG00000232775.6   11.02174       -3.72506  0.864055  -4.31114  1.62417e-05 5.72783e-05
+## ENSG00000272872.1   25.78507       -4.40809  0.684453  -6.44031  1.19230e-10 6.76770e-10
+## ...                      ...            ...       ...       ...          ...         ...
+## ENSG00000008735.13  285.4336       5.693925  0.267719  21.26829 2.23282e-100 2.66152e-98
+## ENSG00000100299.17   56.2960       0.576911  0.260476   2.21483  2.67716e-02 5.37235e-02
+## ENSG00000251322.7   245.8691       4.031104  0.196709  20.49276  2.49813e-93 2.12698e-91
+## ENSG00000184319.15   58.1105       1.475279  0.271682   5.43016  5.63032e-08 2.64226e-07
+## ENSG00000079974.17   60.3887       0.717441  0.262638   2.73167  6.30137e-03 1.49032e-02</code></pre>
+</div>
+<p>As res is a DataFrame object, it carries metadata with information on the meaning of the columns.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>mcols(res, use.names = TRUE)</code></pre>
+<pre><code>## DataFrame with 6 rows and 2 columns
+##                        type            description
+##                 &lt;character&gt;            &lt;character&gt;
+## baseMean       intermediate mean of normalized c..
+## log2FoldChange      results log2 fold change (ML..
+## lfcSE               results standard error: cond..
+## stat                results Wald statistic: cond..
+## pvalue              results Wald test p-value: c..
+## padj                results   BH adjusted p-values</code></pre>
+</div>
+<p>The first column, <code>baseMean</code>, is a just the average of the normalized count values, dividing by size factors, taken over all samples in the <em>DESeqDataSet</em>. The remaining four columns refer to a specific contrast, namely the comparison of the <code>HBR</code> level over the <code>UHR</code> level for the factor variable <code>condition</code>.</p>
+<p>The column <code>log2FoldChange</code> is the effect size estimate. It tells us how much the gene’s expression seems to have changed between conditions. This value is reported on a logarithmic scale to base 2: for example, a log2 fold change of 1.5 means that the gene’s expression is increased by a multiplicative factor of 2^1.5 ≈ 2.82.</p>
+<p>Of course, this estimate has an uncertainty associated with it, which is available in the column <code>lfcSE</code>, the standard error estimate for the log2 fold change estimate. We can also express the uncertainty of a particular effect size estimate as the result of a statistical test. The purpose of a test for differential expression is to test whether the data provides sufficient evidence to conclude that this value is really different from zero. DESeq2 performs for each gene a <em>hypothesis</em> test to see whether evidence is sufficient to decide against the <em>null hypothesis</em> that there is zero effect of the treatment on the gene and that the observed difference between treatment and control was merely caused by experimental variability (i.e., the type of variability that you can expect between different samples in the same treatment group).</p>
+<p>As usual in statistics, the result of this test is reported as a <em>p</em> value, and it is found in the column <code>pvalue</code>. A <em>p</em> value indicates the probability that a fold change as strong as the observed one, or even stronger, would be seen under the situation described by the null hypothesis. The adjusted <em>p</em> values satisfy the property that thresholding at a specific value defines a set of tests (one for each gene) with a bounded false discovery rate (FDR), typically a useful metric for assessing which genes to target for further analysis. For example, the set of genes with adjusted p value less than 0.1 should contain no more than 10% false positives.</p>
+<p>We can also summarize the results with the following line of code, which reports some additional information.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>summary(res)</code></pre>
+<pre><code>## 
+## out of 596 with nonzero total read count
+## adjusted p-value &lt; 0.1
+## LFC &gt; 0 (up)       : 158, 27%
+## LFC &lt; 0 (down)     : 167, 28%
+## outliers [1]       : 0, 0%
+## low counts [2]     : 0, 0%
+## (mean count &lt; 1)
+## [1] see &#39;cooksCutoff&#39; argument of ?results
+## [2] see &#39;independentFiltering&#39; argument of ?results</code></pre>
+</div>
+</div>
+<div id="plotting-results" class="section level3" number="3.5.5">
+<h3><span class="header-section-number">3.5.5</span> Plotting results</h3>
+<p>A quick way to visualize the counts for a particular gene is to use the <em>plotCounts</em> function that takes as arguments the <em>DESeqDataSet</em>, a gene name, and the group over which to plot the counts.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>top &lt;- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = top, intgroup = &quot;condition&quot;)</code></pre>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-36"></span>
+<img src="lab_rnaseq_files/figure-html/unnamed-chunk-36-1.png" alt="Normalized counts for a single gene over condition group." width="672" />
+<p class="caption">
+Figure 3.2: Normalized counts for a single gene over condition group.
+</p>
+</div>
+</div>
+<p>Another plot we can genrate, is a so-called MA-plot - this provides a useful overview for an experiment with a two-group comparison.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>plotMA(res)</code></pre>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-37"></span>
+<img src="lab_rnaseq_files/figure-html/unnamed-chunk-37-1.png" alt="An MA-plot of changes induced by condition." width="672" />
+<p class="caption">
+Figure 3.3: An MA-plot of changes induced by condition.
+</p>
+</div>
+</div>
+<p>The log2 fold change for a particular comparison is plotted on the y-axis and the average of the counts normalized by size factor is shown on the x-axis (“M” for minus, because a log ratio is equal to log minus log, and “A” for average). Each gene is represented with a dot. Genes with an adjusted p value below a threshold (here 0.1, the default) are shown in blue.</p>
+</div>
+<div id="annotating-results" class="section level3" number="3.5.6">
+<h3><span class="header-section-number">3.5.6</span> Annotating results</h3>
+<p>Our result table so far only contains information about Ensembl gene IDs, but alternative gene names may be more informative for collaborators. Bioconductor’s annotation packages help with mapping various ID schemes to each other. We load the AnnotationDbi package and the annotation package org.Hs.eg.db:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>library(AnnotationDbi)
+library(org.Hs.eg.db)</code></pre>
+</div>
+<p>This is the organism annotation package (“org”) for Homo sapiens (“Hs”), organized as an AnnotationDbi database package (“db”), using Entrez Gene IDs (“eg”) as primary key. To get a list of all available key types, use:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>columns(org.Hs.eg.db)</code></pre>
+<pre><code>##  [1] &quot;ACCNUM&quot;       &quot;ALIAS&quot;        &quot;ENSEMBL&quot;      &quot;ENSEMBLPROT&quot;  &quot;ENSEMBLTRANS&quot; &quot;ENTREZID&quot;     &quot;ENZYME&quot;       &quot;EVIDENCE&quot;     &quot;EVIDENCEALL&quot;  &quot;GENENAME&quot;    
+## [11] &quot;GENETYPE&quot;     &quot;GO&quot;           &quot;GOALL&quot;        &quot;IPI&quot;          &quot;MAP&quot;          &quot;OMIM&quot;         &quot;ONTOLOGY&quot;     &quot;ONTOLOGYALL&quot;  &quot;PATH&quot;         &quot;PFAM&quot;        
+## [21] &quot;PMID&quot;         &quot;PROSITE&quot;      &quot;REFSEQ&quot;       &quot;SYMBOL&quot;       &quot;UCSCKG&quot;       &quot;UNIPROT&quot;</code></pre>
+</div>
+<p>We can use the <em>mapIds</em> function to add individual columns to our results table. We provide the row names of our results table as a key, and specify that keytype=ENSEMBL. The <code>column</code> argument tells the <em>mapIds</em> function which information we want, and the <code>multiVals</code> argument tells the function what to do if there are multiple possible values for a single input value. Here we ask to just give us back the first one that occurs in the database. To add the gene symbol and Entrez ID, we call <em>mapIds</em> twice.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>ids &lt;- strsplit(rownames(res), &quot;.&quot;, fixed = TRUE)
+
+ids &lt;- sapply(ids, head, n = 1)
+
+res$symbol &lt;- mapIds(
+  x = org.Hs.eg.db,
+  keys = ids,
+  column = &quot;SYMBOL&quot;,
+  keytype = &quot;ENSEMBL&quot;,
+  multiVals = &quot;first&quot;
+)
+
+res$entrez &lt;- mapIds(
+  x = org.Hs.eg.db,
+  keys = ids,
+  column = &quot;ENTREZID&quot;,
+  keytype = &quot;ENSEMBL&quot;,
+  multiVals = &quot;first&quot;
+)</code></pre>
+</div>
+<p>Now the results have the desired external gene IDs:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code># Output the first few lines of the results table
+head(res)</code></pre>
+<pre><code>## log2 fold change (MLE): condition HBR vs UHR 
+## Wald test p-value: condition HBR vs UHR 
+## DataFrame with 6 rows and 8 columns
+##                     baseMean log2FoldChange     lfcSE      stat      pvalue        padj      symbol      entrez
+##                    &lt;numeric&gt;      &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;   &lt;numeric&gt;   &lt;numeric&gt; &lt;character&gt; &lt;character&gt;
+## ENSG00000198062.14   4.28703       -4.28589  1.391617  -3.07979 2.07147e-03 5.58641e-03       POTEH       23784
+## ENSG00000206195.10  78.27301       -4.10683  0.366725 -11.19864 4.14037e-29 8.22554e-28      DUXAP8      503637
+## ENSG00000271127.1    6.21682       -4.85879  1.334809  -3.64007 2.72568e-04 8.46098e-04          NA          NA
+## ENSG00000232775.6   11.02174       -3.72506  0.864055  -4.31114 1.62417e-05 5.72783e-05     BMS1P22   106480334
+## ENSG00000272872.1   25.78507       -4.40809  0.684453  -6.44031 1.19230e-10 6.76770e-10          NA          NA
+## ENSG00000223875.2    1.82601       -4.08525  1.646005  -2.48192 1.30677e-02 2.92513e-02          NA          NA</code></pre>
+</div>
+</div>
+<div id="exporting-results" class="section level3" number="3.5.7">
+<h3><span class="header-section-number">3.5.7</span> Exporting results</h3>
+<p>A plain-text file of the results can be exported using the base R functions <em>write.csv</em> or <em>write.delim</em>. We suggest using a descriptive file name indicating the variable and levels which were tested.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>write.csv(as.data.frame(res), file = &quot;tutorial/output/HBR-UHR.results.csv&quot;)</code></pre>
+</div>
+<p>Exporting only the results which pass an adjusted <em>p</em> value threshold can be accomplished with the subset function, followed by the <em>write.csv</em> function.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>sig &lt;- subset(res, padj &lt; 0.1)
+write.csv(as.data.frame(sig), file = &quot;tutorial/output/HBR-UHR.signif.csv&quot;)</code></pre>
+</div>
+</div>
+<div id="session-information" class="section level3" number="3.5.8">
+<h3><span class="header-section-number">3.5.8</span> Session information</h3>
+<p>As the last part of this document, we call the function sessionInfo, which reports the version numbers of R and all the packages used in this session. It is good practice to always keep such a record of this as it will help to trace down what has happened in case an R script ceases to work or gives different results because the functions have been changed in a newer version of one of your packages. By including it at the bottom of a script, your reports will become more reproducible.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+R
+</div>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>## R version 4.2.1 (2022-06-23)
+## Platform: x86_64-apple-darwin17.0 (64-bit)
+## Running under: macOS Monterey 12.6
+## 
+## Matrix products: default
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
+## 
+## attached base packages:
+## [1] stats4    stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] org.Hs.eg.db_3.15.0         AnnotationDbi_1.58.0        DESeq2_1.36.0               SummarizedExperiment_1.26.1 Biobase_2.56.0             
+##  [6] MatrixGenerics_1.8.1        matrixStats_0.62.0          GenomicRanges_1.48.0        GenomeInfoDb_1.32.4         IRanges_2.30.1             
+## [11] S4Vectors_0.34.0            BiocGenerics_0.42.0         Rsubread_2.10.5             fontawesome_0.3.0.9000      captioner_2.2.3            
+## [16] bookdown_0.29               knitr_1.40                  rmarkdown_2.16             
+## 
+## loaded via a namespace (and not attached):
+##  [1] bitops_1.0-7           bit64_4.0.5            RColorBrewer_1.1-3     httr_1.4.4             tools_4.2.1            bslib_0.4.0           
+##  [7] utf8_1.2.2             R6_2.5.1               DBI_1.1.3              colorspace_2.0-3       tidyselect_1.1.2       bit_4.0.4             
+## [13] compiler_4.2.1         cli_3.4.0              DelayedArray_0.22.0    sass_0.4.2             scales_1.2.1           genefilter_1.78.0     
+## [19] stringr_1.4.1          digest_0.6.29          XVector_0.36.0         pkgconfig_2.0.3        htmltools_0.5.3        vembedr_0.1.5         
+## [25] fastmap_1.1.0          highr_0.9              rlang_1.0.5            rstudioapi_0.14        RSQLite_2.2.17         jquerylib_0.1.4       
+## [31] generics_0.1.3         jsonlite_1.8.0         BiocParallel_1.30.3    dplyr_1.0.10           RCurl_1.98-1.8         magrittr_2.0.3        
+## [37] GenomeInfoDbData_1.2.8 Matrix_1.5-1           Rcpp_1.0.9             munsell_0.5.0          fansi_1.0.3            lifecycle_1.0.2       
+## [43] stringi_1.7.8          yaml_2.3.5             zlibbioc_1.42.0        grid_4.2.1             blob_1.2.3             parallel_4.2.1        
+## [49] crayon_1.5.1           lattice_0.20-45        Biostrings_2.64.1      splines_4.2.1          annotate_1.74.0        KEGGREST_1.36.3       
+## [55] locfit_1.5-9.6         pillar_1.8.1           geneplotter_1.74.0     codetools_0.2-18       XML_3.99-0.10          glue_1.6.2            
+## [61] evaluate_0.16          BiocManager_1.30.18    png_0.1-7              vctrs_0.4.1            gtable_0.3.1           purrr_0.3.4           
+## [67] assertthat_0.2.1       cachem_1.0.6           ggplot2_3.3.6          xfun_0.33              xtable_1.8-4           survival_3.4-0        
+## [73] tibble_3.1.8           memoise_2.0.1</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="references" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> References</h1>
+<p>This tutorial was produced from a number of different online tutorials and review articles. Most of the text has been duplicated verbatim or adapted to fit the tutorial objectives.</p>
+<ul>
+<li><p><a href="https://f1000research.com/articles/4-1070">RNA-Seq workflow: gene-level exploratory analysis and differential expression</a></p></li>
+<li><p><a href="https://www.nature.com/articles/nprot.2016.095">Transcript-level expression analysis of RNA-seq experiments with HISAT, StringTie and Ballgown</a></p></li>
+<li><p><a href="https://rnabio.org">RNA-seq Bioinformatics</a></p></li>
+<li><p><a href="https://www.nature.com/articles/s41576-019-0150-2">RNA sequencing: the teenage years</a></p></li>
+</ul>
+</div>
+
+
+<footer class="footer">
+<div class="container footer-container">
+<div class="row">
+
+<div class="footer-left col-sm-6">
+<p class="small">
+<b>2022</b> • <a href="https://www.zifornd.com">Zifo</a>
+</p>
+</div>
+
+<div class="footer-right col-sm-6">
+<p>
+<span>
+  <span class="footericon" style="padding-right:4px; padding-left:4px">
+    <a href="https://www.zifornd.com">
+      <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 496 512"><path d="M248 8C111.03 8 0 119.03 0 256s111.03 248 248 248 248-111.03 248-248S384.97 8 248 8zm82.29 357.6c-3.9 3.88-7.99 7.95-11.31 11.28-2.99 3-5.1 6.7-6.17 10.71-1.51 5.66-2.73 11.38-4.77 16.87l-17.39 46.85c-13.76 3-28 4.69-42.65 4.69v-27.38c1.69-12.62-7.64-36.26-22.63-51.25-6-6-9.37-14.14-9.37-22.63v-32.01c0-11.64-6.27-22.34-16.46-27.97-14.37-7.95-34.81-19.06-48.81-26.11-11.48-5.78-22.1-13.14-31.65-21.75l-.8-.72a114.792 114.792 0 0 1-18.06-20.74c-9.38-13.77-24.66-36.42-34.59-51.14 20.47-45.5 57.36-82.04 103.2-101.89l24.01 12.01C203.48 89.74 216 82.01 216 70.11v-11.3c7.99-1.29 16.12-2.11 24.39-2.42l28.3 28.3c6.25 6.25 6.25 16.38 0 22.63L264 112l-10.34 10.34c-3.12 3.12-3.12 8.19 0 11.31l4.69 4.69c3.12 3.12 3.12 8.19 0 11.31l-8 8a8.008 8.008 0 0 1-5.66 2.34h-8.99c-2.08 0-4.08.81-5.58 2.27l-9.92 9.65a8.008 8.008 0 0 0-1.58 9.31l15.59 31.19c2.66 5.32-1.21 11.58-7.15 11.58h-5.64c-1.93 0-3.79-.7-5.24-1.96l-9.28-8.06a16.017 16.017 0 0 0-15.55-3.1l-31.17 10.39a11.95 11.95 0 0 0-8.17 11.34c0 4.53 2.56 8.66 6.61 10.69l11.08 5.54c9.41 4.71 19.79 7.16 30.31 7.16s22.59 27.29 32 32h66.75c8.49 0 16.62 3.37 22.63 9.37l13.69 13.69a30.503 30.503 0 0 1 8.93 21.57 46.536 46.536 0 0 1-13.72 32.98zM417 274.25c-5.79-1.45-10.84-5-14.15-9.97l-17.98-26.97a23.97 23.97 0 0 1 0-26.62l19.59-29.38c2.32-3.47 5.5-6.29 9.24-8.15l12.98-6.49C440.2 193.59 448 223.87 448 256c0 8.67-.74 17.16-1.82 25.54L417 274.25z"></path>
+      </svg>
+    </a>
+    </span>
+    <span class="footericon" style="padding-right:4px; padding-left:4px">
+      <a href="https://twitter.com/zifornd"><svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path>
+    </svg>
+    </a>
+    </span>
+    <span class="footericon" style="padding-left:4px">
+      <a href="https://www.linkedin.com/company/zifo-technologies">
+        <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path>
+        </svg>
+    </a>
+    </span>
+  </span>
+</p>
+</div>
+
+</div>
+</div>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

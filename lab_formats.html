@@ -1,0 +1,2451 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>FASTA/Q Processing</title>
+
+<script src="lab_formats_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lab_formats_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="lab_formats_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lab_formats_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lab_formats_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="lab_formats_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="lab_formats_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="lab_formats_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="lab_formats_files/navigation-1.1/tabsets.js"></script>
+<link href="lab_formats_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="lab_formats_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="lab_formats_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="lab_formats_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="lab_formats_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+#TOC {
+  display: none !important;
+}
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img src="assets/logo.svg" id="logo" style="height:20px;margin:0;"/></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="home_schedule.html">Schedule</a>
+</li>
+<li>
+  <a href="home_content.html">Content</a>
+</li>
+<li>
+  <a href="home_precourse.html">Precourse</a>
+</li>
+<li>
+  <a href="home_info.html">Info</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">FASTA/Q Processing</h1>
+<h4 class="date">21 September, 2022</h4>
+
+</div>
+
+
+<!-- rmd lab header -->
+<p><br></p>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>SeqKit is a cross-platform ultra-fast comprehensive toolkit for FASTA/Q processing. It works on Linux, macOS and Windows, and can be directly used without any dependencies or pre-configuration. Further information can be found on the project <a href="https://bioinf.shenwei.me/seqkit/">website</a> and technical details are available in the research <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0163962">article</a>.</p>
+</div>
+<div id="objectives" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Objectives</h1>
+<ul>
+<li><a href="#install-seqkit">Install SeqKit</a></li>
+<li><a href="#perform-basic-operations">Perform basic operations</a></li>
+<li><a href="#convert-between-file-formats">Convert between file formats</a></li>
+<li><a href="#search-for-sub-sequences">Search for sub-sequences</a></li>
+<li><a href="#perform-set-operations">Perform set operations</a></li>
+<li><a href="#edit-sequence-files">Edit sequence files</a></li>
+<li><a href="#order-sequence-files">Order sequence files</a></li>
+</ul>
+</div>
+<div id="tutorial" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Tutorial</h1>
+<p>In this tutorial we are going to learn how to use SeqKit to process and manipulate FASTA/Q files. The first thing to do is create a directory to store all the tutorial data. It is good practice to create a new directory for each project you work on, this ensures files do not get mixed up and all the results are self-contained.</p>
+<p>Create a ‘tutorial’ directory to store output files:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>mkdir tutorial</code></pre>
+</div>
+<p>Download the tutorial and exercise data:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>curl https://raw.githubusercontent.com/zifornd/workshop-template-rmd-ga/master/data/formats/data.tar.gz --output tutorial/data.tar.gz</code></pre>
+<pre><code>##   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+##                                  Dload  Upload   Total   Spent    Left  Speed
+## 
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0 13.2M    0  5503    0     0   5764      0  0:40:07 --:--:--  0:40:07  5786
+ 13 13.2M   13 1839k    0     0  1014k      0  0:00:13  0:00:01  0:00:12 1017k
+ 28 13.2M   28 3887k    0     0  1364k      0  0:00:09  0:00:02  0:00:07 1366k
+ 45 13.2M   45 6111k    0     0  1603k      0  0:00:08  0:00:03  0:00:05 1605k
+ 61 13.2M   61 8272k    0     0  1718k      0  0:00:07  0:00:04  0:00:03 1720k
+ 76 13.2M   76 10.1M    0     0  1792k      0  0:00:07  0:00:05  0:00:02 2142k
+ 92 13.2M   92 12.2M    0     0  1843k      0  0:00:07  0:00:06  0:00:01 2144k
+100 13.2M  100 13.2M    0     0  1864k      0  0:00:07  0:00:07 --:--:-- 2188k</code></pre>
+</div>
+<p>Extract the archive file into the tutorial directory:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>tar xf tutorial/data.tar.gz --directory=tutorial</code></pre>
+</div>
+<div id="install-seqkit" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Install SeqKit</h2>
+<p>The software we are going to use in this tutorial can be installed using the conda package manager. Please refer to the previous conda workshop for details on installing software and creating conda environments.</p>
+<p>Create a new environment with SeqKit installed:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda create --yes --name seqkit seqkit</code></pre>
+<pre><code>## Collecting package metadata (current_repodata.json): ...working... done
+## Solving environment: ...working... done
+## 
+## ## Package Plan ##
+## 
+##   environment location: /opt/miniconda3/envs/seqkit
+## 
+##   added / updated specs:
+##     - seqkit
+## 
+## 
+## The following NEW packages will be INSTALLED:
+## 
+##   seqkit             bioconda/osx-64::seqkit-2.3.0-h527b516_0
+## 
+## 
+## Preparing transaction: ...working... done
+## Verifying transaction: ...working... done
+## Executing transaction: ...working... done
+## #
+## # To activate this environment, use
+## #
+## #     $ conda activate seqkit
+## #
+## # To deactivate an active environment, use
+## #
+## #     $ conda deactivate
+## 
+## Retrieving notices: ...working... done</code></pre>
+</div>
+<p>Activate the new environment to use it:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate seqkit</code></pre>
+</div>
+<p>Test that the <code>seqkit</code> command is available:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>which seqkit</code></pre>
+<pre><code>## /opt/miniconda3/envs/seqkit/bin/seqkit</code></pre>
+</div>
+</div>
+<div id="perform-basic-operations" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Perform basic operations</h2>
+<p>We will start the tutorial by performing some basic operations on FASTA/Q files. The most popular operations include transforming sequences, calculating statistics, and extracting sub-sequences.</p>
+<div id="transform-sequences" class="section level3" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Transform sequences</h3>
+<p>Display help information for seq subcommand:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit seq --help</code></pre>
+<pre><code>## transform sequences (extract ID, filter by length, remove gaps, reverse complement...)
+## 
+## Usage:
+##   seqkit seq [flags]
+## 
+## Flags:
+##   -k, --color                     colorize sequences - to be piped into &quot;less -R&quot;
+##   -p, --complement                complement sequence, flag &#39;-v&#39; is recommended to switch on
+##       --dna2rna                   DNA to RNA
+##   -G, --gap-letters string        gap letters (default &quot;- \t.&quot;)
+##   -h, --help                      help for seq
+##   -l, --lower-case                print sequences in lower case
+##   -M, --max-len int               only print sequences shorter than the maximum length (-1 for no limit) (default -1)
+##   -R, --max-qual float            only print sequences with average quality less than this limit (-1 for no limit) (default -1)
+##   -m, --min-len int               only print sequences longer than the minimum length (-1 for no limit) (default -1)
+##   -Q, --min-qual float            only print sequences with average quality qreater or equal than this limit (-1 for no limit) (default -1)
+##   -n, --name                      only print names
+##   -i, --only-id                   print ID instead of full head
+##   -q, --qual                      only print qualities
+##   -b, --qual-ascii-base int       ASCII BASE, 33 for Phred+33 (default 33)
+##   -g, --remove-gaps               remove gaps
+##   -r, --reverse                   reverse sequence
+##       --rna2dna                   RNA to DNA
+##   -s, --seq                       only print sequences
+##   -u, --upper-case                print sequences in upper case
+##   -v, --validate-seq              validate bases according to the alphabet
+##   -V, --validate-seq-length int   length of sequence to validate (0 for whole seq) (default 10000)
+## 
+## Global Flags:
+##       --alphabet-guess-seq-length int   length of sequence prefix of the first FASTA record based on which seqkit guesses the sequence type (0 for whole seq) (default 10000)
+##       --id-ncbi                         FASTA head is NCBI-style, e.g. &gt;gi|110645304|ref|NC_002516.2| Pseud...
+##       --id-regexp string                regular expression for parsing ID (default &quot;^(\\S+)\\s?&quot;)
+##       --infile-list string              file of input files list (one file per line), if given, they are appended to files from cli arguments
+##   -w, --line-width int                  line width when outputting FASTA format (0 for no wrap) (default 60)
+##   -o, --out-file string                 out file (&quot;-&quot; for stdout, suffix .gz for gzipped out) (default &quot;-&quot;)
+##       --quiet                           be quiet and do not show extra information
+##   -t, --seq-type string                 sequence type (dna|rna|protein|unlimit|auto) (for auto, it automatically detect by the first sequence) (default &quot;auto&quot;)
+##   -j, --threads int                     number of CPUs. can also set with environment variable SEQKIT_THREADS) (default 4)</code></pre>
+</div>
+<p>Only print sequence names:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit seq --name tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## GENE-1
+## GENE-2
+## GENE-3
+## GENE-4
+## GENE-5
+## GENE-6
+## GENE-7
+## GENE-8
+## GENE-9
+## GENE-10</code></pre>
+</div>
+<p>Only print sequences:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit seq --seq tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATCTTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTTCGTCCGGGTGTGACCGAAAGGTAAG
+## ATGGAGAGCCTTGTCCCTGGTTTCAACGAGAAAACACACGTCCAACTCAGTTTGCCTGTTTTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGTCTTATCAGAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGCGTTTTGCCTCAACTTGAACAGCCCTATGTGTTCATCAAACGTTCGGATGCTCGAA
+## ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAATTCTTTCACACGTGGTGTTTATTACCCTGACAAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGACTTGTTCTTACCTTTCTTTTCCAATGTTACTTGGTTCCATGCTATACATGTCTCTGGGACCAATGGTACTAAGAGGTTTGATAACCCTGTCCTACCATTTAATGATGGTGTTTATTTTGCTTCCACTGAGAAGTCTAACATAATAAGAGGCTGGATTTTTGGTACTACTTTAGATTC
+## ATGGATTTGTTTATGAGAATCTTCACAATTGGAACTGTAACTTTGAAGCAAGGTGAAATCAAGGATGCTACTCCTTCAGATTTTGTTCGCGCTACTGCAACGATACCGATACAAGCCTCACTCCCTTTCGGATGGCTTATTGTTGGCGTTGCACTTCTTGCTG
+## ATGTACTCATTCGTTTCGGAAGAGACAGGTACGTTAATAGTTAATAGCGTACTTCTTTTTCTTGCTTTCGTGGTATTCTTGC
+## ATGGCAGATTCCAACGGTACTATTACCGTTGAAGAGCTTAAAAAGCTCCTTGAACAATGGAACCTAGTAATAGGTTTCCTATTCCTTACATGGATTTGTCTTCTACAATTTGCCTATGCCAACAGGAATAGGTTTTTGTATATAATTAAGTTAATTTTCCTCTGGCTGT
+## ATGTTTCATCTCGTTGACTTTCAGGTTACTATAGCAGAGATATTACTAATTATTATGAGGACTTTTAAAGTTTCCAT
+## ATGAAAATTATTCTTTTCTTGGCACTGATAACACTCGCTACTTGTGAGCTTTATCACTACCAAGAGTGTGTTAGAGGTACAACAGTACTTTTAAAAGAACCTTGCTCTTCTGGAACATACGAGGGCAATTCACCATTTCATCCTCTAGCTGATAACAAATTTGCACTGACTTGCTTTAGCACTCA
+## ATGATTGAACTTTCATTAATTGACTTCTATTTGTGCTTTTTAGCCTTTCTGCTATTCCTTGTTTTAATTATGCTTATTATCTTTTGGTTCTCACTTGAACTG
+## ATGAAATTTCTTGTTTTCTTAGGAATCATCACAACTGTAGCTGCATTTCACCAAGAATGTAGTTTACAGTCATGTACTCAACATCAACCATATGTAGTTGATGACCCGTGTCCTATTCACTTCTATTCTAAATGGTATATTAGAGTAGGAGCTAGAAAATC</code></pre>
+</div>
+<p>Filter by sequence length:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># Only print sequences shorter than 250 characters
+seqkit seq --max-len 250 tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## [33m[WARN][0m you may switch on flag -g/--remove-gaps to remove spaces
+## &gt;GENE-2
+## ATGGAGAGCCTTGTCCCTGGTTTCAACGAGAAAACACACGTCCAACTCAGTTTGCCTGTT
+## TTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGTCTTATCA
+## GAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGCGTT
+## TTGCCTCAACTTGAACAGCCCTATGTGTTCATCAAACGTTCGGATGCTCGAA
+## &gt;GENE-4
+## ATGGATTTGTTTATGAGAATCTTCACAATTGGAACTGTAACTTTGAAGCAAGGTGAAATC
+## AAGGATGCTACTCCTTCAGATTTTGTTCGCGCTACTGCAACGATACCGATACAAGCCTCA
+## CTCCCTTTCGGATGGCTTATTGTTGGCGTTGCACTTCTTGCTG
+## &gt;GENE-5
+## ATGTACTCATTCGTTTCGGAAGAGACAGGTACGTTAATAGTTAATAGCGTACTTCTTTTT
+## CTTGCTTTCGTGGTATTCTTGC
+## &gt;GENE-6
+## ATGGCAGATTCCAACGGTACTATTACCGTTGAAGAGCTTAAAAAGCTCCTTGAACAATGG
+## AACCTAGTAATAGGTTTCCTATTCCTTACATGGATTTGTCTTCTACAATTTGCCTATGCC
+## AACAGGAATAGGTTTTTGTATATAATTAAGTTAATTTTCCTCTGGCTGT
+## &gt;GENE-7
+## ATGTTTCATCTCGTTGACTTTCAGGTTACTATAGCAGAGATATTACTAATTATTATGAGG
+## ACTTTTAAAGTTTCCAT
+## &gt;GENE-8
+## ATGAAAATTATTCTTTTCTTGGCACTGATAACACTCGCTACTTGTGAGCTTTATCACTAC
+## CAAGAGTGTGTTAGAGGTACAACAGTACTTTTAAAAGAACCTTGCTCTTCTGGAACATAC
+## GAGGGCAATTCACCATTTCATCCTCTAGCTGATAACAAATTTGCACTGACTTGCTTTAGC
+## ACTCA
+## &gt;GENE-9
+## ATGATTGAACTTTCATTAATTGACTTCTATTTGTGCTTTTTAGCCTTTCTGCTATTCCTT
+## GTTTTAATTATGCTTATTATCTTTTGGTTCTCACTTGAACTG
+## &gt;GENE-10
+## ATGAAATTTCTTGTTTTCTTAGGAATCATCACAACTGTAGCTGCATTTCACCAAGAATGT
+## AGTTTACAGTCATGTACTCAACATCAACCATATGTAGTTGATGACCCGTGTCCTATTCAC
+## TTCTATTCTAAATGGTATATTAGAGTAGGAGCTAGAAAATC</code></pre>
+</div>
+</div>
+<div id="calculate-statistics" class="section level3" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> Calculate statistics</h3>
+<p>Display help information for stats subcommand:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit stats --help</code></pre>
+<pre><code>## simple statistics of FASTA/Q files
+## 
+## Tips:
+##   1. For lots of small files (especially on SDD), use big value of &#39;-j&#39; to
+##      parallelize counting.
+## 
+## Usage:
+##   seqkit stats [flags]
+## 
+## Aliases:
+##   stats, stat
+## 
+## Flags:
+##   -a, --all                  all statistics, including quartiles of seq length, sum_gap, N50
+##   -b, --basename             only output basename of files
+##   -E, --fq-encoding string   fastq quality encoding. available values: &#39;sanger&#39;, &#39;solexa&#39;, &#39;illumina-1.3+&#39;, &#39;illumina-1.5+&#39;, &#39;illumina-1.8+&#39;. (default &quot;sanger&quot;)
+##   -G, --gap-letters string   gap letters (default &quot;- .&quot;)
+##   -h, --help                 help for stats
+##   -e, --skip-err             skip error, only show warning message
+##   -i, --stdin-label string   label for replacing default &quot;-&quot; for stdin (default &quot;-&quot;)
+##   -T, --tabular              output in machine-friendly tabular format
+## 
+## Global Flags:
+##       --alphabet-guess-seq-length int   length of sequence prefix of the first FASTA record based on which seqkit guesses the sequence type (0 for whole seq) (default 10000)
+##       --id-ncbi                         FASTA head is NCBI-style, e.g. &gt;gi|110645304|ref|NC_002516.2| Pseud...
+##       --id-regexp string                regular expression for parsing ID (default &quot;^(\\S+)\\s?&quot;)
+##       --infile-list string              file of input files list (one file per line), if given, they are appended to files from cli arguments
+##   -w, --line-width int                  line width when outputting FASTA format (0 for no wrap) (default 60)
+##   -o, --out-file string                 out file (&quot;-&quot; for stdout, suffix .gz for gzipped out) (default &quot;-&quot;)
+##       --quiet                           be quiet and do not show extra information
+##   -t, --seq-type string                 sequence type (dna|rna|protein|unlimit|auto) (for auto, it automatically detect by the first sequence) (default &quot;auto&quot;)
+##   -j, --threads int                     number of CPUs. can also set with environment variable SEQKIT_THREADS) (default 4)</code></pre>
+</div>
+<p>Calculate simple statistics:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit stats tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## file                               format  type  num_seqs  sum_len  min_len  avg_len  max_len
+## tutorial/data/example/genes.fasta  FASTA   DNA         10    1,771       77    177.1      335</code></pre>
+</div>
+<p>Output simple statistics in tabular format:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit stats --tabular tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## file format  type    num_seqs    sum_len min_len avg_len max_len
+## tutorial/data/example/genes.fasta    FASTA   DNA 10  1771    77  177.1   335</code></pre>
+</div>
+<p>Calculate advanced statistics:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit stats --all tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## file                               format  type  num_seqs  sum_len  min_len  avg_len  max_len   Q1   Q2   Q3  sum_gap  N50  Q20(%)  Q30(%)  GC(%)
+## tutorial/data/example/genes.fasta  FASTA   DNA         10    1,771       77    177.1      335  102  166  232        0  185       0       0   39.3</code></pre>
+</div>
+</div>
+<div id="extract-subsequences" class="section level3" number="3.2.3">
+<h3><span class="header-section-number">3.2.3</span> Extract subsequences</h3>
+<p>Display help information for subseq subcommand:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit subseq --help</code></pre>
+<pre><code>## get subsequences by region/gtf/bed, including flanking sequences.
+## 
+## Attentions:
+##   1. Use &quot;seqkit grep&quot; for extract subsets of sequences.
+##      &quot;seqtk subseq seqs.fasta id.txt&quot; equals to
+##      &quot;seqkit grep -f id.txt seqs.fasta&quot;
+## 
+## Recommendation:
+##   1. use plain FASTA file, so seqkit could utilize FASTA index.
+## 
+## The definition of region is 1-based and with some custom design.
+## 
+## Examples:
+## 
+##  1-based index    1 2 3 4 5 6 7 8 9 10
+## negative index    0-9-8-7-6-5-4-3-2-1
+##            seq    A C G T N a c g t n
+##            1:1    A
+##            2:4      C G T
+##          -4:-2                c g t
+##          -4:-1                c g t n
+##          -1:-1                      n
+##           2:-2      C G T N a c g t
+##           1:-1    A C G T N a c g t n
+##           1:12    A C G T N a c g t n
+##         -12:-1    A C G T N a c g t n
+## 
+## Usage:
+##   seqkit subseq [flags]
+## 
+## Flags:
+##       --bed string        by tab-delimited BED file
+##       --chr strings       select limited sequence with sequence IDs when using --gtf or --bed (multiple value supported, case ignored)
+##   -d, --down-stream int   down stream length
+##       --feature strings   select limited feature types (multiple value supported, case ignored, only works with GTF)
+##       --gtf string        by GTF (version 2.2) file
+##       --gtf-tag string    output this tag as sequence comment (default &quot;gene_id&quot;)
+##   -h, --help              help for subseq
+##   -f, --only-flank        only return up/down stream sequence
+##   -r, --region string     by region. e.g 1:12 for first 12 bases, -12:-1 for last 12 bases, 13:-1 for cutting first 12 bases. type &quot;seqkit subseq -h&quot; for more examples
+##   -u, --up-stream int     up stream length
+## 
+## Global Flags:
+##       --alphabet-guess-seq-length int   length of sequence prefix of the first FASTA record based on which seqkit guesses the sequence type (0 for whole seq) (default 10000)
+##       --id-ncbi                         FASTA head is NCBI-style, e.g. &gt;gi|110645304|ref|NC_002516.2| Pseud...
+##       --id-regexp string                regular expression for parsing ID (default &quot;^(\\S+)\\s?&quot;)
+##       --infile-list string              file of input files list (one file per line), if given, they are appended to files from cli arguments
+##   -w, --line-width int                  line width when outputting FASTA format (0 for no wrap) (default 60)
+##   -o, --out-file string                 out file (&quot;-&quot; for stdout, suffix .gz for gzipped out) (default &quot;-&quot;)
+##       --quiet                           be quiet and do not show extra information
+##   -t, --seq-type string                 sequence type (dna|rna|protein|unlimit|auto) (for auto, it automatically detect by the first sequence) (default &quot;auto&quot;)
+##   -j, --threads int                     number of CPUs. can also set with environment variable SEQKIT_THREADS) (default 4)</code></pre>
+</div>
+<p>Get the first 10 bases from each sequence:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit subseq --region 1:10 tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## [INFO][0m create FASTA index for tutorial/data/example/genes.fasta
+## &gt;GENE-1
+## ATTAAAGGTT
+## &gt;GENE-2
+## ATGGAGAGCC
+## &gt;GENE-3
+## ATGTTTGTTT
+## &gt;GENE-4
+## ATGGATTTGT
+## &gt;GENE-5
+## ATGTACTCAT
+## &gt;GENE-6
+## ATGGCAGATT
+## &gt;GENE-7
+## ATGTTTCATC
+## &gt;GENE-8
+## ATGAAAATTA
+## &gt;GENE-9
+## ATGATTGAAC
+## &gt;GENE-10
+## ATGAAATTTC</code></pre>
+</div>
+<p>Get the last 10 bases from each sequence:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit subseq --region -10:-1 tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## &gt;GENE-1
+## GAAAGGTAAG
+## &gt;GENE-2
+## GATGCTCGAA
+## &gt;GENE-3
+## CTTTAGATTC
+## &gt;GENE-4
+## CTTCTTGCTG
+## &gt;GENE-5
+## GTATTCTTGC
+## &gt;GENE-6
+## CTCTGGCTGT
+## &gt;GENE-7
+## AAGTTTCCAT
+## &gt;GENE-8
+## TTAGCACTCA
+## &gt;GENE-9
+## ACTTGAACTG
+## &gt;GENE-10
+## CTAGAAAATC</code></pre>
+</div>
+</div>
+</div>
+<div id="convert-between-file-formats" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Convert between file formats</h2>
+<p>Next, we will look at how to convert between the FASTA/Q file formats. Remember, it only makes sense to convert from FASTQ to FASTA and not the other way around.</p>
+<div id="fastq-to-fasta" class="section level3" number="3.3.1">
+<h3><span class="header-section-number">3.3.1</span> FASTQ to FASTA</h3>
+<p>Display help information for fq2fa subcommand:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit fq2fa --help</code></pre>
+<pre><code>## convert FASTQ to FASTA
+## 
+## Usage:
+##   seqkit fq2fa [flags]
+## 
+## Flags:
+##   -h, --help   help for fq2fa
+## 
+## Global Flags:
+##       --alphabet-guess-seq-length int   length of sequence prefix of the first FASTA record based on which seqkit guesses the sequence type (0 for whole seq) (default 10000)
+##       --id-ncbi                         FASTA head is NCBI-style, e.g. &gt;gi|110645304|ref|NC_002516.2| Pseud...
+##       --id-regexp string                regular expression for parsing ID (default &quot;^(\\S+)\\s?&quot;)
+##       --infile-list string              file of input files list (one file per line), if given, they are appended to files from cli arguments
+##   -w, --line-width int                  line width when outputting FASTA format (0 for no wrap) (default 60)
+##   -o, --out-file string                 out file (&quot;-&quot; for stdout, suffix .gz for gzipped out) (default &quot;-&quot;)
+##       --quiet                           be quiet and do not show extra information
+##   -t, --seq-type string                 sequence type (dna|rna|protein|unlimit|auto) (for auto, it automatically detect by the first sequence) (default &quot;auto&quot;)
+##   -j, --threads int                     number of CPUs. can also set with environment variable SEQKIT_THREADS) (default 4)</code></pre>
+</div>
+<p>Convert FASTQ to FASTA:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit fq2fa tutorial/data/example/reads.fastq</code></pre>
+<pre><code>## &gt;READ-1
+## CCTAAGAATACTGGAGAAATTTAGCTGGAAAGATAC
+## &gt;READ-2
+## ACCATCCTGTGGTGAGGTAGCGGGTTCTCTGCGTCTCT
+## &gt;READ-3
+## AGATTCTGCAAAGGAATGTCCAGCATCTGAAAATAA
+## &gt;READ-4
+## CTGCTTCAAGGATGAATTCAGGGACCTTCAGACCCTGT
+## &gt;READ-5
+## GTGGGTGGATTGATGGAAGTCCCTTGGCTGGCTGGCTG
+## &gt;READ-6
+## ACATCTTTACGAGTTATATCCTTCTGCAAACCAACAT
+## &gt;READ-7
+## ATCATTTTTGTAGAAAATCTTCTACCACATGTTAGAC
+## &gt;READ-8
+## ACAGGTGGCATTTAGCATCTTACTATCCTGAAAGAACT
+## &gt;READ-9
+## TGCTGGGTGGTCCTGAAGGAACCCCCCAGCTCTCTGCT
+## &gt;READ-10
+## AAAAAGTGGAAAATTTAGAAATGTCCACTGTAGGACTT</code></pre>
+</div>
+</div>
+<div id="fastaq-to-tsv" class="section level3" number="3.3.2">
+<h3><span class="header-section-number">3.3.2</span> FASTA/Q to TSV</h3>
+<p>Display help information for fx2tab subcommand:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit fx2tab --help</code></pre>
+<pre><code>## convert FASTA/Q to tabular format, and provide various information,
+## like sequence length, GC content/GC skew.
+## 
+## Attention:
+##   1. Fixed three columns (ID, sequence, quality) are outputted for either FASTA
+##      or FASTQ, except when flag -n/--name is on. This is for format compatibility.
+## 
+## Usage:
+##   seqkit fx2tab [flags]
+## 
+## Flags:
+##   -a, --alphabet               print alphabet letters
+##   -q, --avg-qual               print average quality of a read
+##   -B, --base-content strings   print base content. (case ignored, multiple values supported) e.g. -B AT -B N
+##   -C, --base-count strings     print base count. (case ignored, multiple values supported) e.g. -C AT -C N
+##   -I, --case-sensitive         calculate case sensitive base content/sequence hash
+##   -g, --gc                     print GC content
+##   -G, --gc-skew                print GC-Skew
+##   -H, --header-line            print header line
+##   -h, --help                   help for fx2tab
+##   -l, --length                 print sequence length
+##   -n, --name                   only print names (no sequences and qualities)
+##   -Q, --no-qual                only output two column even for FASTQ file
+##   -i, --only-id                print ID instead of full head
+##   -b, --qual-ascii-base int    ASCII BASE, 33 for Phred+33 (default 33)
+##   -s, --seq-hash               print hash (MD5) of sequence
+## 
+## Global Flags:
+##       --alphabet-guess-seq-length int   length of sequence prefix of the first FASTA record based on which seqkit guesses the sequence type (0 for whole seq) (default 10000)
+##       --id-ncbi                         FASTA head is NCBI-style, e.g. &gt;gi|110645304|ref|NC_002516.2| Pseud...
+##       --id-regexp string                regular expression for parsing ID (default &quot;^(\\S+)\\s?&quot;)
+##       --infile-list string              file of input files list (one file per line), if given, they are appended to files from cli arguments
+##   -w, --line-width int                  line width when outputting FASTA format (0 for no wrap) (default 60)
+##   -o, --out-file string                 out file (&quot;-&quot; for stdout, suffix .gz for gzipped out) (default &quot;-&quot;)
+##       --quiet                           be quiet and do not show extra information
+##   -t, --seq-type string                 sequence type (dna|rna|protein|unlimit|auto) (for auto, it automatically detect by the first sequence) (default &quot;auto&quot;)
+##   -j, --threads int                     number of CPUs. can also set with environment variable SEQKIT_THREADS) (default 4)</code></pre>
+</div>
+<p>Output FASTQ in tabular format:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit fx2tab tutorial/data/example/reads.fastq</code></pre>
+<pre><code>## READ-1   CCTAAGAATACTGGAGAAATTTAGCTGGAAAGATAC    AAAAAEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+## READ-2   ACCATCCTGTGGTGAGGTAGCGGGTTCTCTGCGTCTCT  AAAAAEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+## READ-3   AGATTCTGCAAAGGAATGTCCAGCATCTGAAAATAA    AAAAAEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+## READ-4   CTGCTTCAAGGATGAATTCAGGGACCTTCAGACCCTGT  AAAAAEEEEEEEEEEEEEEEEEEEEEEEEEEAEEEEEE
+## READ-5   GTGGGTGGATTGATGGAAGTCCCTTGGCTGGCTGGCTG  AAAAAEEEEEEEEEAEEEEEEEEEEEEEEEEEEEEEEE
+## READ-6   ACATCTTTACGAGTTATATCCTTCTGCAAACCAACAT   AAAAAEEEEEEEEEEEEEEEEEEEEEEEEEEEEEAEE
+## READ-7   ATCATTTTTGTAGAAAATCTTCTACCACATGTTAGAC   AAAAAEEAEEEEEEEE6EEEEEEEEEEEEEEEE/EEE
+## READ-8   ACAGGTGGCATTTAGCATCTTACTATCCTGAAAGAACT  AAAAAEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+## READ-9   TGCTGGGTGGTCCTGAAGGAACCCCCCAGCTCTCTGCT  AAAAAEEEEEEAEEE6EEEA6EEEEEE/E/EEAEAEAA
+## READ-10  AAAAAGTGGAAAATTTAGAAATGTCCACTGTAGGACTT  AAAAAEEEEEEEEEEEEEEEEEEEEAEEEEEEEEEEEE</code></pre>
+</div>
+<p>Output specific FASTQ information in tabular format:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># print sequence name, length, and GC content
+seqkit fx2tab --name --length --gc tutorial/data/example/reads.fastq</code></pre>
+<pre><code>## READ-1   36  36.11
+## READ-2   38  57.89
+## READ-3   36  36.11
+## READ-4   38  50.00
+## READ-5   38  60.53
+## READ-6   37  35.14
+## READ-7   37  29.73
+## READ-8   38  39.47
+## READ-9   38  63.16
+## READ-10  38  31.58</code></pre>
+</div>
+</div>
+</div>
+<div id="search-for-sub-sequences" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Search for sub-sequences</h2>
+<p>Now we will look at how to search for small sub-sequences within the sequences stored in FASTA/Q files.</p>
+<div id="search-sequence" class="section level3" number="3.4.1">
+<h3><span class="header-section-number">3.4.1</span> Search sequence</h3>
+<p>Display help information for grep subcommand:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit grep --help</code></pre>
+<pre><code>## search sequences by ID/name/sequence/sequence motifs, mismatch allowed
+## 
+## Attentions:
+## 
+##   0. By default, we match sequence ID with patterns, use &quot;-n/--by-name&quot;
+##      for matching full name instead of just ID.
+##   1. Unlike POSIX/GNU grep, we compare the pattern to the whole target
+##      (ID/full header) by default. Please switch &quot;-r/--use-regexp&quot; on
+##      for partly matching.
+##   2. When searching by sequences, it&#39;s partly matching, and both positive
+##      and negative strands are searched.
+##      Mismatch is allowed using flag &quot;-m/--max-mismatch&quot;, you can increase
+##      the value of &quot;-j/--threads&quot; to accelerate processing.
+##   3. Degenerate bases/residues like &quot;RYMM..&quot; are also supported by flag -d.
+##      But do not use degenerate bases/residues in regular expression, you need
+##      convert them to regular expression, e.g., change &quot;N&quot; or &quot;X&quot;  to &quot;.&quot;.
+##   4. When providing search patterns (motifs) via flag &#39;-p&#39;,
+##      please use double quotation marks for patterns containing comma, 
+##      e.g., -p &#39;&quot;A{2,}&quot;&#39; or -p &quot;\&quot;A{2,}\&quot;&quot;. Because the command line argument
+##      parser accepts comma-separated-values (CSV) for multiple values (motifs).
+##      Patterns in file do not follow this rule.
+##   5. The order of sequences in result is consistent with that in original
+##      file, not the order of the query patterns. 
+##      But for FASTA file, you can use:
+##         seqkit faidx seqs.fasta --infile-list IDs.txt
+##   6. For multiple patterns, you can either set &quot;-p&quot; multiple times, i.e.,
+##      -p pattern1 -p pattern2, or give a file of patterns via &quot;-f/--pattern-file&quot;.
+## 
+## You can specify the sequence region for searching with the flag -R (--region).
+## The definition of region is 1-based and with some custom design.
+## 
+## Examples:
+## 
+##  1-based index    1 2 3 4 5 6 7 8 9 10
+## negative index    0-9-8-7-6-5-4-3-2-1
+##            seq    A C G T N a c g t n
+##            1:1    A
+##            2:4      C G T
+##          -4:-2                c g t
+##          -4:-1                c g t n
+##          -1:-1                      n
+##           2:-2      C G T N a c g t
+##           1:-1    A C G T N a c g t n
+##           1:12    A C G T N a c g t n
+##         -12:-1    A C G T N a c g t n
+## 
+## Usage:
+##   seqkit grep [flags]
+## 
+## Flags:
+##   -n, --by-name                match by full name instead of just ID
+##   -s, --by-seq                 search subseq on seq, both positive and negative strand are searched, and mismatch allowed using flag -m/--max-mismatch
+##   -c, --circular               circular genome
+##   -C, --count                  just print a count of matching records. with the -v/--invert-match flag, count non-matching records
+##   -d, --degenerate             pattern/motif contains degenerate base
+##       --delete-matched         delete a pattern right after being matched, this keeps the firstly matched data and speedups when using regular expressions
+##   -h, --help                   help for grep
+##   -i, --ignore-case            ignore case
+##   -I, --immediate-output       print output immediately, do not use write buffer
+##   -v, --invert-match           invert the sense of matching, to select non-matching records
+##   -m, --max-mismatch int       max mismatch when matching by seq. For large genomes like human genome, using mapping/alignment tools would be faster
+##   -P, --only-positive-strand   only search on positive strand
+##   -p, --pattern strings        search pattern (multiple values supported. Attention: use double quotation marks for patterns containing comma, e.g., -p &#39;&quot;A{2,}&quot;&#39;))
+##   -f, --pattern-file string    pattern file (one record per line)
+##   -R, --region string          specify sequence region for searching. e.g 1:12 for first 12 bases, -12:-1 for last 12 bases
+##   -r, --use-regexp             patterns are regular expression
+## 
+## Global Flags:
+##       --alphabet-guess-seq-length int   length of sequence prefix of the first FASTA record based on which seqkit guesses the sequence type (0 for whole seq) (default 10000)
+##       --id-ncbi                         FASTA head is NCBI-style, e.g. &gt;gi|110645304|ref|NC_002516.2| Pseud...
+##       --id-regexp string                regular expression for parsing ID (default &quot;^(\\S+)\\s?&quot;)
+##       --infile-list string              file of input files list (one file per line), if given, they are appended to files from cli arguments
+##   -w, --line-width int                  line width when outputting FASTA format (0 for no wrap) (default 60)
+##   -o, --out-file string                 out file (&quot;-&quot; for stdout, suffix .gz for gzipped out) (default &quot;-&quot;)
+##       --quiet                           be quiet and do not show extra information
+##   -t, --seq-type string                 sequence type (dna|rna|protein|unlimit|auto) (for auto, it automatically detect by the first sequence) (default &quot;auto&quot;)
+##   -j, --threads int                     number of CPUs. can also set with environment variable SEQKIT_THREADS) (default 4)</code></pre>
+</div>
+<p>Extract sequences with matching name:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit grep --by-name --pattern &quot;gene-GU280_gp04&quot; tutorial/data/example/genes.fasta</code></pre>
+</div>
+<p>Extract sequences containing AGGCG subsequence:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit grep --by-seq --pattern &quot;AGGCG&quot; tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## &gt;GENE-2
+## ATGGAGAGCCTTGTCCCTGGTTTCAACGAGAAAACACACGTCCAACTCAGTTTGCCTGTT
+## TTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGTCTTATCA
+## GAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGCGTT
+## TTGCCTCAACTTGAACAGCCCTATGTGTTCATCAAACGTTCGGATGCTCGAA</code></pre>
+</div>
+<p>Extract sequences containing AGGCG in the first N bases:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># sequence region for searching (1:10 for first 10 bases)
+seqkit grep --by-seq --pattern &quot;AGGCG&quot; --region 1:10 tutorial/data/example/genes.fasta</code></pre>
+</div>
+</div>
+<div id="locate-subsequence" class="section level3" number="3.4.2">
+<h3><span class="header-section-number">3.4.2</span> Locate subsequence</h3>
+<p>Display help information for locate subcommand:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit locate --help</code></pre>
+<pre><code>## locate subsequences/motifs, mismatch allowed
+## 
+## Attentions:
+## 
+##   1. Motifs could be EITHER plain sequence containing &quot;ACTGN&quot; OR regular
+##      expression like &quot;A[TU]G(?:.{3})+?[TU](?:AG|AA|GA)&quot; for ORFs.     
+##   2. Degenerate bases/residues like &quot;RYMM..&quot; are also supported by flag -d.
+##      But do not use degenerate bases/residues in regular expression, you need
+##      convert them to regular expression, e.g., change &quot;N&quot; or &quot;X&quot;  to &quot;.&quot;.
+##   3. When providing search patterns (motifs) via flag &#39;-p&#39;,
+##      please use double quotation marks for patterns containing comma, 
+##      e.g., -p &#39;&quot;A{2,}&quot;&#39; or -p &quot;\&quot;A{2,}\&quot;&quot;. Because the command line argument
+##      parser accepts comma-separated-values (CSV) for multiple values (motifs).
+##      Patterns in file do not follow this rule.     
+##   4. Mismatch is allowed using flag &quot;-m/--max-mismatch&quot;,
+##      you can increase the value of &quot;-j/--threads&quot; to accelerate processing.
+##   5. When using flag --circular, end position of matched subsequence that 
+##      crossing genome sequence end would be greater than sequence length.
+## 
+## Usage:
+##   seqkit locate [flags]
+## 
+## Flags:
+##       --bed                       output in BED6 format
+##   -c, --circular                  circular genome. type &quot;seqkit locate -h&quot; for details
+##   -d, --degenerate                pattern/motif contains degenerate base
+##       --gtf                       output in GTF format
+##   -h, --help                      help for locate
+##   -M, --hide-matched              do not show matched sequences
+##   -i, --ignore-case               ignore case
+##   -I, --immediate-output          print output immediately, do not use write buffer
+##   -m, --max-mismatch int          max mismatch when matching by seq. For large genomes like human genome, using mapping/alignment tools would be faster
+##   -G, --non-greedy                non-greedy mode, faster but may miss motifs overlapping with others
+##   -P, --only-positive-strand      only search on positive strand
+##   -p, --pattern strings           pattern/motif (multiple values supported. Attention: use double quotation marks for patterns containing comma, e.g., -p &#39;&quot;A{2,}&quot;&#39;)
+##   -f, --pattern-file string       pattern/motif file (FASTA format)
+##   -F, --use-fmi                   use FM-index for much faster search of lots of sequence patterns
+##   -r, --use-regexp                patterns/motifs are regular expression
+##   -V, --validate-seq-length int   length of sequence to validate (0 for whole seq) (default 10000)
+## 
+## Global Flags:
+##       --alphabet-guess-seq-length int   length of sequence prefix of the first FASTA record based on which seqkit guesses the sequence type (0 for whole seq) (default 10000)
+##       --id-ncbi                         FASTA head is NCBI-style, e.g. &gt;gi|110645304|ref|NC_002516.2| Pseud...
+##       --id-regexp string                regular expression for parsing ID (default &quot;^(\\S+)\\s?&quot;)
+##       --infile-list string              file of input files list (one file per line), if given, they are appended to files from cli arguments
+##   -w, --line-width int                  line width when outputting FASTA format (0 for no wrap) (default 60)
+##   -o, --out-file string                 out file (&quot;-&quot; for stdout, suffix .gz for gzipped out) (default &quot;-&quot;)
+##       --quiet                           be quiet and do not show extra information
+##   -t, --seq-type string                 sequence type (dna|rna|protein|unlimit|auto) (for auto, it automatically detect by the first sequence) (default &quot;auto&quot;)
+##   -j, --threads int                     number of CPUs. can also set with environment variable SEQKIT_THREADS) (default 4)</code></pre>
+</div>
+<p>Locate a subsequence in each sequence:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># exact match
+seqkit locate --pattern &quot;ACGT&quot; tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## seqID    patternName pattern strand  start   end matched
+## GENE-2   ACGT    ACGT    +   38  41  ACGT
+## GENE-2   ACGT    ACGT    +   74  77  ACGT
+## GENE-2   ACGT    ACGT    +   84  87  ACGT
+## GENE-2   ACGT    ACGT    +   126 129 ACGT
+## GENE-2   ACGT    ACGT    +   216 219 ACGT
+## GENE-2   ACGT    ACGT    -   216 219 ACGT
+## GENE-2   ACGT    ACGT    -   126 129 ACGT
+## GENE-2   ACGT    ACGT    -   84  87  ACGT
+## GENE-2   ACGT    ACGT    -   74  77  ACGT
+## GENE-2   ACGT    ACGT    -   38  41  ACGT
+## GENE-3   ACGT    ACGT    +   99  102 ACGT
+## GENE-3   ACGT    ACGT    -   99  102 ACGT
+## GENE-5   ACGT    ACGT    +   31  34  ACGT
+## GENE-5   ACGT    ACGT    -   31  34  ACGT</code></pre>
+</div>
+<p>Locate a subsequence with N mismatches:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># allow 1 mismatch
+seqkit locate --pattern &quot;ACGT&quot; --max-mismatch 1 tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## seqID    patternName pattern strand  start   end matched
+## GENE-1   ACGT    ACGT    +   6   9   AGGT
+## GENE-1   ACGT    ACGT    +   14  17  ACCT
+## GENE-1   ACGT    ACGT    +   22  25  AGGT
+## GENE-1   ACGT    ACGT    +   39  42  ACTT
+## GENE-1   ACGT    ACGT    +   70  73  ACGA
+## GENE-1   ACGT    ACGT    +   74  77  ACTT
+## GENE-1   ACGT    ACGT    +   122 125 ACGC
+## GENE-1   ACGT    ACGT    +   150 153 TCGT
+## GENE-1   ACGT    ACGT    +   163 166 ACGA
+## GENE-1   ACGT    ACGT    +   172 175 TCGT
+## GENE-1   ACGT    ACGT    +   196 199 ACGG
+## GENE-1   ACGT    ACGT    +   202 205 TCGT
+## GENE-1   ACGT    ACGT    +   206 209 CCGT
+## GENE-1   ACGT    ACGT    +   229 232 ACAT
+## GENE-1   ACGT    ACGT    +   235 238 AGGT
+## GENE-1   ACGT    ACGT    +   240 243 TCGT
+## GENE-1   ACGT    ACGT    +   259 262 AGGT
+## GENE-1   ACGT    ACGT    -   259 262 ACCT
+## GENE-1   ACGT    ACGT    -   240 243 ACGA
+## GENE-1   ACGT    ACGT    -   235 238 ACCT
+## GENE-1   ACGT    ACGT    -   229 232 ATGT
+## GENE-1   ACGT    ACGT    -   206 209 ACGG
+## GENE-1   ACGT    ACGT    -   202 205 ACGA
+## GENE-1   ACGT    ACGT    -   196 199 CCGT
+## GENE-1   ACGT    ACGT    -   172 175 ACGA
+## GENE-1   ACGT    ACGT    -   163 166 TCGT
+## GENE-1   ACGT    ACGT    -   150 153 ACGA
+## GENE-1   ACGT    ACGT    -   122 125 GCGT
+## GENE-1   ACGT    ACGT    -   74  77  AAGT
+## GENE-1   ACGT    ACGT    -   70  73  TCGT
+## GENE-1   ACGT    ACGT    -   39  42  AAGT
+## GENE-1   ACGT    ACGT    -   22  25  ACCT
+## GENE-1   ACGT    ACGT    -   14  17  AGGT
+## GENE-1   ACGT    ACGT    -   6   9   ACCT
+## GENE-2   ACGT    ACGT    +   26  29  ACGA
+## GENE-2   ACGT    ACGT    +   38  41  ACGT
+## GENE-2   ACGT    ACGT    +   65  68  AGGT
+## GENE-2   ACGT    ACGT    +   74  77  ACGT
+## GENE-2   ACGT    ACGT    +   80  83  TCGT
+## GENE-2   ACGT    ACGT    +   84  87  ACGT
+## GENE-2   ACGT    ACGT    +   101 104 CCGT
+## GENE-2   ACGT    ACGT    +   110 113 AGGT
+## GENE-2   ACGT    ACGT    +   126 129 ACGT
+## GENE-2   ACGT    ACGT    +   132 135 ACAT
+## GENE-2   ACGT    ACGT    +   148 151 ACTT
+## GENE-2   ACGT    ACGT    +   164 167 AAGT
+## GENE-2   ACGT    ACGT    +   176 179 GCGT
+## GENE-2   ACGT    ACGT    +   189 192 ACTT
+## GENE-2   ACGT    ACGT    +   203 206 ATGT
+## GENE-2   ACGT    ACGT    +   216 219 ACGT
+## GENE-2   ACGT    ACGT    -   216 219 ACGT
+## GENE-2   ACGT    ACGT    -   203 206 ACAT
+## GENE-2   ACGT    ACGT    -   189 192 AAGT
+## GENE-2   ACGT    ACGT    -   176 179 ACGC
+## GENE-2   ACGT    ACGT    -   164 167 ACTT
+## GENE-2   ACGT    ACGT    -   148 151 AAGT
+## GENE-2   ACGT    ACGT    -   132 135 ATGT
+## GENE-2   ACGT    ACGT    -   126 129 ACGT
+## GENE-2   ACGT    ACGT    -   110 113 ACCT
+## GENE-2   ACGT    ACGT    -   101 104 ACGG
+## GENE-2   ACGT    ACGT    -   84  87  ACGT
+## GENE-2   ACGT    ACGT    -   80  83  ACGA
+## GENE-2   ACGT    ACGT    -   74  77  ACGT
+## GENE-2   ACGT    ACGT    -   65  68  ACCT
+## GENE-2   ACGT    ACGT    -   38  41  ACGT
+## GENE-2   ACGT    ACGT    -   26  29  TCGT
+## GENE-3   ACGT    ACGT    +   1   4   ATGT
+## GENE-3   ACGT    ACGT    +   99  102 ACGT
+## GENE-3   ACGT    ACGT    +   122 125 AAGT
+## GENE-3   ACGT    ACGT    +   144 147 ACAT
+## GENE-3   ACGT    ACGT    +   158 161 ACTT
+## GENE-3   ACGT    ACGT    +   168 171 ACCT
+## GENE-3   ACGT    ACGT    +   182 185 ATGT
+## GENE-3   ACGT    ACGT    +   187 190 ACTT
+## GENE-3   ACGT    ACGT    +   204 207 ACAT
+## GENE-3   ACGT    ACGT    +   206 209 ATGT
+## GENE-3   ACGT    ACGT    +   232 235 AGGT
+## GENE-3   ACGT    ACGT    +   289 292 AAGT
+## GENE-3   ACGT    ACGT    +   296 299 ACAT
+## GENE-3   ACGT    ACGT    +   325 328 ACTT
+## GENE-3   ACGT    ACGT    -   325 328 AAGT
+## GENE-3   ACGT    ACGT    -   296 299 ATGT
+## GENE-3   ACGT    ACGT    -   289 292 ACTT
+## GENE-3   ACGT    ACGT    -   232 235 ACCT
+## GENE-3   ACGT    ACGT    -   206 209 ACAT
+## GENE-3   ACGT    ACGT    -   204 207 ATGT
+## GENE-3   ACGT    ACGT    -   187 190 AAGT
+## GENE-3   ACGT    ACGT    -   182 185 ACAT
+## GENE-3   ACGT    ACGT    -   168 171 AGGT
+## GENE-3   ACGT    ACGT    -   158 161 AAGT
+## GENE-3   ACGT    ACGT    -   144 147 ATGT
+## GENE-3   ACGT    ACGT    -   122 125 ACTT
+## GENE-3   ACGT    ACGT    -   99  102 ACGT
+## GENE-3   ACGT    ACGT    -   1   4   ACAT
+## GENE-4   ACGT    ACGT    +   40  43  ACTT
+## GENE-4   ACGT    ACGT    +   51  54  AGGT
+## GENE-4   ACGT    ACGT    +   100 103 ACGA
+## GENE-4   ACGT    ACGT    +   146 149 GCGT
+## GENE-4   ACGT    ACGT    +   153 156 ACTT
+## GENE-4   ACGT    ACGT    -   153 156 AAGT
+## GENE-4   ACGT    ACGT    -   146 149 ACGC
+## GENE-4   ACGT    ACGT    -   100 103 TCGT
+## GENE-4   ACGT    ACGT    -   51  54  ACCT
+## GENE-4   ACGT    ACGT    -   40  43  AAGT
+## GENE-5   ACGT    ACGT    +   1   4   ATGT
+## GENE-5   ACGT    ACGT    +   11  14  TCGT
+## GENE-5   ACGT    ACGT    +   27  30  AGGT
+## GENE-5   ACGT    ACGT    +   31  34  ACGT
+## GENE-5   ACGT    ACGT    +   47  50  GCGT
+## GENE-5   ACGT    ACGT    +   51  54  ACTT
+## GENE-5   ACGT    ACGT    +   68  71  TCGT
+## GENE-5   ACGT    ACGT    -   68  71  ACGA
+## GENE-5   ACGT    ACGT    -   51  54  AAGT
+## GENE-5   ACGT    ACGT    -   47  50  ACGC
+## GENE-5   ACGT    ACGT    -   31  34  ACGT
+## GENE-5   ACGT    ACGT    -   27  30  ACCT
+## GENE-5   ACGT    ACGT    -   11  14  ACGA
+## GENE-5   ACGT    ACGT    -   1   4   ACAT
+## GENE-6   ACGT    ACGT    +   14  17  ACGG
+## GENE-6   ACGT    ACGT    +   26  29  CCGT
+## GENE-6   ACGT    ACGT    +   62  65  ACCT
+## GENE-6   ACGT    ACGT    +   72  75  AGGT
+## GENE-6   ACGT    ACGT    +   88  91  ACAT
+## GENE-6   ACGT    ACGT    +   130 133 AGGT
+## GENE-6   ACGT    ACGT    +   148 151 AAGT
+## GENE-6   ACGT    ACGT    -   148 151 ACTT
+## GENE-6   ACGT    ACGT    -   130 133 ACCT
+## GENE-6   ACGT    ACGT    -   88  91  ATGT
+## GENE-6   ACGT    ACGT    -   72  75  ACCT
+## GENE-6   ACGT    ACGT    -   62  65  AGGT
+## GENE-6   ACGT    ACGT    -   26  29  ACGG
+## GENE-6   ACGT    ACGT    -   14  17  CCGT
+## GENE-7   ACGT    ACGT    +   1   4   ATGT
+## GENE-7   ACGT    ACGT    +   11  14  TCGT
+## GENE-7   ACGT    ACGT    +   17  20  ACTT
+## GENE-7   ACGT    ACGT    +   23  26  AGGT
+## GENE-7   ACGT    ACGT    +   61  64  ACTT
+## GENE-7   ACGT    ACGT    +   68  71  AAGT
+## GENE-7   ACGT    ACGT    -   68  71  ACTT
+## GENE-7   ACGT    ACGT    -   61  64  AAGT
+## GENE-7   ACGT    ACGT    -   23  26  ACCT
+## GENE-7   ACGT    ACGT    -   17  20  AAGT
+## GENE-7   ACGT    ACGT    -   11  14  ACGA
+## GENE-7   ACGT    ACGT    -   1   4   ACAT
+## GENE-8   ACGT    ACGT    +   40  43  ACTT
+## GENE-8   ACGT    ACGT    +   75  78  AGGT
+## GENE-8   ACGT    ACGT    +   87  90  ACTT
+## GENE-8   ACGT    ACGT    +   99  102 ACCT
+## GENE-8   ACGT    ACGT    +   115 118 ACAT
+## GENE-8   ACGT    ACGT    +   119 122 ACGA
+## GENE-8   ACGT    ACGT    +   169 172 ACTT
+## GENE-8   ACGT    ACGT    -   169 172 AAGT
+## GENE-8   ACGT    ACGT    -   119 122 TCGT
+## GENE-8   ACGT    ACGT    -   115 118 ATGT
+## GENE-8   ACGT    ACGT    -   99  102 AGGT
+## GENE-8   ACGT    ACGT    -   87  90  AAGT
+## GENE-8   ACGT    ACGT    -   75  78  ACCT
+## GENE-8   ACGT    ACGT    -   40  43  AAGT
+## GENE-9   ACGT    ACGT    +   9   12  ACTT
+## GENE-9   ACGT    ACGT    +   23  26  ACTT
+## GENE-9   ACGT    ACGT    +   93  96  ACTT
+## GENE-9   ACGT    ACGT    -   93  96  AAGT
+## GENE-9   ACGT    ACGT    -   23  26  AAGT
+## GENE-9   ACGT    ACGT    -   9   12  AAGT
+## GENE-10  ACGT    ACGT    +   57  60  ATGT
+## GENE-10  ACGT    ACGT    +   72  75  ATGT
+## GENE-10  ACGT    ACGT    +   81  84  ACAT
+## GENE-10  ACGT    ACGT    +   92  95  ATGT
+## GENE-10  ACGT    ACGT    +   106 109 CCGT
+## GENE-10  ACGT    ACGT    +   119 122 ACTT
+## GENE-10  ACGT    ACGT    -   119 122 AAGT
+## GENE-10  ACGT    ACGT    -   106 109 ACGG
+## GENE-10  ACGT    ACGT    -   92  95  ACAT
+## GENE-10  ACGT    ACGT    -   81  84  ATGT
+## GENE-10  ACGT    ACGT    -   72  75  ACAT
+## GENE-10  ACGT    ACGT    -   57  60  ACAT</code></pre>
+</div>
+<p>Locate a subsequence using regular expressions:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># match AAGC or GGGC
+seqkit locate --pattern &quot;(A{2}|G{2})GC&quot; --use-regexp tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## seqID    patternName pattern strand  start   end matched
+## GENE-1   (A{2}|G{2})GC   (A{2}|G{2})GC   -   192 195 AAGC
+## GENE-1   (A{2}|G{2})GC   (A{2}|G{2})GC   -   109 112 AAGC
+## GENE-2   (A{2}|G{2})GC   (A{2}|G{2})GC   -   198 201 GGGC
+## GENE-2   (A{2}|G{2})GC   (A{2}|G{2})GC   -   155 158 AAGC
+## GENE-2   (A{2}|G{2})GC   (A{2}|G{2})GC   -   89  92  AAGC
+## GENE-3   (A{2}|G{2})GC   (A{2}|G{2})GC   -   277 280 AAGC
+## GENE-4   (A{2}|G{2})GC   (A{2}|G{2})GC   +   46  49  AAGC
+## GENE-4   (A{2}|G{2})GC   (A{2}|G{2})GC   +   113 116 AAGC
+## GENE-4   (A{2}|G{2})GC   (A{2}|G{2})GC   -   135 138 AAGC
+## GENE-5   (A{2}|G{2})GC   (A{2}|G{2})GC   -   64  67  AAGC
+## GENE-6   (A{2}|G{2})GC   (A{2}|G{2})GC   +   43  46  AAGC
+## GENE-6   (A{2}|G{2})GC   (A{2}|G{2})GC   -   36  39  AAGC
+## GENE-8   (A{2}|G{2})GC   (A{2}|G{2})GC   +   123 126 GGGC
+## GENE-8   (A{2}|G{2})GC   (A{2}|G{2})GC   -   173 176 AAGC
+## GENE-8   (A{2}|G{2})GC   (A{2}|G{2})GC   -   48  51  AAGC
+## GENE-9   (A{2}|G{2})GC   (A{2}|G{2})GC   -   72  75  AAGC
+## GENE-9   (A{2}|G{2})GC   (A{2}|G{2})GC   -   35  38  AAGC</code></pre>
+</div>
+</div>
+</div>
+<div id="perform-set-operations" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span> Perform set operations</h2>
+<div id="sample-sequences" class="section level3" number="3.5.1">
+<h3><span class="header-section-number">3.5.1</span> Sample sequences</h3>
+<p>Display help information for sample subcommand:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit sample --help</code></pre>
+<pre><code>## sample sequences by number or proportion.
+## 
+## Attention:
+## 1. Do not use &#39;-n&#39; on large FASTQ files, it loads all seqs into memory!
+##    use &#39;seqkit sample -p 0.1 seqs.fq.gz | seqkit head -n N&#39; instead!
+## 
+## Usage:
+##   seqkit sample [flags]
+## 
+## Flags:
+##   -h, --help               help for sample
+##   -n, --number int         sample by number (result may not exactly match), DO NOT use on large FASTQ files.
+##   -p, --proportion float   sample by proportion
+##   -s, --rand-seed int      rand seed (default 11)
+##   -2, --two-pass           2-pass mode read files twice to lower memory usage. Not allowed when reading from stdin
+## 
+## Global Flags:
+##       --alphabet-guess-seq-length int   length of sequence prefix of the first FASTA record based on which seqkit guesses the sequence type (0 for whole seq) (default 10000)
+##       --id-ncbi                         FASTA head is NCBI-style, e.g. &gt;gi|110645304|ref|NC_002516.2| Pseud...
+##       --id-regexp string                regular expression for parsing ID (default &quot;^(\\S+)\\s?&quot;)
+##       --infile-list string              file of input files list (one file per line), if given, they are appended to files from cli arguments
+##   -w, --line-width int                  line width when outputting FASTA format (0 for no wrap) (default 60)
+##   -o, --out-file string                 out file (&quot;-&quot; for stdout, suffix .gz for gzipped out) (default &quot;-&quot;)
+##       --quiet                           be quiet and do not show extra information
+##   -t, --seq-type string                 sequence type (dna|rna|protein|unlimit|auto) (for auto, it automatically detect by the first sequence) (default &quot;auto&quot;)
+##   -j, --threads int                     number of CPUs. can also set with environment variable SEQKIT_THREADS) (default 4)</code></pre>
+</div>
+<p>Sample sequences by number:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># set seed to reproduce result
+seqkit sample --number 5 --rand-seed 1701 tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## [INFO][0m sample by number
+## [INFO][0m loading all sequences into memory...
+## [INFO][0m 4 sequences outputted
+## &gt;GENE-2
+## ATGGAGAGCCTTGTCCCTGGTTTCAACGAGAAAACACACGTCCAACTCAGTTTGCCTGTT
+## TTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGTCTTATCA
+## GAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGCGTT
+## TTGCCTCAACTTGAACAGCCCTATGTGTTCATCAAACGTTCGGATGCTCGAA
+## &gt;GENE-3
+## ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACC
+## AGAACTCAATTACCCCCTGCATACACTAATTCTTTCACACGTGGTGTTTATTACCCTGAC
+## AAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGACTTGTTCTTACCTTTCTTTTCC
+## AATGTTACTTGGTTCCATGCTATACATGTCTCTGGGACCAATGGTACTAAGAGGTTTGAT
+## AACCCTGTCCTACCATTTAATGATGGTGTTTATTTTGCTTCCACTGAGAAGTCTAACATA
+## ATAAGAGGCTGGATTTTTGGTACTACTTTAGATTC
+## &gt;GENE-4
+## ATGGATTTGTTTATGAGAATCTTCACAATTGGAACTGTAACTTTGAAGCAAGGTGAAATC
+## AAGGATGCTACTCCTTCAGATTTTGTTCGCGCTACTGCAACGATACCGATACAAGCCTCA
+## CTCCCTTTCGGATGGCTTATTGTTGGCGTTGCACTTCTTGCTG
+## &gt;GENE-10
+## ATGAAATTTCTTGTTTTCTTAGGAATCATCACAACTGTAGCTGCATTTCACCAAGAATGT
+## AGTTTACAGTCATGTACTCAACATCAACCATATGTAGTTGATGACCCGTGTCCTATTCAC
+## TTCTATTCTAAATGGTATATTAGAGTAGGAGCTAGAAAATC</code></pre>
+</div>
+<p>Sample sequences by proportion:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># set seed to reproduce result
+seqkit sample --proportion 0.25 --rand-seed 1701 tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## [INFO][0m sample by proportion
+## [INFO][0m 3 sequences outputted
+## &gt;GENE-2
+## ATGGAGAGCCTTGTCCCTGGTTTCAACGAGAAAACACACGTCCAACTCAGTTTGCCTGTT
+## TTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGTCTTATCA
+## GAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGCGTT
+## TTGCCTCAACTTGAACAGCCCTATGTGTTCATCAAACGTTCGGATGCTCGAA
+## &gt;GENE-3
+## ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACC
+## AGAACTCAATTACCCCCTGCATACACTAATTCTTTCACACGTGGTGTTTATTACCCTGAC
+## AAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGACTTGTTCTTACCTTTCTTTTCC
+## AATGTTACTTGGTTCCATGCTATACATGTCTCTGGGACCAATGGTACTAAGAGGTTTGAT
+## AACCCTGTCCTACCATTTAATGATGGTGTTTATTTTGCTTCCACTGAGAAGTCTAACATA
+## ATAAGAGGCTGGATTTTTGGTACTACTTTAGATTC
+## &gt;GENE-10
+## ATGAAATTTCTTGTTTTCTTAGGAATCATCACAACTGTAGCTGCATTTCACCAAGAATGT
+## AGTTTACAGTCATGTACTCAACATCAACCATATGTAGTTGATGACCCGTGTCCTATTCAC
+## TTCTATTCTAAATGGTATATTAGAGTAGGAGCTAGAAAATC</code></pre>
+</div>
+</div>
+<div id="split-sequences" class="section level3" number="3.5.2">
+<h3><span class="header-section-number">3.5.2</span> Split sequences</h3>
+<p>Display help information for split subcommand:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit split --help</code></pre>
+<pre><code>## split sequences into files by name ID, subsequence of given region,
+## part size or number of parts.
+## 
+## If you just want to split by parts or sizes, please use &quot;seqkit split2&quot;,
+## which also applies for paired- and single-end FASTQ.
+## 
+## The definition of region is 1-based and with some custom design.
+## 
+## Examples:
+## 
+##  1-based index    1 2 3 4 5 6 7 8 9 10
+## negative index    0-9-8-7-6-5-4-3-2-1
+##            seq    A C G T N a c g t n
+##            1:1    A
+##            2:4      C G T
+##          -4:-2                c g t
+##          -4:-1                c g t n
+##          -1:-1                      n
+##           2:-2      C G T N a c g t
+##           1:-1    A C G T N a c g t n
+##           1:12    A C G T N a c g t n
+##         -12:-1    A C G T N a c g t n
+## 
+## Usage:
+##   seqkit split [flags]
+## 
+## Flags:
+##   -i, --by-id                     split squences according to sequence ID
+##       --by-id-prefix string       file prefix for --by-id
+##   -p, --by-part int               split sequences into N parts
+##       --by-part-prefix string     file prefix for --by-part
+##   -r, --by-region string          split squences according to subsequence of given region. e.g 1:12 for first 12 bases, -12:-1 for last 12 bases. type &quot;seqkit split -h&quot; for more examples
+##       --by-region-prefix string   file prefix for --by-region
+##   -s, --by-size int               split sequences into multi parts with N sequences
+##       --by-size-prefix string     file prefix for --by-size
+##   -d, --dry-run                   dry run, just print message and no files will be created.
+##   -e, --extension string          set output file extension, e.g., &quot;.gz&quot;, &quot;.xz&quot;, or &quot;.zst&quot;
+##   -f, --force                     overwrite output directory
+##   -h, --help                      help for split
+##   -k, --keep-temp                 keep temporary FASTA and .fai file when using 2-pass mode
+##   -O, --out-dir string            output directory (default value is $infile.split)
+##   -2, --two-pass                  two-pass mode read files twice to lower memory usage. (only for FASTA format)
+## 
+## Global Flags:
+##       --alphabet-guess-seq-length int   length of sequence prefix of the first FASTA record based on which seqkit guesses the sequence type (0 for whole seq) (default 10000)
+##       --id-ncbi                         FASTA head is NCBI-style, e.g. &gt;gi|110645304|ref|NC_002516.2| Pseud...
+##       --id-regexp string                regular expression for parsing ID (default &quot;^(\\S+)\\s?&quot;)
+##       --infile-list string              file of input files list (one file per line), if given, they are appended to files from cli arguments
+##   -w, --line-width int                  line width when outputting FASTA format (0 for no wrap) (default 60)
+##   -o, --out-file string                 out file (&quot;-&quot; for stdout, suffix .gz for gzipped out) (default &quot;-&quot;)
+##       --quiet                           be quiet and do not show extra information
+##   -t, --seq-type string                 sequence type (dna|rna|protein|unlimit|auto) (for auto, it automatically detect by the first sequence) (default &quot;auto&quot;)
+##   -j, --threads int                     number of CPUs. can also set with environment variable SEQKIT_THREADS) (default 4)</code></pre>
+</div>
+<p>Split sequences into files by name:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit split --by-id tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## [INFO][0m split by ID. idRegexp: ^(\S+)\s?
+## [INFO][0m read sequences ...
+## [INFO][0m read 10 sequences
+## [INFO][0m write 1 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_GENE-3.fasta
+## [INFO][0m write 1 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_GENE-4.fasta
+## [INFO][0m write 1 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_GENE-5.fasta
+## [INFO][0m write 1 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_GENE-8.fasta
+## [INFO][0m write 1 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_GENE-10.fasta
+## [INFO][0m write 1 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_GENE-1.fasta
+## [INFO][0m write 1 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_GENE-2.fasta
+## [INFO][0m write 1 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_GENE-6.fasta
+## [INFO][0m write 1 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_GENE-7.fasta
+## [INFO][0m write 1 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_GENE-9.fasta</code></pre>
+</div>
+<p>Split sequences into multiple files with N sequences:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># 2 sequences per file
+seqkit split --by-size 2 tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## [33m[WARN][0m outdir not empty: tutorial/data/example/genes.fasta.split, you can use --force to overwrite
+## [INFO][0m split into 2 seqs per file
+## [INFO][0m write 2 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_001.fasta
+## [INFO][0m write 2 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_002.fasta
+## [INFO][0m write 2 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_003.fasta
+## [INFO][0m write 2 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_004.fasta
+## [INFO][0m write 2 sequences to file: tutorial/data/example/genes.fasta.split/genes.part_005.fasta</code></pre>
+</div>
+</div>
+</div>
+<div id="edit-sequence-files" class="section level2" number="3.6">
+<h2><span class="header-section-number">3.6</span> Edit sequence files</h2>
+<div id="replace-namesequence" class="section level3" number="3.6.1">
+<h3><span class="header-section-number">3.6.1</span> Replace name/sequence</h3>
+<p>Display help information for replace subcommand:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit replace --help</code></pre>
+<pre><code>## replace name/sequence by regular expression.
+## 
+## Note that the replacement supports capture variables.
+## e.g. $1 represents the text of the first submatch.
+## ATTENTION: use SINGLE quote NOT double quotes in *nix OS.
+## 
+## Examples: Adding space to all bases.
+## 
+##     seqkit replace -p &quot;(.)&quot; -r &#39;$1 &#39; -s
+## 
+## Or use the \ escape character.
+## 
+##     seqkit replace -p &quot;(.)&quot; -r &quot;\$1 &quot; -s
+## 
+## more on: http://bioinf.shenwei.me/seqkit/usage/#replace
+## 
+## Special replacement symbols (only for replacing name not sequence):
+## 
+##     {nr}    Record number, starting from 1
+##     {kv}    Corresponding value of the key (captured variable $n) by key-value file,
+##             n can be specified by flag -I (--key-capt-idx) (default: 1)
+##             
+## Special cases:
+##   1. If replacements contain &#39;$&#39;, 
+##     a). If using &#39;{kv}&#39;, you need use &#39;$$$$&#39; instead of a single &#39;$&#39;:
+##             -r &#39;{kv}&#39; -k &lt;(sed &#39;s/\$/$$$$/&#39; kv.txt)
+##     b). If not, use &#39;$$&#39;:
+##             -r &#39;xxx$$xx&#39;
+## 
+## Usage:
+##   seqkit replace [flags]
+## 
+## Flags:
+##   -s, --by-seq                 replace seq (only FASTA)
+##   -h, --help                   help for replace
+##   -i, --ignore-case            ignore case
+##   -K, --keep-key               keep the key as value when no value found for the key (only for sequence name)
+##   -U, --keep-untouch           do not change anything when no value found for the key (only for sequence name)
+##   -I, --key-capt-idx int       capture variable index of key (1-based) (default 1)
+##   -m, --key-miss-repl string   replacement for key with no corresponding value
+##   -k, --kv-file string         tab-delimited key-value file for replacing key with value when using &quot;{kv}&quot; in -r (--replacement) (only for sequence name)
+##       --nr-width int           minimum width for {nr} in flag -r/--replacement. e.g., formatting &quot;1&quot; to &quot;001&quot; by --nr-width 3 (default 1)
+##   -p, --pattern string         search regular expression
+##   -r, --replacement string     replacement. supporting capture variables.  e.g. $1 represents the text of the first submatch. ATTENTION: for *nix OS, use SINGLE quote NOT double quotes or use the \ escape character. Record number is also supported by &quot;{nr}&quot;.use ${1} instead of $1 when {kv} given!
+## 
+## Global Flags:
+##       --alphabet-guess-seq-length int   length of sequence prefix of the first FASTA record based on which seqkit guesses the sequence type (0 for whole seq) (default 10000)
+##       --id-ncbi                         FASTA head is NCBI-style, e.g. &gt;gi|110645304|ref|NC_002516.2| Pseud...
+##       --id-regexp string                regular expression for parsing ID (default &quot;^(\\S+)\\s?&quot;)
+##       --infile-list string              file of input files list (one file per line), if given, they are appended to files from cli arguments
+##   -w, --line-width int                  line width when outputting FASTA format (0 for no wrap) (default 60)
+##   -o, --out-file string                 out file (&quot;-&quot; for stdout, suffix .gz for gzipped out) (default &quot;-&quot;)
+##       --quiet                           be quiet and do not show extra information
+##   -t, --seq-type string                 sequence type (dna|rna|protein|unlimit|auto) (for auto, it automatically detect by the first sequence) (default &quot;auto&quot;)
+##   -j, --threads int                     number of CPUs. can also set with environment variable SEQKIT_THREADS) (default 4)</code></pre>
+</div>
+<p>Replace name by regular expression:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit replace --pattern &quot;-&quot; --replacement &quot;_&quot; tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## &gt;GENE_1
+## ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
+## GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
+## CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
+## TTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTT
+## CGTCCGGGTGTGACCGAAAGGTAAG
+## &gt;GENE_2
+## ATGGAGAGCCTTGTCCCTGGTTTCAACGAGAAAACACACGTCCAACTCAGTTTGCCTGTT
+## TTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGTCTTATCA
+## GAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGCGTT
+## TTGCCTCAACTTGAACAGCCCTATGTGTTCATCAAACGTTCGGATGCTCGAA
+## &gt;GENE_3
+## ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACC
+## AGAACTCAATTACCCCCTGCATACACTAATTCTTTCACACGTGGTGTTTATTACCCTGAC
+## AAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGACTTGTTCTTACCTTTCTTTTCC
+## AATGTTACTTGGTTCCATGCTATACATGTCTCTGGGACCAATGGTACTAAGAGGTTTGAT
+## AACCCTGTCCTACCATTTAATGATGGTGTTTATTTTGCTTCCACTGAGAAGTCTAACATA
+## ATAAGAGGCTGGATTTTTGGTACTACTTTAGATTC
+## &gt;GENE_4
+## ATGGATTTGTTTATGAGAATCTTCACAATTGGAACTGTAACTTTGAAGCAAGGTGAAATC
+## AAGGATGCTACTCCTTCAGATTTTGTTCGCGCTACTGCAACGATACCGATACAAGCCTCA
+## CTCCCTTTCGGATGGCTTATTGTTGGCGTTGCACTTCTTGCTG
+## &gt;GENE_5
+## ATGTACTCATTCGTTTCGGAAGAGACAGGTACGTTAATAGTTAATAGCGTACTTCTTTTT
+## CTTGCTTTCGTGGTATTCTTGC
+## &gt;GENE_6
+## ATGGCAGATTCCAACGGTACTATTACCGTTGAAGAGCTTAAAAAGCTCCTTGAACAATGG
+## AACCTAGTAATAGGTTTCCTATTCCTTACATGGATTTGTCTTCTACAATTTGCCTATGCC
+## AACAGGAATAGGTTTTTGTATATAATTAAGTTAATTTTCCTCTGGCTGT
+## &gt;GENE_7
+## ATGTTTCATCTCGTTGACTTTCAGGTTACTATAGCAGAGATATTACTAATTATTATGAGG
+## ACTTTTAAAGTTTCCAT
+## &gt;GENE_8
+## ATGAAAATTATTCTTTTCTTGGCACTGATAACACTCGCTACTTGTGAGCTTTATCACTAC
+## CAAGAGTGTGTTAGAGGTACAACAGTACTTTTAAAAGAACCTTGCTCTTCTGGAACATAC
+## GAGGGCAATTCACCATTTCATCCTCTAGCTGATAACAAATTTGCACTGACTTGCTTTAGC
+## ACTCA
+## &gt;GENE_9
+## ATGATTGAACTTTCATTAATTGACTTCTATTTGTGCTTTTTAGCCTTTCTGCTATTCCTT
+## GTTTTAATTATGCTTATTATCTTTTGGTTCTCACTTGAACTG
+## &gt;GENE_10
+## ATGAAATTTCTTGTTTTCTTAGGAATCATCACAACTGTAGCTGCATTTCACCAAGAATGT
+## AGTTTACAGTCATGTACTCAACATCAACCATATGTAGTTGATGACCCGTGTCCTATTCAC
+## TTCTATTCTAAATGGTATATTAGAGTAGGAGCTAGAAAATC</code></pre>
+</div>
+<p>Replace sequence by regular expression:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit replace --by-seq --pattern &quot;AGC&quot; --replacement &quot;---&quot; tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## &gt;GENE-1
+## ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
+## GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
+## CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
+## TTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGC---CGATCATC---ACATCTAGGTTT
+## CGTCCGGGTGTGACCGAAAGGTAAG
+## &gt;GENE-2
+## ATGGAG---CTTGTCCCTGGTTTCAACGAGAAAACACACGTCCAACTCAGTTTGCCTGTT
+## TTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGTCTTATCA
+## GAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGCGTT
+## TTGCCTCAACTTGAAC---CCTATGTGTTCATCAAACGTTCGGATGCTCGAA
+## &gt;GENE-3
+## ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACC
+## AGAACTCAATTACCCCCTGCATACACTAATTCTTTCACACGTGGTGTTTATTACCCTGAC
+## AAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGACTTGTTCTTACCTTTCTTTTCC
+## AATGTTACTTGGTTCCATGCTATACATGTCTCTGGGACCAATGGTACTAAGAGGTTTGAT
+## AACCCTGTCCTACCATTTAATGATGGTGTTTATTTTGCTTCCACTGAGAAGTCTAACATA
+## ATAAGAGGCTGGATTTTTGGTACTACTTTAGATTC
+## &gt;GENE-4
+## ATGGATTTGTTTATGAGAATCTTCACAATTGGAACTGTAACTTTGA---AAGGTGAAATC
+## AAGGATGCTACTCCTTCAGATTTTGTTCGCGCTACTGCAACGATACCGATACA---CTCA
+## CTCCCTTTCGGATGGCTTATTGTTGGCGTTGCACTTCTTGCTG
+## &gt;GENE-5
+## ATGTACTCATTCGTTTCGGAAGAGACAGGTACGTTAATAGTTAAT---GTACTTCTTTTT
+## CTTGCTTTCGTGGTATTCTTGC
+## &gt;GENE-6
+## ATGGCAGATTCCAACGGTACTATTACCGTTGAAG---TTAAAA---TCCTTGAACAATGG
+## AACCTAGTAATAGGTTTCCTATTCCTTACATGGATTTGTCTTCTACAATTTGCCTATGCC
+## AACAGGAATAGGTTTTTGTATATAATTAAGTTAATTTTCCTCTGGCTGT
+## &gt;GENE-7
+## ATGTTTCATCTCGTTGACTTTCAGGTTACTAT---AGAGATATTACTAATTATTATGAGG
+## ACTTTTAAAGTTTCCAT
+## &gt;GENE-8
+## ATGAAAATTATTCTTTTCTTGGCACTGATAACACTCGCTACTTGTG---TTTATCACTAC
+## CAAGAGTGTGTTAGAGGTACAACAGTACTTTTAAAAGAACCTTGCTCTTCTGGAACATAC
+## GAGGGCAATTCACCATTTCATCCTCT---TGATAACAAATTTGCACTGACTTGCTTT---
+## ACTCA
+## &gt;GENE-9
+## ATGATTGAACTTTCATTAATTGACTTCTATTTGTGCTTTTT---CTTTCTGCTATTCCTT
+## GTTTTAATTATGCTTATTATCTTTTGGTTCTCACTTGAACTG
+## &gt;GENE-10
+## ATGAAATTTCTTGTTTTCTTAGGAATCATCACAACTGT---TGCATTTCACCAAGAATGT
+## AGTTTACAGTCATGTACTCAACATCAACCATATGTAGTTGATGACCCGTGTCCTATTCAC
+## TTCTATTCTAAATGGTATATTAGAGTAGG---TAGAAAATC</code></pre>
+</div>
+</div>
+</div>
+<div id="order-sequence-files" class="section level2" number="3.7">
+<h2><span class="header-section-number">3.7</span> Order sequence files</h2>
+<div id="sort-sequences" class="section level3" number="3.7.1">
+<h3><span class="header-section-number">3.7.1</span> Sort sequences</h3>
+<p>Display help information for sort subcommand:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit sort --help</code></pre>
+<pre><code>## sort sequences by id/name/sequence/length.
+## 
+## By default, all records will be readed into memory.
+## For FASTA format, use flag -2 (--two-pass) to reduce memory usage. FASTQ not
+## supported.
+## 
+## Firstly, seqkit reads the sequence head and length information.
+## If the file is not plain FASTA file,
+## seqkit will write the sequences to temporary files, and create FASTA index.
+## 
+## Secondly, seqkit sorts sequence by head and length information
+## and extracts sequences by FASTA index.
+## 
+## Usage:
+##   seqkit sort [flags]
+## 
+## Flags:
+##   -b, --by-bases                by non-gap bases
+##   -l, --by-length               by sequence length
+##   -n, --by-name                 by full name instead of just id
+##   -s, --by-seq                  by sequence
+##   -G, --gap-letters string      gap letters (default &quot;- \t.&quot;)
+##   -h, --help                    help for sort
+##   -i, --ignore-case             ignore case
+##   -k, --keep-temp               keep temporary FASTA and .fai file when using 2-pass mode
+##   -N, --natural-order           sort in natural order, when sorting by IDs/full name
+##   -r, --reverse                 reverse the result
+##   -L, --seq-prefix-length int   length of sequence prefix on which seqkit sorts by sequences (0 for whole sequence) (default 10000)
+##   -2, --two-pass                two-pass mode read files twice to lower memory usage. (only for FASTA format)
+## 
+## Global Flags:
+##       --alphabet-guess-seq-length int   length of sequence prefix of the first FASTA record based on which seqkit guesses the sequence type (0 for whole seq) (default 10000)
+##       --id-ncbi                         FASTA head is NCBI-style, e.g. &gt;gi|110645304|ref|NC_002516.2| Pseud...
+##       --id-regexp string                regular expression for parsing ID (default &quot;^(\\S+)\\s?&quot;)
+##       --infile-list string              file of input files list (one file per line), if given, they are appended to files from cli arguments
+##   -w, --line-width int                  line width when outputting FASTA format (0 for no wrap) (default 60)
+##   -o, --out-file string                 out file (&quot;-&quot; for stdout, suffix .gz for gzipped out) (default &quot;-&quot;)
+##       --quiet                           be quiet and do not show extra information
+##   -t, --seq-type string                 sequence type (dna|rna|protein|unlimit|auto) (for auto, it automatically detect by the first sequence) (default &quot;auto&quot;)
+##   -j, --threads int                     number of CPUs. can also set with environment variable SEQKIT_THREADS) (default 4)</code></pre>
+</div>
+<p>Sort file by sequence name:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit sort --by-name tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## [INFO][0m read sequences ...
+## [INFO][0m 10 sequences loaded
+## [INFO][0m sorting ...
+## [INFO][0m output ...
+## &gt;GENE-1
+## ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
+## GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
+## CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
+## TTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTT
+## CGTCCGGGTGTGACCGAAAGGTAAG
+## &gt;GENE-10
+## ATGAAATTTCTTGTTTTCTTAGGAATCATCACAACTGTAGCTGCATTTCACCAAGAATGT
+## AGTTTACAGTCATGTACTCAACATCAACCATATGTAGTTGATGACCCGTGTCCTATTCAC
+## TTCTATTCTAAATGGTATATTAGAGTAGGAGCTAGAAAATC
+## &gt;GENE-2
+## ATGGAGAGCCTTGTCCCTGGTTTCAACGAGAAAACACACGTCCAACTCAGTTTGCCTGTT
+## TTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGTCTTATCA
+## GAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGCGTT
+## TTGCCTCAACTTGAACAGCCCTATGTGTTCATCAAACGTTCGGATGCTCGAA
+## &gt;GENE-3
+## ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACC
+## AGAACTCAATTACCCCCTGCATACACTAATTCTTTCACACGTGGTGTTTATTACCCTGAC
+## AAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGACTTGTTCTTACCTTTCTTTTCC
+## AATGTTACTTGGTTCCATGCTATACATGTCTCTGGGACCAATGGTACTAAGAGGTTTGAT
+## AACCCTGTCCTACCATTTAATGATGGTGTTTATTTTGCTTCCACTGAGAAGTCTAACATA
+## ATAAGAGGCTGGATTTTTGGTACTACTTTAGATTC
+## &gt;GENE-4
+## ATGGATTTGTTTATGAGAATCTTCACAATTGGAACTGTAACTTTGAAGCAAGGTGAAATC
+## AAGGATGCTACTCCTTCAGATTTTGTTCGCGCTACTGCAACGATACCGATACAAGCCTCA
+## CTCCCTTTCGGATGGCTTATTGTTGGCGTTGCACTTCTTGCTG
+## &gt;GENE-5
+## ATGTACTCATTCGTTTCGGAAGAGACAGGTACGTTAATAGTTAATAGCGTACTTCTTTTT
+## CTTGCTTTCGTGGTATTCTTGC
+## &gt;GENE-6
+## ATGGCAGATTCCAACGGTACTATTACCGTTGAAGAGCTTAAAAAGCTCCTTGAACAATGG
+## AACCTAGTAATAGGTTTCCTATTCCTTACATGGATTTGTCTTCTACAATTTGCCTATGCC
+## AACAGGAATAGGTTTTTGTATATAATTAAGTTAATTTTCCTCTGGCTGT
+## &gt;GENE-7
+## ATGTTTCATCTCGTTGACTTTCAGGTTACTATAGCAGAGATATTACTAATTATTATGAGG
+## ACTTTTAAAGTTTCCAT
+## &gt;GENE-8
+## ATGAAAATTATTCTTTTCTTGGCACTGATAACACTCGCTACTTGTGAGCTTTATCACTAC
+## CAAGAGTGTGTTAGAGGTACAACAGTACTTTTAAAAGAACCTTGCTCTTCTGGAACATAC
+## GAGGGCAATTCACCATTTCATCCTCTAGCTGATAACAAATTTGCACTGACTTGCTTTAGC
+## ACTCA
+## &gt;GENE-9
+## ATGATTGAACTTTCATTAATTGACTTCTATTTGTGCTTTTTAGCCTTTCTGCTATTCCTT
+## GTTTTAATTATGCTTATTATCTTTTGGTTCTCACTTGAACTG</code></pre>
+</div>
+<p>Sort file by sequence length:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit sort --by-length tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## [INFO][0m read sequences ...
+## [INFO][0m 10 sequences loaded
+## [INFO][0m sorting ...
+## [INFO][0m output ...
+## &gt;GENE-7
+## ATGTTTCATCTCGTTGACTTTCAGGTTACTATAGCAGAGATATTACTAATTATTATGAGG
+## ACTTTTAAAGTTTCCAT
+## &gt;GENE-5
+## ATGTACTCATTCGTTTCGGAAGAGACAGGTACGTTAATAGTTAATAGCGTACTTCTTTTT
+## CTTGCTTTCGTGGTATTCTTGC
+## &gt;GENE-9
+## ATGATTGAACTTTCATTAATTGACTTCTATTTGTGCTTTTTAGCCTTTCTGCTATTCCTT
+## GTTTTAATTATGCTTATTATCTTTTGGTTCTCACTTGAACTG
+## &gt;GENE-10
+## ATGAAATTTCTTGTTTTCTTAGGAATCATCACAACTGTAGCTGCATTTCACCAAGAATGT
+## AGTTTACAGTCATGTACTCAACATCAACCATATGTAGTTGATGACCCGTGTCCTATTCAC
+## TTCTATTCTAAATGGTATATTAGAGTAGGAGCTAGAAAATC
+## &gt;GENE-4
+## ATGGATTTGTTTATGAGAATCTTCACAATTGGAACTGTAACTTTGAAGCAAGGTGAAATC
+## AAGGATGCTACTCCTTCAGATTTTGTTCGCGCTACTGCAACGATACCGATACAAGCCTCA
+## CTCCCTTTCGGATGGCTTATTGTTGGCGTTGCACTTCTTGCTG
+## &gt;GENE-6
+## ATGGCAGATTCCAACGGTACTATTACCGTTGAAGAGCTTAAAAAGCTCCTTGAACAATGG
+## AACCTAGTAATAGGTTTCCTATTCCTTACATGGATTTGTCTTCTACAATTTGCCTATGCC
+## AACAGGAATAGGTTTTTGTATATAATTAAGTTAATTTTCCTCTGGCTGT
+## &gt;GENE-8
+## ATGAAAATTATTCTTTTCTTGGCACTGATAACACTCGCTACTTGTGAGCTTTATCACTAC
+## CAAGAGTGTGTTAGAGGTACAACAGTACTTTTAAAAGAACCTTGCTCTTCTGGAACATAC
+## GAGGGCAATTCACCATTTCATCCTCTAGCTGATAACAAATTTGCACTGACTTGCTTTAGC
+## ACTCA
+## &gt;GENE-2
+## ATGGAGAGCCTTGTCCCTGGTTTCAACGAGAAAACACACGTCCAACTCAGTTTGCCTGTT
+## TTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGTCTTATCA
+## GAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGCGTT
+## TTGCCTCAACTTGAACAGCCCTATGTGTTCATCAAACGTTCGGATGCTCGAA
+## &gt;GENE-1
+## ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
+## GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
+## CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
+## TTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTT
+## CGTCCGGGTGTGACCGAAAGGTAAG
+## &gt;GENE-3
+## ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACC
+## AGAACTCAATTACCCCCTGCATACACTAATTCTTTCACACGTGGTGTTTATTACCCTGAC
+## AAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGACTTGTTCTTACCTTTCTTTTCC
+## AATGTTACTTGGTTCCATGCTATACATGTCTCTGGGACCAATGGTACTAAGAGGTTTGAT
+## AACCCTGTCCTACCATTTAATGATGGTGTTTATTTTGCTTCCACTGAGAAGTCTAACATA
+## ATAAGAGGCTGGATTTTTGGTACTACTTTAGATTC</code></pre>
+</div>
+</div>
+<div id="shuffle-sequences" class="section level3" number="3.7.2">
+<h3><span class="header-section-number">3.7.2</span> Shuffle sequences</h3>
+<p>Display help information for shuffle subcommand:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>seqkit shuffle --help</code></pre>
+<pre><code>## shuffle sequences.
+## 
+## By default, all records will be readed into memory.
+## For FASTA format, use flag -2 (--two-pass) to reduce memory usage. FASTQ not
+## supported.
+## 
+## Firstly, seqkit reads the sequence IDs. If the file is not plain FASTA file,
+## seqkit will write the sequences to temporary files, and create FASTA index.
+## 
+## Secondly, seqkit shuffles sequence IDs and extract sequences by FASTA index.
+## 
+## Usage:
+##   seqkit shuffle [flags]
+## 
+## Flags:
+##   -h, --help            help for shuffle
+##   -k, --keep-temp       keep temporary FASTA and .fai file when using 2-pass mode
+##   -s, --rand-seed int   rand seed for shuffle (default 23)
+##   -2, --two-pass        two-pass mode read files twice to lower memory usage. (only for FASTA format)
+## 
+## Global Flags:
+##       --alphabet-guess-seq-length int   length of sequence prefix of the first FASTA record based on which seqkit guesses the sequence type (0 for whole seq) (default 10000)
+##       --id-ncbi                         FASTA head is NCBI-style, e.g. &gt;gi|110645304|ref|NC_002516.2| Pseud...
+##       --id-regexp string                regular expression for parsing ID (default &quot;^(\\S+)\\s?&quot;)
+##       --infile-list string              file of input files list (one file per line), if given, they are appended to files from cli arguments
+##   -w, --line-width int                  line width when outputting FASTA format (0 for no wrap) (default 60)
+##   -o, --out-file string                 out file (&quot;-&quot; for stdout, suffix .gz for gzipped out) (default &quot;-&quot;)
+##       --quiet                           be quiet and do not show extra information
+##   -t, --seq-type string                 sequence type (dna|rna|protein|unlimit|auto) (for auto, it automatically detect by the first sequence) (default &quot;auto&quot;)
+##   -j, --threads int                     number of CPUs. can also set with environment variable SEQKIT_THREADS) (default 4)</code></pre>
+</div>
+<p>Shuffle sequences:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># set seed to reproduce result
+seqkit shuffle --rand-seed 1701 tutorial/data/example/genes.fasta</code></pre>
+<pre><code>## [INFO][0m read sequences ...
+## [INFO][0m 10 sequences loaded
+## [INFO][0m shuffle ...
+## [INFO][0m output ...
+## &gt;GENE-5
+## ATGTACTCATTCGTTTCGGAAGAGACAGGTACGTTAATAGTTAATAGCGTACTTCTTTTT
+## CTTGCTTTCGTGGTATTCTTGC
+## &gt;GENE-3
+## ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACC
+## AGAACTCAATTACCCCCTGCATACACTAATTCTTTCACACGTGGTGTTTATTACCCTGAC
+## AAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGACTTGTTCTTACCTTTCTTTTCC
+## AATGTTACTTGGTTCCATGCTATACATGTCTCTGGGACCAATGGTACTAAGAGGTTTGAT
+## AACCCTGTCCTACCATTTAATGATGGTGTTTATTTTGCTTCCACTGAGAAGTCTAACATA
+## ATAAGAGGCTGGATTTTTGGTACTACTTTAGATTC
+## &gt;GENE-8
+## ATGAAAATTATTCTTTTCTTGGCACTGATAACACTCGCTACTTGTGAGCTTTATCACTAC
+## CAAGAGTGTGTTAGAGGTACAACAGTACTTTTAAAAGAACCTTGCTCTTCTGGAACATAC
+## GAGGGCAATTCACCATTTCATCCTCTAGCTGATAACAAATTTGCACTGACTTGCTTTAGC
+## ACTCA
+## &gt;GENE-6
+## ATGGCAGATTCCAACGGTACTATTACCGTTGAAGAGCTTAAAAAGCTCCTTGAACAATGG
+## AACCTAGTAATAGGTTTCCTATTCCTTACATGGATTTGTCTTCTACAATTTGCCTATGCC
+## AACAGGAATAGGTTTTTGTATATAATTAAGTTAATTTTCCTCTGGCTGT
+## &gt;GENE-9
+## ATGATTGAACTTTCATTAATTGACTTCTATTTGTGCTTTTTAGCCTTTCTGCTATTCCTT
+## GTTTTAATTATGCTTATTATCTTTTGGTTCTCACTTGAACTG
+## &gt;GENE-1
+## ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
+## GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
+## CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
+## TTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTT
+## CGTCCGGGTGTGACCGAAAGGTAAG
+## &gt;GENE-2
+## ATGGAGAGCCTTGTCCCTGGTTTCAACGAGAAAACACACGTCCAACTCAGTTTGCCTGTT
+## TTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGTCTTATCA
+## GAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGCGTT
+## TTGCCTCAACTTGAACAGCCCTATGTGTTCATCAAACGTTCGGATGCTCGAA
+## &gt;GENE-10
+## ATGAAATTTCTTGTTTTCTTAGGAATCATCACAACTGTAGCTGCATTTCACCAAGAATGT
+## AGTTTACAGTCATGTACTCAACATCAACCATATGTAGTTGATGACCCGTGTCCTATTCAC
+## TTCTATTCTAAATGGTATATTAGAGTAGGAGCTAGAAAATC
+## &gt;GENE-4
+## ATGGATTTGTTTATGAGAATCTTCACAATTGGAACTGTAACTTTGAAGCAAGGTGAAATC
+## AAGGATGCTACTCCTTCAGATTTTGTTCGCGCTACTGCAACGATACCGATACAAGCCTCA
+## CTCCCTTTCGGATGGCTTATTGTTGGCGTTGCACTTCTTGCTG
+## &gt;GENE-7
+## ATGTTTCATCTCGTTGACTTTCAGGTTACTATAGCAGAGATATTACTAATTATTATGAGG
+## ACTTTTAAAGTTTCCAT</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="exercises" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Exercises</h1>
+<p>The exercies below are designed to strengthen your knowledge of using SeqKit for FASTA/Q parsing. The solution to each problem is blurred, only after attempting to solve the problem yourself should you look at the solution. Should you need any help, please ask one of the instructors.</p>
+<p>Create a directory to store the output files from each exercise:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>mkdir exercises
+mkdir exercises/covid19
+mkdir exercises/malaria
+mkdir exercises/leishmania</code></pre>
+</div>
+<div id="coronavirus" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Coronavirus</h2>
+<blockquote>
+<p>Coronavirus disease (COVID-19) is an infectious disease caused by the SARS-CoV-2 virus. Most people infected with the virus will experience mild to moderate respiratory illness and recover without requiring special treatment. However, some will become seriously ill and require medical attention.</p>
+</blockquote>
+<p>The <code>covid19</code> directory contains the COVID-19 reference genome in FASTA format. This was downloaded from the COVID-19 <a href="https://covid-19.ensembl.org/index.html">portal</a> maintained by the Ensembl genome database. Using the SeqKit software, answer the follow questions about the viral genome:</p>
+<ol style="list-style-type: decimal">
+<li>How long is the genome?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># 29,903
+seqkit stats tutorial/data/covid19/GCA_009858895.3.fasta &gt; exercises/covid19/genome-length.txt</code></pre>
+</div>
+</div>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>What is the GC content of the genome?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># 37.97
+seqkit fx2tab --name --gc tutorial/data/covid19/GCA_009858895.3.fasta &gt; exercises/covid19/genome-gc.txt</code></pre>
+</div>
+</div>
+</div>
+<ol start="3" style="list-style-type: decimal">
+<li>How many “GAGAGA” subsequences are in the genome?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># 12
+seqkit locate --pattern &quot;GAGAGA&quot; tutorial/data/covid19/GCA_009858895.3.fasta | tail -n +2 | wc -l &gt; exercises/covid19/genome-pattern.txt</code></pre>
+</div>
+</div>
+</div>
+<ol start="4" style="list-style-type: decimal">
+<li>Translate the DNA sequence to its corresponding protein sequence:</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>seqkit translate tutorial/data/covid19/GCA_009858895.3.fasta | head  &gt; exercises/covid19/genome-protein.txt</code></pre>
+</div>
+</div>
+</div>
+<ol start="5" style="list-style-type: decimal">
+<li>How many STOP characters are in the protein sequence?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># 116
+seqkit translate tutorial/data/covid19/GCA_009858895.3.fasta | grep --count &quot;*&quot; &gt; exercises/covid19/genome-stop.txt</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="malaria" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Malaria</h2>
+<blockquote>
+<p><em>Plasmodium falciparum</em> is the malarial parasite most dangerous to humans, accounting for over 90% of all malarial deaths, and was the first species of the genus Plasmodium to be sequenced. Its genome is notable for an exceptionally low GC content of under 20%. In other respects, the genome has a similar size (23.3 Mb) and gene count (about 5300) to other species of malaria.</p>
+</blockquote>
+<p>The <code>malaria</code> directory contains a FASTA file of all the cDNA sequences in the parasite genome. The file was downloaded from the <em>Plasmodium falciparum</em> <a href="https://protists.ensembl.org/Plasmodium_falciparum/Info/Index">portal</a> maintained by the Ensembl genome database. Using the SeqKit software, answer the follow questions about the parasite genes:</p>
+<ol style="list-style-type: decimal">
+<li>How many genes are in the genome?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># 5,515
+seqkit stats tutorial/data/malaria/Plasmodium_falciparum.ASM276v2.cdna.all.fa &gt; exercises/malaria/total-genes.txt</code></pre>
+</div>
+</div>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>What is the name of the longest gene?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># PF3D7_0628100
+seqkit sort --by-length --reverse tutorial/data/malaria/Plasmodium_falciparum.ASM276v2.cdna.all.fa | seqkit head -n 1 | seqkit seq --name &gt; exercises/malaria/longest-gene.txt</code></pre>
+<pre><code>## [INFO][0m read sequences ...
+## [INFO][0m 5515 sequences loaded
+## [INFO][0m sorting ...
+## [INFO][0m output ...</code></pre>
+</div>
+</div>
+</div>
+<ol start="3" style="list-style-type: decimal">
+<li>What is the range of GC content across all genes? Use the watch subcommand to help you answer this question.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># 14.90 to 50.98
+seqkit watch --fields GC --img exercises/malaria/genes-gc.png tutorial/data/malaria/Plasmodium_falciparum.ASM276v2.cdna.all.fa</code></pre>
+<pre><code>## [2J                                      GC content                                
+## 0.113┤          _                                
+## 0.110┤       _  █                                
+## 0.101┤       █ _█                                
+## 0.093┤       █_██_                               
+## 0.081┤       █████_                              
+##      │       ██████                              
+## 0.072┤      _██████_                             
+## 0.062┤      ████████__                           
+## 0.051┤     _██████████                           
+## 0.046┤     ███████████__                         
+##      │     █████████████                         
+## 0.026┤    _█████████████__                       
+## 0.022┤    ████████████████___                    
+## 0.011┤   _███████████████████___                 
+##      │──────────────────────────────────────────────────────────────────────────
+##      │1111111222222222223333333333334444444444445                         
+##      │4567899012345567890012345567890012345567890                         
+##      │...........................................                         
+##      │9764319864310865320875420976421976431986531                         
+##      │Count: 5515 Mean: 25.03 Stdev: 4.18 Min: 14.90 Max: 50.98 Precision: 2 Bins: 43</code></pre>
+</div>
+</div>
+</div>
+<ol start="4" style="list-style-type: decimal">
+<li>Extract the name and sequence of the gene which causes resistance to the antimalarial drug chloroquine:</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># Search sequences mentioning &quot;chloroquine&quot; and extract the sequence by name
+grep &quot;chloroquine&quot; tutorial/data/malaria/Plasmodium_falciparum.ASM276v2.cdna.all.fa
+seqkit grep --pattern &quot;CAD50842&quot; tutorial/data/malaria/Plasmodium_falciparum.ASM276v2.cdna.all.fa &gt; exercises/malaria/drug-gene.txt</code></pre>
+<pre><code>## &gt;CAD50842 cdna chromosome:ASM276v2:7:403222:406317:1 gene:PF3D7_0709000 gene_biotype:protein_coding transcript_biotype:protein_coding description:chloroquine resistance transporter</code></pre>
+</div>
+</div>
+</div>
+<ol start="5" style="list-style-type: decimal">
+<li>Extract subsequences of the chloroquine resistance gene in sliding windows (step size = 1, window size = 10) and produce a histogram of the GC content:</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>seqkit grep --pattern &quot;CAD50842&quot; tutorial/data/malaria/Plasmodium_falciparum.ASM276v2.cdna.all.fa | seqkit sliding --step 1 --window 10 | seqkit watch --fields GC --img exercises/malaria/gc-hist.png</code></pre>
+<pre><code>## [2J                                      GC content                                
+## 0.041┤                        ______                                    
+## 0.040┤                  ______│████│                                    
+##      │                  │████││████│                                    
+##      │                  │████││████│                                    
+##      │                  │████││████│                                    
+## 0.029┤                  │████││████│      ______                        
+##      │                  │████││████│      │████│                        
+## 0.022┤      ______      │████││████│      │████│                        
+##      │      │████│      │████││████│      │████│                        
+##      │      │████│      │████││████│      │████│                        
+## 0.014┤      │████│      │████││████│      │████│______                  
+##      │      │████│      │████││████│      │████││████│                  
+## 0.006┤______│████│      │████││████│      │████││████│                  
+## 0.006┤│████││████│      │████││████│      │████││████│      ______      
+##      │──────────────────────────────────────────────────────────────────────────
+##      │0     6     1     1     2     3     3     4     5     5     6       
+##      │.     .     2     9     5     1     8     4     0     7     3       
+##      │0     3     .     .     .     .     .     .     .     .     .       
+##      │0     6     7     1     5     8     2     5     9     3     6       
+##      │Count: 1266 Mean: 28.4 Stdev: 14.3 Min: 0.0 Max: 70.0 Precision: 1 Bins: 11</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="leishmaniasis" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> Leishmaniasis</h2>
+<blockquote>
+<p>Leishmania is a Tryanosomatid protozoa and is the parasite responsible for the disease Leishmaniasis. Leishmania is transmitted by the bite of certain species of sand fly and affects the populations of 88 tropical and sub-tropical countries worldwide. The symptoms are cutaneous and muco-cutaneous lesions initially around the bite, the parasite can also migrate causing visceral leishmaniasis affecting the haemopoietic organs.</p>
+</blockquote>
+<p>The <code>leishmania</code> directory contains the <em>Leishmania major</em> reference genome and gene sequences in FASTA format. The file was downloaded from the <em>Plasmodium falciparum</em> <a href="http://protists.ensembl.org/Leishmania_major/Info/Index">portal</a> maintained by the Ensembl genome database. Using the SeqKit software, answer the follow questions about the parasite genome:</p>
+<ol style="list-style-type: decimal">
+<li>What is the total number of polar amino acids (SCNBQZTY) in the protein sequences?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># 2,706
+seqkit translate tutorial/data/leishmania/Leishmania_major.ASM272v2.cdna.all.fa | grep -c &quot;[SCNBQZTY]&quot; &gt; exercises/leishmania/total-polar.txt</code></pre>
+</div>
+</div>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>How many genes have duplicate sequences and what are their names?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># 2 CBZ11846, CBZ11847
+# 2 CBZ11883, CBZ11882
+seqkit rmdup --by-seq --ignore-case --dup-num-file exercises/leishmania/dupnum.txt --out-file exercises/leishmania/dupfile.txt tutorial/data/leishmania/Leishmania_major.ASM272v2.cdna.all.fa
+cat exercises/leishmania/dupnum.txt</code></pre>
+<pre><code>## [INFO][0m 2 duplicated records removed
+## 2    CBZ11883, CBZ11882
+## 2    CBZ11846, CBZ11847</code></pre>
+</div>
+</div>
+</div>
+<ol start="3" style="list-style-type: decimal">
+<li>What is the name of the 28th longest gene?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># CBZ11909
+seqkit sort --by-length --reverse tutorial/data/leishmania/Leishmania_major.ASM272v2.cdna.all.fa | seqkit range --range 28:28 | seqkit seq --name &gt; exercises/leishmania/name-28-long.txt</code></pre>
+<pre><code>## [INFO][0m read sequences ...
+## [INFO][0m 202 sequences loaded
+## [INFO][0m sorting ...
+## [INFO][0m output ...</code></pre>
+</div>
+</div>
+</div>
+<ol start="4" style="list-style-type: decimal">
+<li>How many SaCas9 PAM sites (NGRRT or NGRRN) are present on chromosome 1?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># 38,139
+seqkit grep --pattern &quot;1&quot; tutorial/data/leishmania/Leishmania_major.ASM272v2.dna.toplevel.fa | seqkit locate --pattern &quot;NGRRT|NGRRN&quot; --degenerate | tail -n +2 | wc -l &gt; exercises/leishmania/cas9-sites.txt</code></pre>
+</div>
+</div>
+</div>
+<ol start="5" style="list-style-type: decimal">
+<li>What is the average GC content of the regions 20 bases upstream of the SaCas9 PAM sites?</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># 63.1
+seqkit grep --pattern &quot;1&quot; tutorial/data/leishmania/Leishmania_major.ASM272v2.dna.toplevel.fa | seqkit locate --bed --pattern &quot;NGRRT|NGRRN&quot; --degenerate &gt; exercises/leishmania/cas9-sites.bed
+seqkit subseq --bed exercises/leishmania/cas9-sites.bed --only-flank --up-stream 20 tutorial/data/leishmania/Leishmania_major.ASM272v2.dna.toplevel.fa | seqkit watch --fields GC --img exercises/leishmania/cas9-sites-gc.png</code></pre>
+<pre><code>## [INFO][0m read BED file ...
+## [INFO][0m 38139 BED features loaded
+## [INFO][0m create FASTA index for tutorial/data/leishmania/Leishmania_major.ASM272v2.dna.toplevel.fa
+## [2J                                      GC content                                
+## 0.074┤                         _              
+##      │                         █              
+## 0.065┤                         █ _            
+##      │                         █ █            
+##      │                         █ █            
+## 0.049┤                       _ █ █            
+## 0.044┤                      _█ █ █ _          
+##      │                      ██ █ █ █          
+## 0.034┤                   _  ██ █ █ █          
+##      │                   █  ██ █ █ █          
+## 0.024┤                   █  ██ █ █ █ _        
+## 0.017┤                 _ █  ██_█ █ █ █        
+##      │                 █ █  ████ █ █ █        
+## 0.008┤               _ █ █ _████ █ █ █        
+##      │──────────────────────────────────────────────────────────────────────────
+##      │0257111122223333444455556666777788889999                            
+##      │....025702570257025702570257025702570257                            
+##      │0505....................................                            
+##      │0000050505050505050505050505050505050505                            
+##      │Count: 38139 Mean: 63.1 Stdev: 11.3 Min: 0.0 Max: 100.0 Precision: 1 Bins: 40</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<footer class="footer">
+<div class="container footer-container">
+<div class="row">
+
+<div class="footer-left col-sm-6">
+<p class="small">
+<b>2022</b> • <a href="https://www.zifornd.com">Zifo</a>
+</p>
+</div>
+
+<div class="footer-right col-sm-6">
+<p>
+<span>
+  <span class="footericon" style="padding-right:4px; padding-left:4px">
+    <a href="https://www.zifornd.com">
+      <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 496 512"><path d="M248 8C111.03 8 0 119.03 0 256s111.03 248 248 248 248-111.03 248-248S384.97 8 248 8zm82.29 357.6c-3.9 3.88-7.99 7.95-11.31 11.28-2.99 3-5.1 6.7-6.17 10.71-1.51 5.66-2.73 11.38-4.77 16.87l-17.39 46.85c-13.76 3-28 4.69-42.65 4.69v-27.38c1.69-12.62-7.64-36.26-22.63-51.25-6-6-9.37-14.14-9.37-22.63v-32.01c0-11.64-6.27-22.34-16.46-27.97-14.37-7.95-34.81-19.06-48.81-26.11-11.48-5.78-22.1-13.14-31.65-21.75l-.8-.72a114.792 114.792 0 0 1-18.06-20.74c-9.38-13.77-24.66-36.42-34.59-51.14 20.47-45.5 57.36-82.04 103.2-101.89l24.01 12.01C203.48 89.74 216 82.01 216 70.11v-11.3c7.99-1.29 16.12-2.11 24.39-2.42l28.3 28.3c6.25 6.25 6.25 16.38 0 22.63L264 112l-10.34 10.34c-3.12 3.12-3.12 8.19 0 11.31l4.69 4.69c3.12 3.12 3.12 8.19 0 11.31l-8 8a8.008 8.008 0 0 1-5.66 2.34h-8.99c-2.08 0-4.08.81-5.58 2.27l-9.92 9.65a8.008 8.008 0 0 0-1.58 9.31l15.59 31.19c2.66 5.32-1.21 11.58-7.15 11.58h-5.64c-1.93 0-3.79-.7-5.24-1.96l-9.28-8.06a16.017 16.017 0 0 0-15.55-3.1l-31.17 10.39a11.95 11.95 0 0 0-8.17 11.34c0 4.53 2.56 8.66 6.61 10.69l11.08 5.54c9.41 4.71 19.79 7.16 30.31 7.16s22.59 27.29 32 32h66.75c8.49 0 16.62 3.37 22.63 9.37l13.69 13.69a30.503 30.503 0 0 1 8.93 21.57 46.536 46.536 0 0 1-13.72 32.98zM417 274.25c-5.79-1.45-10.84-5-14.15-9.97l-17.98-26.97a23.97 23.97 0 0 1 0-26.62l19.59-29.38c2.32-3.47 5.5-6.29 9.24-8.15l12.98-6.49C440.2 193.59 448 223.87 448 256c0 8.67-.74 17.16-1.82 25.54L417 274.25z"></path>
+      </svg>
+    </a>
+    </span>
+    <span class="footericon" style="padding-right:4px; padding-left:4px">
+      <a href="https://twitter.com/zifornd"><svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path>
+    </svg>
+    </a>
+    </span>
+    <span class="footericon" style="padding-left:4px">
+      <a href="https://www.linkedin.com/company/zifo-technologies">
+        <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path>
+        </svg>
+    </a>
+    </span>
+  </span>
+</p>
+</div>
+
+</div>
+</div>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

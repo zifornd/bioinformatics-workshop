@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Data visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="James Ashmore • 20-Sep-2022" />
+    <script src="libs/header-attrs-2.16/header-attrs.js"></script>
+    <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+    <link id="font-awesome-1-attachment" rel="attachment" href="libs/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+    <link rel="stylesheet" href="assets/slide.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Data visualization
+]
+.author[
+### <b>James Ashmore</b> • 20-Sep-2022
+]
+.institute[
+### Zifo RnD Solutions
+]
+
+---
+
+exclude: true
+count: false
+
+
+&lt;link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;amp;subset=latin-ext" rel="stylesheet"&gt;
+&lt;link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"&gt;
+
+
+
+
+
+&lt;!-- ------------ Only edit title, subtitle &amp; author above this ------------ --&gt;
+
+
+```r
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+```
+
+
+
+---
+
+## What is data visualization?
+
+* This might seem a *trivial* question, but what would you answer?
+
+* Technical writer Kate Brush gives a great one-line definition:
+
+&gt; Data visualization is the practice of translating information into a visual context, such as a map or graph, to make data easier for the human brain to understand and pull insights from
+
+&lt;br&gt;
+
+.pull-left-50[
+
+* The important point here is that data visualization is for **humans**
+
+* The human brain is still better than any computer at identifying patterns or outliers
+
+* The advent of genomics resulted in many new types of data and file formats
+
+* New data types meant researchers had to come up with new visualization methods
+
+]
+
+.pull-right-50[
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/visualization/xkcd-self-driving.png" alt="xkcd: Self Driving" width="75%" /&gt;
+&lt;p class="caption"&gt;xkcd: Self Driving&lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+---
+
+## Why is data visualization important?
+
+.pull-left-50[
+
+* Data visualization is useful for a variety of reasons:
+
+  * Data cleaning
+  * Exploring data structure
+  * Detecting outliers and unusual groups
+  * Identify trends and clusters
+  * Presenting results
+
+* By its very nature genomic data is often very **large** and **complex**
+
+* There is also a huge variety of different genomic data **types**
+
+* How can we *effectively* visualize all of this data?
+
+**Genome browsers to the rescue!**
+
+]
+
+.pull-right-50[
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/visualization/genomic-data.png" alt="Common data types" width="100%" /&gt;
+&lt;p class="caption"&gt;Common data types&lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+
+---
+
+## What is a genome browser?
+
+* In bioinformatics, a **genome browser** is a graphical interface for displaying genomes
+
+* Genome browsers enable researchers to browse genomes alongside **genomic data**
+
+* The types of genomic data usually displayed:
+
+  * Genotyping
+  * Gene expression
+  * Epigenetics
+
+* A large number of genome browsers are available, many of them **free**
+
+* The best known genome browsers:
+
+  * Online genome browsers:
+  
+      * [UCSC Genome Browser](https://genome.ucsc.edu)
+      * [Ensembl Genome Browser](https://www.ensembl.org/index.html)
+      * [NCBI Genome Data Viewer](https://www.ncbi.nlm.nih.gov/genome/gdv/)
+  
+  * Desktop genome browsers:
+  
+      * [Integrative Genomics Viewer](https://software.broadinstitute.org/software/igv/)
+      * [Integrated Genome Browser](https://www.bioviz.org)
+
+---
+
+## How do genome browsers work?
+
+&lt;br&gt;
+
+&lt;img src="data/visualization/coord-system.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+
+* Genome browsers use a **coordinate system** to display genomic data
+
+  * Data is displayed on tracks using **glyphs**
+  
+  * Coordinates determine the **position** of glyphs
+  
+      * Chromosome name
+      * Start position
+      * End position
+      
+  * Glyphs can accommodate additional information
+  
+      * Score (e.g., read coverage)
+      * Relationship (e.g., exons within a transcript)
+      * Variation (e.g., SNPs and indels)
+
+---
+
+## Genome coordinate systems
+
+&lt;br&gt;
+
+&lt;img src="data/visualization/zero-vs-one.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+
+
+* Confusingly, there are actually *two* coordinates systems:
+
+.pull-left-50[
+
+* 0-based
+  * Reference starts at zero
+  * Numbers *between* nucleotides
+  * Ensembl Genome Browser
+  * File formats: `BED` `BAM`
+
+]
+
+.pull-right-50[
+  
+* 1-based
+  * Reference starts at one
+  * Numbers nucleotides *directly*
+  * UCSC Genome Browser
+  * File formats: `GFF` `SAM` `VCF`
+      
+]
+
+---
+
+## Genomic file formats
+
+* When loading a data file, genome browsers use the file extension to determine the file format
+
+* The file format sets the data type and glyph display options:
+
+  * Segmented copy number: `seg`
+
+  * Sequence alignments: `bed` `cram`
+
+  * Genome annotations: `bed` `gtf` `gff3` `psl` `bigbed`
+
+  * Quantitative data: `wig` `bedgraph` `bigwig` `tdf`
+  
+&lt;br&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/visualization/igv-types.jpg" alt="Common glyph display options" width="70%%" /&gt;
+&lt;p class="caption"&gt;Common glyph display options&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Online genome browsers
+
+### UCSC
+
+&lt;iframe src="https://genome.ucsc.edu" width="100%" height="500px" data-external="1"&gt;&lt;/iframe&gt;
+
+---
+
+## Online genome browsers
+
+### Ensembl
+
+&lt;iframe src="https://www.ensembl.org/index.html" width="100%" height="500px" data-external="1"&gt;&lt;/iframe&gt;
+
+---
+
+## Desktop genome browsers
+
+### IGV
+
+&lt;iframe src="https://software.broadinstitute.org/software/igv/" width="100%" height="500px" data-external="1"&gt;&lt;/iframe&gt;
+
+---
+
+## Desktop genome browsers
+
+### IGB
+
+&lt;iframe src="https://www.bioviz.org" width="100%" height="500px" data-external="1"&gt;&lt;/iframe&gt;
+
+---
+
+## Integrative Genomics Viewer
+
+### Overview
+
+.pull-left-70[
+
+* Enables intuitive real-time exploration of diverse, large-scale genomic data
+
+* Supports flexible integration of a wide range of genomic data types including:
+
+  * Aligned sequence reads
+  * Mutations
+  * Copy number
+  * RNA interference screens
+  * Gene expression
+  * Methylation
+  * Genomic annotations 
+
+* Navigation allows the user to zoom and pan seamlessly across the genome
+
+* Data can be loaded from local or remote sources, including cloud-based resources
+
+]
+
+.pull-right-30[
+
+&lt;img src="data/visualization/igv-logo.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+
+## Integrative Genomics Viewer
+
+&lt;br&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/visualization/igv-layout.jpeg" alt="The IGV application window" width="80%%" /&gt;
+&lt;p class="caption"&gt;The IGV application window&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Integrative Genomics Viewer
+
+&lt;br&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/visualization/igv-coverage.webp" alt="Coverage plot and alignments from paired-end reads for a matched tumor/normal pair" width="90%" /&gt;
+&lt;p class="caption"&gt;Coverage plot and alignments from paired-end reads for a matched tumor/normal pair&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Integrative Genomics Viewer
+
+&lt;br&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/visualization/igv-alignment.jpeg" alt="Read alignment views at 20 kb and base pair resolution" width="80%" /&gt;
+&lt;p class="caption"&gt;Read alignment views at 20 kb and base pair resolution&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Integrative Genomics Viewer
+
+&lt;br&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/visualization/igv-attribute.jpeg" alt="The attribute panel displays a color-coded matrix of phenotypic and clinical data" width="52%" /&gt;
+&lt;p class="caption"&gt;The attribute panel displays a color-coded matrix of phenotypic and clinical data&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Public data examples
+
+### https://doi.org/10.1016/j.cell.2016.12.016
+
+&lt;br&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/visualization/example-figure-1.png" alt="Snapshot of genomic data at a candidate genomic locus" width="61%" /&gt;
+&lt;p class="caption"&gt;Snapshot of genomic data at a candidate genomic locus&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Public data examples
+
+### https://doi.org/10.7554/eLife.22631
+
+&lt;br&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/visualization/example-figure-2.jpg" alt="Genomic snapshots illustrating ChIP-seq signal before and after treatment" width="65%" /&gt;
+&lt;p class="caption"&gt;Genomic snapshots illustrating ChIP-seq signal before and after treatment&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Summary
+
+* Data visualization is the process of transforming data into a visual context, like a map or graph
+
+* Data visualization makes it easier for the human brain to understand and identify patterns
+
+* The advent of genomics meant new data types were created which had to be visualized
+
+* Genome browsers allow you to display genomic data from multiple technologies
+
+* There are lots of genome browsers, some available online and others as desktop applications
+
+* Ultimately, the best way to understand genome browsers is to explore them hands-on
+
+---
+
+## Resources
+
+* [Data File Formats](https://genome.ucsc.edu/FAQ/FAQformat.html)
+
+* [IGV User Guide](https://software.broadinstitute.org/software/igv/UserGuide)
+
+* [Ensembl Tutorials](https://www.ensembl.org/info/website/tutorials/index.html)
+
+* [UCSC Training](https://genome.ucsc.edu/training/)
+
+&lt;!-- --------------------- Do not edit this and below --------------------- --&gt;
+
+---
+name: end_slide
+class: end-slide, middle
+count: false
+
+# Thank you. Questions?
+
+
+.end-text[
+&lt;p class="smaller"&gt;
+&lt;span class="small" style="line-height: 1.2;"&gt;Graphics from &lt;/span&gt;&lt;img src="./assets/freepik.jpg" style="max-height:20px; vertical-align:middle;"&gt;&lt;br&gt;
+Created: 20-Sep-2022 • James Ashmore • &lt;a href="https://www.zifornd.com"&gt;Zifo&lt;/a&gt;
+&lt;/p&gt;
+]
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="assets/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "4:3",
+"highlightLanguage": "r",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

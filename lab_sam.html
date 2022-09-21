@@ -1,0 +1,2299 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Samtools</title>
+
+<script src="lab_sam_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lab_sam_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="lab_sam_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lab_sam_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lab_sam_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="lab_sam_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="lab_sam_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="lab_sam_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="lab_sam_files/navigation-1.1/tabsets.js"></script>
+<link href="lab_sam_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="lab_sam_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="lab_sam_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="lab_sam_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="lab_sam_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+#TOC {
+  display: none !important;
+}
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img src="assets/logo.svg" id="logo" style="height:20px;margin:0;"/></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="home_schedule.html">Schedule</a>
+</li>
+<li>
+  <a href="home_content.html">Content</a>
+</li>
+<li>
+  <a href="home_precourse.html">Precourse</a>
+</li>
+<li>
+  <a href="home_info.html">Info</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Samtools</h1>
+<h4 class="date">21 September, 2022</h4>
+
+</div>
+
+
+<!-- rmd lab header -->
+<p><br></p>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<div id="what-is-the-sam-file-format" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> What is the SAM file format?</h2>
+<p>From Wikipedia, the free encyclopedia:</p>
+<blockquote>
+<p>Sequence Alignment Map (SAM) is a text-based format originally for storing biological sequences aligned to a reference sequence developed by Heng Li and Bob Handsaker et al.[1] It was developed when the 1000 Genomes Project wanted to move away from the MAQ mapper format and decided to design a new format. The overall TAB-delimited flavour of the format came from an earlier format inspired by BLAT’s PSL. The name of SAM came from Gabor Marth from University of Utah, who originally had a format under the same name but with a different syntax more similar to a BLAST output.[2] It is widely used for storing data, such as nucleotide sequences, generated by next generation sequencing technologies, and the standard has been broadened to include unmapped sequences.[3] The format supports short and long reads (up to 128 Mbp) produced by different sequencing platforms and is used to hold mapped data within the Genome Analysis Toolkit (GATK) and across the Broad Institute, the Wellcome Sanger Institute, and throughout the 1000 Genomes Project.</p>
+</blockquote>
+</div>
+</div>
+<div id="what-is-the-samtools-software" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> What is the Samtools software?</h1>
+<p>From Wikipedia, the free encyclopedia:</p>
+<blockquote>
+<p>SAMtools is a set of utilities for interacting with and post-processing short DNA sequence read alignments in the SAM (Sequence Alignment/Map), BAM (Binary Alignment/Map) and CRAM formats, written by Heng Li. These files are generated as output by short read aligners like BWA. Both simple and advanced tools are provided, supporting complex tasks like variant calling and alignment viewing as well as sorting, indexing, data extraction and format conversion.[3] SAM files can be very large (10s of Gigabytes is common), so compression is used to save space. SAM files are human-readable text files, and BAM files are simply their binary equivalent, whilst CRAM files are a restructured column-oriented binary container format. BAM files are typically compressed and more efficient for software to work with than SAM. SAMtools makes it possible to work directly with a compressed BAM file, without having to uncompress the whole file. Additionally, since the format for a SAM/BAM file is somewhat complex - containing reads, references, alignments, quality information, and user-specified annotations - SAMtools reduces the effort needed to use SAM/BAM files by hiding low-level details.</p>
+</blockquote>
+</div>
+<div id="objectives" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Objectives</h1>
+<ul>
+<li><a href="#software-installation">Software installation</a></li>
+<li><a href="#data-preparation">Data preparation</a></li>
+<li><a href="#sam-readingwriting">SAM reading/writing</a></li>
+<li><a href="#alignment-statistics">Alignment statistics</a></li>
+<li><a href="#alignment-filtering">Alignment filtering</a></li>
+</ul>
+</div>
+<div id="tutorial" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Tutorial</h1>
+<p>The first thing to do is create a directory to store all the tutorial output files and data:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>mkdir tutorial</code></pre>
+</div>
+<div id="software-installation" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Software installation</h2>
+<p>Create a new environment called ‘alignment’ with all the required software installed:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda create --yes --name alignment bowtie2 bwa entrez-direct samtools seqkit sra-tools=2.11.0=pl5262h37d2149_1 # only this version works currently (21/09/2022)</code></pre>
+<pre><code>## Collecting package metadata (current_repodata.json): ...working... done
+## Solving environment: ...working... failed with repodata from current_repodata.json, will retry with next repodata source.
+## Collecting package metadata (repodata.json): ...working... done
+## Solving environment: ...working... done
+## 
+## ## Package Plan ##
+## 
+##   environment location: /opt/miniconda3/envs/alignment
+## 
+##   added / updated specs:
+##     - bowtie2
+##     - bwa
+##     - entrez-direct
+##     - samtools
+##     - seqkit
+##     - sra-tools==2.11.0=pl5262h37d2149_1
+## 
+## 
+## The following NEW packages will be INSTALLED:
+## 
+##   bowtie2            bioconda/osx-64::bowtie2-2.4.5-py310h7d4de36_4
+##   bwa                bioconda/osx-64::bwa-0.7.17-h1f540d2_9
+##   bzip2              conda-forge/osx-64::bzip2-1.0.8-h0d85af4_4
+##   c-ares             conda-forge/osx-64::c-ares-1.18.1-h0d85af4_0
+##   ca-certificates    conda-forge/osx-64::ca-certificates-2022.9.14-h033912b_0
+##   curl               conda-forge/osx-64::curl-7.83.1-h23f1065_0
+##   entrez-direct      bioconda/osx-64::entrez-direct-16.2-h193322a_1
+##   gettext            conda-forge/osx-64::gettext-0.19.8.1-hd1a6beb_1008
+##   hdf5               conda-forge/osx-64::hdf5-1.10.6-nompi_haae91d6_101
+##   htslib             bioconda/osx-64::htslib-1.16-h567f53e_0
+##   icu                conda-forge/osx-64::icu-70.1-h96cf925_0
+##   krb5               conda-forge/osx-64::krb5-1.19.3-hb98e516_0
+##   libcurl            conda-forge/osx-64::libcurl-7.83.1-h23f1065_0
+##   libcxx             conda-forge/osx-64::libcxx-14.0.6-hccf4f1f_0
+##   libdeflate         conda-forge/osx-64::libdeflate-1.13-h775f41a_0
+##   libedit            conda-forge/osx-64::libedit-3.1.20191231-h0678c8f_2
+##   libev              conda-forge/osx-64::libev-4.33-haf1e3a3_1
+##   libffi             conda-forge/osx-64::libffi-3.4.2-h0d85af4_5
+##   libgfortran        conda-forge/osx-64::libgfortran-4.0.0-7_5_0_h1a10cd1_23
+##   libgfortran4       conda-forge/osx-64::libgfortran4-7.5.0-h1a10cd1_23
+##   libiconv           conda-forge/osx-64::libiconv-1.16-haf1e3a3_0
+##   libidn2            conda-forge/osx-64::libidn2-2.3.3-hac89ed1_0
+##   libnghttp2         conda-forge/osx-64::libnghttp2-1.47.0-h5aae05b_1
+##   libsqlite          conda-forge/osx-64::libsqlite-3.39.3-ha978bb4_0
+##   libssh2            conda-forge/osx-64::libssh2-1.10.0-h47af595_3
+##   libunistring       conda-forge/osx-64::libunistring-0.9.10-h0d85af4_0
+##   libxml2            conda-forge/osx-64::libxml2-2.9.14-hea49891_4
+##   libzlib            conda-forge/osx-64::libzlib-1.2.12-hfd90126_3
+##   llvm-openmp        conda-forge/osx-64::llvm-openmp-14.0.4-ha654fa7_0
+##   ncbi-ngs-sdk       bioconda/osx-64::ncbi-ngs-sdk-2.11.2-h247ad82_0
+##   ncurses            conda-forge/osx-64::ncurses-6.3-h96cf925_1
+##   openssl            conda-forge/osx-64::openssl-3.0.5-hfd90126_2
+##   ossuuid            conda-forge/osx-64::ossuuid-1.6.2-h0a44026_1000
+##   perl               conda-forge/osx-64::perl-5.26.2-hbcb3906_1008
+##   perl-uri           bioconda/osx-64::perl-uri-1.71-pl526_3
+##   perl-xml-libxml    bioconda/osx-64::perl-xml-libxml-2.0132-pl526h08abf6f_1
+##   perl-xml-namespac~ bioconda/osx-64::perl-xml-namespacesupport-1.11-pl526_1
+##   perl-xml-sax       bioconda/osx-64::perl-xml-sax-0.99-pl526_1
+##   perl-xml-sax-base  bioconda/osx-64::perl-xml-sax-base-1.09-pl526_0
+##   pip                conda-forge/noarch::pip-22.2.2-pyhd8ed1ab_0
+##   python             conda-forge/osx-64::python-3.10.6-hc14f532_0_cpython
+##   python_abi         conda-forge/osx-64::python_abi-3.10-2_cp310
+##   readline           conda-forge/osx-64::readline-8.1.2-h3899abd_0
+##   samtools           bioconda/osx-64::samtools-1.15.1-h7e39424_1
+##   seqkit             bioconda/osx-64::seqkit-2.3.0-h527b516_0
+##   setuptools         conda-forge/noarch::setuptools-65.3.0-pyhd8ed1ab_1
+##   sra-tools          bioconda/osx-64::sra-tools-2.11.0-pl5262h37d2149_1
+##   tbb                conda-forge/osx-64::tbb-2021.5.0-hb8565cd_2
+##   tk                 conda-forge/osx-64::tk-8.6.12-h5dbffcc_0
+##   tzdata             conda-forge/noarch::tzdata-2022c-h191b570_0
+##   wget               conda-forge/osx-64::wget-1.20.3-hd3787cc_1
+##   wheel              conda-forge/noarch::wheel-0.37.1-pyhd8ed1ab_0
+##   xz                 conda-forge/osx-64::xz-5.2.6-h775f41a_0
+##   zlib               conda-forge/osx-64::zlib-1.2.12-hfd90126_3
+##   zstd               conda-forge/osx-64::zstd-1.5.2-hfa58983_4
+## 
+## 
+## Preparing transaction: ...working... done
+## Verifying transaction: ...working... done
+## Executing transaction: ...working... done
+## #
+## # To activate this environment, use
+## #
+## #     $ conda activate alignment
+## #
+## # To deactivate an active environment, use
+## #
+## #     $ conda deactivate
+## 
+## Retrieving notices: ...working... done</code></pre>
+</div>
+<!-- Download xtract for Apple Silicon -->
+<p>Activate the ‘alignment’ environment:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate alignment</code></pre>
+</div>
+<p>Test that Bowtie 2 and BWA are available:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>which samtools</code></pre>
+<pre><code>## /opt/miniconda3/envs/alignment/bin/samtools</code></pre>
+</div>
+</div>
+<div id="data-preparation" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Data preparation</h2>
+<p>Download the Ebola virus reference genome:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>efetch -db nuccore -id AF086833 -format fasta &gt; tutorial/AF086833.fasta</code></pre>
+</div>
+<p>Download 1,000 sequencing reads from public data:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>fastq-dump -X 1000 -O tutorial --split-files SRR1972739</code></pre>
+<pre><code>## Read 1000 spots for SRR1972739
+## Written 1000 spots for SRR1972739</code></pre>
+</div>
+<p>Index the reference genome:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>bwa index -p tutorial/AF086833 tutorial/AF086833.fasta</code></pre>
+<pre><code>## [bwa_index] Pack FASTA... 0.00 sec
+## [bwa_index] Construct BWT for the packed sequence...
+## [bwa_index] 0.00 seconds elapse.
+## [bwa_index] Update BWT... 0.00 sec
+## [bwa_index] Pack forward-only FASTA... 0.00 sec
+## [bwa_index] Construct SA from BWT and Occ... 0.00 sec
+## [main] Version: 0.7.17-r1188
+## [main] CMD: bwa index -p tutorial/AF086833 tutorial/AF086833.fasta
+## [main] Real time: 0.005 sec; CPU: 0.020 sec</code></pre>
+</div>
+<p>Align reads using BWA to the reference genome:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>bwa mem tutorial/AF086833 tutorial/SRR1972739_1.fastq tutorial/SRR1972739_2.fastq &gt; tutorial/SRR1972739.sam</code></pre>
+<pre><code>## [M::bwa_idx_load_from_disk] read 0 ALT contigs
+## [M::process] read 2000 sequences (202000 bp)...
+## [M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (63, 590, 2, 68)
+## [M::mem_pestat] analyzing insert size distribution for orientation FF...
+## [M::mem_pestat] (25, 50, 75) percentile: (85, 119, 183)
+## [M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 379)
+## [M::mem_pestat] mean and std.dev: (135.27, 62.49)
+## [M::mem_pestat] low and high boundaries for proper pairs: (1, 477)
+## [M::mem_pestat] analyzing insert size distribution for orientation FR...
+## [M::mem_pestat] (25, 50, 75) percentile: (176, 219, 275)
+## [M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 473)
+## [M::mem_pestat] mean and std.dev: (227.64, 75.24)
+## [M::mem_pestat] low and high boundaries for proper pairs: (1, 572)
+## [M::mem_pestat] skip orientation RF as there are not enough pairs
+## [M::mem_pestat] analyzing insert size distribution for orientation RR...
+## [M::mem_pestat] (25, 50, 75) percentile: (71, 147, 192)
+## [M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 434)
+## [M::mem_pestat] mean and std.dev: (149.31, 89.10)
+## [M::mem_pestat] low and high boundaries for proper pairs: (1, 555)
+## [M::mem_process_seqs] Processed 2000 reads in 0.105 CPU sec, 0.105 real sec
+## [main] Version: 0.7.17-r1188
+## [main] CMD: bwa mem tutorial/AF086833 tutorial/SRR1972739_1.fastq tutorial/SRR1972739_2.fastq
+## [main] Real time: 0.108 sec; CPU: 0.111 sec</code></pre>
+</div>
+</div>
+<div id="sam-readingwriting" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> SAM reading/writing</h2>
+<p>The SAM format is used to store output from read alignment software. It is a TAB-delimited text format consisting of a header and alignment section. To look at each of these sections, we can use the <code>view</code> command.</p>
+<p>Print the SAM header section:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>samtools view -H tutorial/SRR1972739.sam</code></pre>
+<pre><code>## @SQ  SN:AF086833.2   LN:18959
+## @PG  ID:bwa  PN:bwa  VN:0.7.17-r1188 CL:bwa mem tutorial/AF086833 tutorial/SRR1972739_1.fastq tutorial/SRR1972739_2.fastq
+## @PG  ID:samtools PN:samtools PP:bwa  VN:1.15.1   CL:samtools view -H tutorial/SRR1972739.sam</code></pre>
+</div>
+<p>The header section primarily contains metadata about the file and reference sequence. For example, whether the alignments in the file have been sorted. Refer to the <a href="http://samtools.github.io/hts-specs/SAMv1.pdf">SAM specification</a> for full details.</p>
+<p>Print the SAM alignment section:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># Output the first few lines
+samtools view tutorial/SRR1972739.sam | head</code></pre>
+<pre><code>## SRR1972739.1 83  AF086833.2  15684   60  69M32S  =   15600   -153    TTTAGATTTAACAAGATACCGAGAAAATGAATTGATTTATGACAATAATCCTCTAAAAGGAGGACTCAAATGAGATATTGCAATTGAGTCCTCCTTTTAGA   DDDDDEEEEEDEEFFFEDHHHHIJJJJJJJJJJJJJJJJJIGIJJJJJJJJJJJJJJJJJJJIGIGJJJJJJJJJJJJJJIJJJJJJIFHHHHFFFFFCCC   NM:i:2  MD:Z:27C16G24   MC:Z:101M   AS:i:59 XS:i:0  SA:Z:AF086833.2,15735,+,33M68S,60,0;
+## SRR1972739.1 2115    AF086833.2  15735   60  33M68H  =   15600   -136    TCTAAAAGGAGGACTCAATTGCAATATCTCATT   CCCFFFFFHHHHFIJJJJJJIJJJJJJJJJJJJ   NM:i:0  MD:Z:33 MC:Z:101M   AS:i:33 XS:i:0  SA:Z:AF086833.2,15684,-,69M32S,60,2;
+## SRR1972739.1 163 AF086833.2  15600   60  101M    =   15684   153 GTATAATCGTGCTCACCTTCATCTAACTAAGTGTTGCACCCGGGAGGTACCAGCTCAGTACTTAACATACACATCTACATTGGATTTAGATTTAACAAGAT   @BBFFFFFHHHHHJJJJJJJJJJJJJIIIJJGHIIJJJJJJJJIJJJGIJGIJJIJJJIJHHHHHHGFFFFFEEEEEEEDFDDDDDDDDDDEDDEDDDDDD   NM:i:3  MD:Z:0A44A14T40 MC:Z:69M32S AS:i:90 XS:i:0
+## SRR1972739.2 115 AF086833.2  4919    60  101M    =   4863    -104    CAGGCTCCTGCGAATTGGAAACCAGGCTTTCCTCCAGGAGTTCGTTCTTCCACCAGTCCAACTACCCCAGTATTTCACCTTTGATTTGACAGCACTCAAAC   DDDDDDDDDDDDDDDEDDDDCDDEEEEEFFFHHHHHIIIJJJJJJJJJIJHGJJJJIJJIIIHFJJJJJJJJJIHGFJJJJJJJJJJIHHHGHFFFFFBBB   NM:i:1  MD:Z:51G49  MC:Z:47S54M AS:i:96 XS:i:0
+## SRR1972739.2 179 AF086833.2  4863    60  47S54M  =   4919    104 TGGTTTCCAATTCGCAGGAGCCTGAGGGGGTGATCCGGGATTCCAGGACCAATCCGCTTGTCAGAGTCAATCGGCTGGGTCCTGGAATCCCGGATCACCCC   BDDDDDDDDDDDDCDDDBDDDDDDDDBDDDDDDDDBDDDEDEECEFFDFFHHGJJIFJJJJJIJJJIJJJHIJJJJJJIHFBJJIHIJHGHHHEDD?F@@@   NM:i:2  MD:Z:8A41T3 MC:Z:101M   AS:i:45 XS:i:0  SA:Z:AF086833.2,4893,+,51S50M,60,1;
+## SRR1972739.2 2211    AF086833.2  4893    60  51H50M  =   4919    127 GGTCCTGGAATCCCGGATCACCCCCTCAGGCTCCTGCGAATTGGAAACCA  FFDFFECEEDEDDDBDDDDDDDDBDDDDDDDDBDDDCDDDDDDDDDDDDB  NM:i:1  MD:Z:20T29  MC:Z:101M   AS:i:45 XS:i:0  SA:Z:AF086833.2,4863,-,47S54M,60,2;
+## SRR1972739.3 67  AF086833.2  2531    60  60M41S  =   2587    57  TATCCGGACTCCCTTGAAGAGGAATATCCACCATGGCTCACTGAAAAAGAGGCCATGAATTTATTCCTGTGATTCATTACTGGCCAATAAAATTGTTGACC   CCCFFFFFHHHHHJJJIIIIJJJJJJJJJJJJJJJJJJJJJIJJIIJJJJFHIJIJJJJJJJHGHGHHHFFFFFFFEFEEEEEDDDDDDDDDDCDCDDDDD   NM:i:2  MD:Z:5A47T6 MC:Z:81M20S AS:i:50 XS:i:0  SA:Z:AF086833.2,2618,-,50M51S,44,3;
+## SRR1972739.3 2131    AF086833.2  2618    44  50M51H  =   2587    -81 GGTCAACAATTTTATTGGCCAGTAATGAATCACAGGAATAAATTCATGGC  DDDDDCDCDDDDDDDDDDEEEEEFEFFFFFFFHHHGHGHJJJJJJJIJIH  NM:i:3  MD:Z:20G2G10A15 MC:Z:81M20H AS:i:35 XS:i:0  SA:Z:AF086833.2,2531,+,60M41S,60,2;
+## SRR1972739.3 131 AF086833.2  2587    60  81M20S  =   2531    -57 GAATGATGAGAATAGATTTGTTACACTGGATGGTCAACAATTTTATTGGCCAGTAATGAATCACAGGAATAAATTCATGGCCTCTTTTTCAGTGAGCCATG   CC@FFFFFHHHHHJJJJJJJJJJJJJJJJJJJJGIJJJJJJJJJJJJJIJJJJHHJIHJJIGIJIIJIJIJJJJJIIJIGHHHHFFFFFCCEEECCEDDC@   NM:i:5  MD:Z:6A18T25G2G10A15    MC:Z:60M41S AS:i:56 XS:i:0
+## SRR1972739.4 77  *   0   0   *   *   0   0   CTCTAATGAATCCCTTAAGCCAGGAGCGTTAGTGTCAAACGCAACGCCCCGGGTTCATGATCCTGGATGGCTGGTCGAACCAGGGAGATGTCACTCTAATA   CCCFFFFFHHHHHJJJJJJJJJIGIJJJIJJJJIGIJJJJHIJJJJIIJJHFFCDEEEDDDDDDDDDDDDDDDBCDDDDDDDDDDDDDDDEDEDDDDDDED   AS:i:0  XS:i:0
+## samtools view: writing to standard output failed: Broken pipe
+## samtools view: error closing standard output: -1</code></pre>
+</div>
+<p>The alignment section contains data about the input sequence alignments. Each line typically represents a single alignment and contains information about how the alignment was generated. For example, which reference sequence and at what position was the input sequence aligned. Again, refer to the <a href="http://samtools.github.io/hts-specs/SAMv1.pdf">SAM specification</a> for full details.</p>
+<p>It’s important to note that we rarely work with alignments in this text-based format. Usually, we convert the SAM file into a binary or compressed representation which we refer to as the BAM format. This allows output from large sequencing runs to be stored efficiently. It also helps if we sort the alignments by their mapping position as this allows us to produce what’s called an ‘index’ file. As the name suggests, this file is analogous to the index in a book. It tells us which part of the file to read to fetch alignments from a particular region of the reference sequence. To sort the alignments and output a BAM file, we can use the <code>sort</code> command.</p>
+<p>Sort and convert from SAM to BAM format:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>samtools sort tutorial/SRR1972739.sam &gt; tutorial/SRR1972739.bam</code></pre>
+</div>
+<p>You should be aware that older versions of <code>samtools</code> required two commands to achieve the same outcome:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>samtools view -b tutorial/SRR1972739.sam &gt; tutorial/SRR1972739.bam
+samtools sort tutorial/SRR1972739.bam &gt; tutorial/SRR1972739.sorted.bam</code></pre>
+</div>
+<p>Once we have the sorted BAM file, we can then create an index file. We do this using the <code>index</code> command. Notably, we do not have to specify an output file name for this command. The index file is automatically created and named by appending <code>.bai</code> to the input file name.</p>
+<p>Build an index for the BAM file:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>samtools index tutorial/SRR1972739.bam</code></pre>
+</div>
+<p>List the BAM and index file:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>ls tutorial/SRR1972739.*</code></pre>
+<pre><code>## tutorial/SRR1972739.bam
+## tutorial/SRR1972739.bam.bai
+## tutorial/SRR1972739.sam</code></pre>
+</div>
+</div>
+<div id="alignment-statistics" class="section level2" number="4.4">
+<h2><span class="header-section-number">4.4</span> Alignment statistics</h2>
+<p>It’s often useful to calculate various statistics on alignment files. These statistics can be used to answer a range of questions, some needed for basic quality control and others which have biological significance. We will go through the most common statistics which can be calculated by the <code>samtools</code> commands. Alignment summary statistics can be reported using the <code>idxstats</code> command. The output is TAB-delimited with each line consisting of reference sequence name, sequence length, number of mapped reads, and number of unmapped reads.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>samtools idxstats tutorial/SRR1972739.bam</code></pre>
+<pre><code>## AF086833.2   18959   1549    0
+## *    0   0   524</code></pre>
+</div>
+<p>In addition to reporting the number of alignments by reference sequence, we can use the <code>flagstat</code> command to report the number of alignments for each FLAG value as described in the SAM format specification.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>samtools flagstat tutorial/SRR1972739.bam</code></pre>
+<pre><code>## 2073 + 0 in total (QC-passed reads + QC-failed reads)
+## 2000 + 0 primary
+## 0 + 0 secondary
+## 73 + 0 supplementary
+## 0 + 0 duplicates
+## 0 + 0 primary duplicates
+## 1549 + 0 mapped (74.72% : N/A)
+## 1476 + 0 primary mapped (73.80% : N/A)
+## 2000 + 0 paired in sequencing
+## 1000 + 0 read1
+## 1000 + 0 read2
+## 1466 + 0 properly paired (73.30% : N/A)
+## 1476 + 0 with itself and mate mapped
+## 0 + 0 singletons (0.00% : N/A)
+## 0 + 0 with mate mapped to a different chr
+## 0 + 0 with mate mapped to a different chr (mapQ&gt;=5)</code></pre>
+</div>
+<p>The <code>flagstat</code> report is helpful to assess the overall alignment performance. For example, a low mapping rate may indicate a significant problem with the library and will require further investigation. If you ever find yourself confused about what a FLAG value represents, you can use the <code>flags</code> command to convert between the value and it’s description.</p>
+<p>Convert FLAG value to description:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>samtools flags PAIRED</code></pre>
+<pre><code>## 0x1  1   PAIRED</code></pre>
+</div>
+<p>Convert description to FLAG value:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>samtools flags 1</code></pre>
+<pre><code>## 0x1  1   PAIRED</code></pre>
+</div>
+<p>In many genomics applications it is important to compute both read coverage and read depth at each position or region:</p>
+<ul>
+<li>Read coverage is defined as the proportion of a region which is covered by alignments. For example, a set of alignments might cover only 10% of the full reference sequence.</li>
+<li>Read depth is defined as the number of alignments that cover a particular position. For example, the 1st base in the reference sequence may be covered by 100 alignments.</li>
+</ul>
+<p>To calculate read coverage, we can use the <code>coverage</code> command. The output contains some useful values like the number of covered bases (covbases), the percentage of covered bases (coverage), and the mean depth of coverage (meandepth).</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>samtools coverage tutorial/SRR1972739.bam</code></pre>
+<pre><code>## #rname   startpos    endpos  numreads    covbases    coverage    meandepth   meanbaseq   meanmapq
+## AF086833.2   1   18959   1549    18545   97.8163 7.74941 38  59.9</code></pre>
+</div>
+<p>To calculate read depth, we can use the <code>depth</code> command. The output is TAB-delimited with each line consisting of reference sequence name, coordinate, and number of mapped reads or alignments.</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># Output the first few lines
+samtools depth tutorial/SRR1972739.bam | head</code></pre>
+<pre><code>## AF086833.2   114 1
+## AF086833.2   115 1
+## AF086833.2   116 1
+## AF086833.2   117 1
+## AF086833.2   118 1
+## AF086833.2   119 1
+## AF086833.2   120 1
+## AF086833.2   121 1
+## AF086833.2   122 1
+## AF086833.2   123 2</code></pre>
+</div>
+</div>
+<div id="alignment-filtering" class="section level2" number="4.5">
+<h2><span class="header-section-number">4.5</span> Alignment filtering</h2>
+<p>For many genomics applications, the SAM file produced by most read alignment software will require some additional processing. You might have to remove unmapped reads, select only high-quality alignments, or use just a subset of regions. All of these tasks and more can be accomplished using the <code>view</code> command. There are a number of options available in this command, so it is worth examining the help information first:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>samtools view --help</code></pre>
+<pre><code>## 
+## Usage: samtools view [options] &lt;in.bam&gt;|&lt;in.sam&gt;|&lt;in.cram&gt; [region ...]
+## 
+## Output options:
+##   -b, --bam                  Output BAM
+##   -C, --cram                 Output CRAM (requires -T)
+##   -1, --fast                 Use fast BAM compression (and default to --bam)
+##   -u, --uncompressed         Uncompressed BAM output (and default to --bam)
+##   -h, --with-header          Include header in SAM output
+##   -H, --header-only          Print SAM header only (no alignments)
+##       --no-header            Print SAM alignment records only [default]
+##   -c, --count                Print only the count of matching records
+##   -o, --output FILE          Write output to FILE [standard output]
+##   -U, --unoutput FILE, --output-unselected FILE
+##                              Output reads not selected by filters to FILE
+##   -p, --unmap                Set flag to UNMAP on reads not selected
+##                              then write to output file.
+##   -P, --fetch-pairs          Retrieve complete pairs even when outside of region
+## Input options:
+##   -t, --fai-reference FILE   FILE listing reference names and lengths
+##   -M, --use-index            Use index and multi-region iterator for regions
+##       --region[s]-file FILE  Use index to include only reads overlapping FILE
+##   -X, --customized-index     Expect extra index file argument after &lt;in.bam&gt;
+## 
+## Filtering options (Only include in output reads that...):
+##   -L, --target[s]-file FILE  ...overlap (BED) regions in FILE
+##   -r, --read-group STR       ...are in read group STR
+##   -R, --read-group-file FILE ...are in a read group listed in FILE
+##   -N, --qname-file FILE      ...whose read name is listed in FILE
+##   -d, --tag STR1[:STR2]      ...have a tag STR1 (with associated value STR2)
+##   -D, --tag-file STR:FILE    ...have a tag STR whose value is listed in FILE
+##   -q, --min-MQ INT           ...have mapping quality &gt;= INT
+##   -l, --library STR          ...are in library STR
+##   -m, --min-qlen INT         ...cover &gt;= INT query bases (as measured via CIGAR)
+##   -e, --expr STR             ...match the filter expression STR
+##   -f, --require-flags FLAG   ...have all of the FLAGs present
+##   -F, --excl[ude]-flags FLAG ...have none of the FLAGs present
+##       --rf, --incl-flags, --include-flags FLAG
+##                              ...have some of the FLAGs present
+##   -G FLAG                    EXCLUDE reads with all of the FLAGs present
+##       --subsample FLOAT      Keep only FLOAT fraction of templates/read pairs
+##       --subsample-seed INT   Influence WHICH reads are kept in subsampling [0]
+##   -s INT.FRAC                Same as --subsample 0.FRAC --subsample-seed INT
+## 
+## Processing options:
+##       --add-flags FLAG       Add FLAGs to reads
+##       --remove-flags FLAG    Remove FLAGs from reads
+##   -x, --remove-tag STR
+##                Comma-separated read tags to strip (repeatable) [null]
+##       --keep-tag STR
+##                Comma-separated read tags to preserve (repeatable) [null].
+##                Equivalent to &quot;-x ^STR&quot;
+##   -B, --remove-B             Collapse the backward CIGAR operation
+## 
+## General options:
+##   -?, --help   Print long help, including note about region specification
+##   -S           Ignored (input format is auto-detected)
+##       --no-PG  Do not add a PG line
+##       --input-fmt-option OPT[=VAL]
+##                Specify a single input file format option in the form
+##                of OPTION or OPTION=VALUE
+##   -O, --output-fmt FORMAT[,OPT[=VAL]]...
+##                Specify output format (SAM, BAM, CRAM)
+##       --output-fmt-option OPT[=VAL]
+##                Specify a single output file format option in the form
+##                of OPTION or OPTION=VALUE
+##   -T, --reference FILE
+##                Reference sequence FASTA FILE [null]
+##   -@, --threads INT
+##                Number of additional threads to use [0]
+##       --write-index
+##                Automatically index the output files [off]
+##       --verbosity INT
+##                Set level of verbosity
+## 
+## Notes:
+## 
+## 1. This command now auto-detects the input format (BAM/CRAM/SAM).
+##    Further control over the CRAM format can be specified by using the
+##    --output-fmt-option, e.g. to specify the number of sequences per slice
+##    and to use avoid reference based compression:
+## 
+##  samtools view -C --output-fmt-option seqs_per_slice=5000 \
+##     --output-fmt-option no_ref -o out.cram in.bam
+## 
+##    Options can also be specified as a comma separated list within the
+##    --output-fmt value too.  For example this is equivalent to the above
+## 
+##  samtools view --output-fmt cram,seqs_per_slice=5000,no_ref \
+##     -o out.cram in.bam
+## 
+## 2. The file supplied with `-t&#39; is SPACE/TAB delimited with the first
+##    two fields of each line consisting of the reference name and the
+##    corresponding sequence length. The `.fai&#39; file generated by 
+##    `samtools faidx&#39; is suitable for use as this file. This may be an
+##    empty file if reads are unaligned.
+## 
+## 3. SAM-&gt;BAM conversion:  samtools view -bT ref.fa in.sam.gz
+## 
+## 4. BAM-&gt;SAM conversion:  samtools view -h in.bam
+## 
+## 5. A region should be presented in one of the following formats:
+##    `chr1&#39;, `chr2:1,000&#39; and `chr3:1000-2,000&#39;. When a region is
+##    specified, the input alignment file must be a sorted and indexed
+##    alignment (BAM/CRAM) file.
+## 
+## 6. Option `-u&#39; is preferred over `-b&#39; when the output is piped to
+##    another samtools command.
+## 
+## 7. Option `-M`/`--use-index` causes overlaps with `-L` BED file regions and
+##    command-line region arguments to be computed using the multi-region iterator
+##    and an index. This increases speed, omits duplicates, and outputs the reads
+##    as they are ordered in the input SAM/BAM/CRAM file.
+## 
+## 8. Options `-L`/`--target[s]-file` and `--region[s]-file` may not be used
+##    together. `--region[s]-file FILE` is simply equivalent to `-M -L FILE`,
+##    so using both causes one of the specified BED files to be ignored.</code></pre>
+</div>
+<p>As you can see, there are a lot of options. These allow the user to perform a huge variety of filtering and file manipulation. These options become especially powerful when combined with other <code>samtools</code> commands. Rather than run through an exhaustive tour of the <code>view</code> command, we will instead demonstrate the most typical use cases.</p>
+<p>To filter alignments, we can use the <code>-f</code> and <code>-F</code> options. The first option will output alignments <em>with</em> a given FLAG value, and the second will output alignments <em>without</em> a given FLAG value. This can be quite counter-intuitive so we should look at some examples:</p>
+<p>Output alignments where the read is unmapped:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># UNMAP (4)
+# With the UNMAP flag (-f 4)
+samtools view -f 4 tutorial/SRR1972739.bam &gt; tutorial/unmapped.sam</code></pre>
+</div>
+<p>Output alignments where the read is mapped (not unmapped):</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># UNMAP (4)
+# Without the UNMAP flag (-F 4)
+samtools view -F 4 tutorial/SRR1972739.bam &gt; tutorial/mapped.bam</code></pre>
+</div>
+<p>Remember, that FLAG values can be summed together to represent a combination of FLAG values.</p>
+<p>Output alignments where the reads is unmapped and is the first read of the pair:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># UNMAP (4)
+# READ1 (64)
+# UNMAP,READ1 (4 + 64 = 68)
+# With the UNMAP,READ1 flag combination (-f 68)
+samtools view -f 68 tutorial/SRR1972739.bam &gt; tutorial/unmapped_read1.bam</code></pre>
+</div>
+<p>Output alignments where the reads is mapped (not unmapped) and passed quality control (did not fail quality control):</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># UNMAP (4)
+# QCFAIL (512)
+# UNMAP,QCFAIL (4 + 512 = 516)
+# Without the UNMAP,QCFAIL flag combination (-F 516)
+samtools view -F 516 tutorial/SRR1972739.bam &gt; tutorial/mapped_qc.bam</code></pre>
+</div>
+<p>To perform more specific filtering - and to make matters more confusing - you can select and disregard combinations of FLAG values. For example, to output alignments on the reverse strand we need to identify alignments <em>without</em> the unmapped FLAG value and <em>with</em> the reverse complemented FLAG value:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>samtools view -c -F 4 -f 16 tutorial/SRR1972739.bam &gt; tutorial/mapped_reverse.bam</code></pre>
+</div>
+<p>Do not be discouraged if you find the FLAG values and the <em>with</em> or <em>with not</em> system of alignment output difficult to remember. Bioinformaticians the world over look this information up on a daily basis and there is no shame in searching online for a solution or reference. Aside from using FLAG values to output specific alignments, we can also choose based on the mapping quality. We can use the <code>-q</code> option to output alignments with mapping quality greater than or equal to a desired value:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># mapping quality &gt;= 10
+samtools view -b -q 10 tutorial/SRR1972739.bam &gt; tutorial/SRR1972739.mapq.bam</code></pre>
+</div>
+<p>Lastly, we can also output alignments from a specific region of the reference sequence. This is useful when you may want to focus on alignments which cover a particular region of the genome, like a specific gene body. To output alignments for a given region, simply specify the region on the command line with the required format (NAME:START-END).</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># NAME = AF086833
+# START = 1
+# END = 1000
+samtools view -b tutorial/SRR1972739.bam AF086833.2:1-1000 &gt; tutorial/SRR1972739.region.bam</code></pre>
+</div>
+<p>Finally, Samtools also provides a text-based genome browser to visually inspect the alignments:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># display as text (-d T)
+# go to this position (-p AF086833.2:9972)
+samtools tview -d T -p AF086833.2:9972 tutorial/SRR1972739.bam tutorial/AF086833.fasta</code></pre>
+<pre><code>##          9981      9991      10001     10011     10021     10031     10041      
+## AGTACTATTTCAGGGTAGTCCAATTAGTGGCACGTCTTTTAGCTGTATATCAGTCGCCCCTGAGATACGCCACAAAAGTG
+## .A............A.......GC.....A...................C....T.........................
+## ,a,,,,,,,,              .....A...................C....T.........................
+## .A............A.......  ,,,,,a,,,,,,,,,,,,,,,,,,,c,,,,t,,,,,,,,,,,,,,,,,,,,,,,,,
+## .A............A.......GC.....A..................                                
+## .A............A.......GC.....A...................C....T....                     
+## .A............A.......GC.....A...................C....T.....................    
+## .A............A.......GC.....A.................                                 
+## .A............A.......GC.....A...................C....T.........................
+## .A............A.......GC.....A...................C....T.......................  
+## ,a,,,,,,,,,,,,a,,,,,,,gc,,,,,a,,,,,,,,,,,,,,,,,,,c,,,,t,,,,,,,,,,,,,,,,,,,,,,,,,
+##  A............A.......GC.....A...................C....T.........................
+##  A............A.......GC.....A...................C....T.........................
+##        .......A.......GC.....A...................C....T.........................
+##                           ,,,a,,,,,,,,,,,,,,,,,,,c,,,,t,,,,,,,,,,,,,,,,,,,,,,,,,
+##                                           .......C....T.........................
+##                                             .....C....T.........................</code></pre>
+</div>
+</div>
+</div>
+<div id="exercise" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Exercise</h1>
+<p>The exercises below are designed to strengthen your knowledge of using Samtools to manipulate SAM files. The solution to each problem is blurred, only after attempting to solve the problem yourself should you look at the solution. Should you need any help, please ask one of the instructors.</p>
+<p>Create a directory to store the output files from each exercise:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>mkdir exercises
+mkdir exercises/cholera
+mkdir exercises/zika
+mkdir exercises/tuberculosis</code></pre>
+</div>
+<div id="cholera" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Cholera</h2>
+<blockquote>
+Cholera is an acute diarrhoeal infection caused by eating or drinking food or water that is contaminated with the bacterium Vibrio cholerae. Cholera remains a global threat to public health and is an indicator of inequity and lack of social development. Researchers have estimated that every year, there are 1.3 to 4.0 million cases of cholera, and 21,000 to 143,000 deaths worldwide due to the infection.
+<footer>
+World Health Organization
+</footer>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>Use the <code>efetch</code> command to download the genome for the Vibrio cholerae bacteria. Note, the genome is split into two entries on the NCBI database: AP014524 and AP014525. You can either download each seperately and then concatenate the files or provide both accession numbers to the <code>efetch</code> command.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>efetch -db nuccore -id &quot;AP014524,AP014525&quot; -format fasta &gt; exercises/cholera/MS6.fasta</code></pre>
+</div>
+</div>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>Use the <code>fastq-dump</code> command to download 1000 single-end reads from the public Vibrio cholerae sequencing run with accession number SRR16345277.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>fastq-dump -X 1000 -O exercises/cholera SRR16345277</code></pre>
+<pre><code>## Read 1000 spots for SRR16345277
+## Written 1000 spots for SRR16345277</code></pre>
+</div>
+</div>
+</div>
+<ol start="3" style="list-style-type: decimal">
+<li>Index the bacterial genome using BWA</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>bwa index exercises/cholera/MS6.fasta</code></pre>
+<pre><code>## [bwa_index] Pack FASTA... 0.03 sec
+## [bwa_index] Construct BWT for the packed sequence...
+## [bwa_index] 0.57 seconds elapse.
+## [bwa_index] Update BWT... 0.02 sec
+## [bwa_index] Pack forward-only FASTA... 0.01 sec
+## [bwa_index] Construct SA from BWT and Occ... 0.17 sec
+## [main] Version: 0.7.17-r1188
+## [main] CMD: bwa index exercises/cholera/MS6.fasta
+## [main] Real time: 0.804 sec; CPU: 0.819 sec</code></pre>
+</div>
+</div>
+</div>
+<ol start="4" style="list-style-type: decimal">
+<li>Align the sequencing reads to the bacterial genome using BWA</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>bwa mem exercises/cholera/MS6.fasta exercises/cholera/SRR16345277.fastq &gt; exercises/cholera/SRR16345277.sam</code></pre>
+<pre><code>## [M::bwa_idx_load_from_disk] read 0 ALT contigs
+## [M::process] read 1000 sequences (100000 bp)...
+## [M::mem_process_seqs] Processed 1000 reads in 0.023 CPU sec, 0.023 real sec
+## [main] Version: 0.7.17-r1188
+## [main] CMD: bwa mem exercises/cholera/MS6.fasta exercises/cholera/SRR16345277.fastq
+## [main] Real time: 0.027 sec; CPU: 0.030 sec</code></pre>
+</div>
+</div>
+</div>
+<ol start="5" style="list-style-type: decimal">
+<li>Use Samtools to sort and convert the SAM file to BAM format</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>samtools sort exercises/cholera/SRR16345277.sam &gt; exercises/cholera/SRR16345277.bam</code></pre>
+</div>
+</div>
+</div>
+<ol start="6" style="list-style-type: decimal">
+<li>Index the sorted BAM file</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>samtools index exercises/cholera/SRR16345277.bam</code></pre>
+</div>
+</div>
+</div>
+<ol start="7" style="list-style-type: decimal">
+<li>Calculate flag alignment statistics from the BAM file</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>samtools flagstat exercises/cholera/SRR16345277.bam</code></pre>
+<pre><code>## 1006 + 0 in total (QC-passed reads + QC-failed reads)
+## 1000 + 0 primary
+## 0 + 0 secondary
+## 6 + 0 supplementary
+## 0 + 0 duplicates
+## 0 + 0 primary duplicates
+## 975 + 0 mapped (96.92% : N/A)
+## 969 + 0 primary mapped (96.90% : N/A)
+## 0 + 0 paired in sequencing
+## 0 + 0 read1
+## 0 + 0 read2
+## 0 + 0 properly paired (N/A : N/A)
+## 0 + 0 with itself and mate mapped
+## 0 + 0 singletons (N/A : N/A)
+## 0 + 0 with mate mapped to a different chr
+## 0 + 0 with mate mapped to a different chr (mapQ&gt;=5)</code></pre>
+</div>
+</div>
+</div>
+<ol start="8" style="list-style-type: decimal">
+<li>Calculate index alignment statistics from the BAM file</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>samtools idxstats exercises/cholera/SRR16345277.bam</code></pre>
+<pre><code>## AP014524.1   2936971 714 0
+## AP014525.1   1093973 261 0
+## *    0   0   31</code></pre>
+</div>
+</div>
+</div>
+<ol start="9" style="list-style-type: decimal">
+<li>Filter the BAM file to contain only MAPPED reads</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># UNMAP (4)
+samtools view -b -F 4 exercises/cholera/SRR16345277.bam &gt; exercises/cholera/SRR16345277.mapped.bam</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="zika" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Zika</h2>
+<blockquote>
+Zika virus is primarily transmitted by the bite of an infected mosquito from the Aedes genus, mainly Aedes aegypti, in tropical and subtropical regions. Aedes mosquitoes usually bite during the day, peaking during early morning and late afternoon/evening. This is the same mosquito that transmits dengue, chikungunya and yellow fever.
+<footer>
+World Health Organization
+</footer>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>Use the <code>efetch</code> command from EDirect to download and save the Zika reference genome (AY632535).</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>efetch -db nuccore -id AY632535 -format fasta &gt; exercises/zika/AY632535.fasta</code></pre>
+</div>
+</div>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>Use the <code>esearch</code> and <code>efetch</code> commands to download and save the run information from a public Zika sequencing project (PRJNA609110).</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>esearch -db sra -query PRJNA609110 | efetch -format runinfo &gt; exercises/zika/runinfo.csv</code></pre>
+</div>
+</div>
+</div>
+<!-- The esearch command only works asynchronously -->
+<ol start="3" style="list-style-type: decimal">
+<li>Create a file which contains the run accession numbers of those runs which are single-end.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>grep &quot;SINGLE&quot; exercises/zika/runinfo.csv | cut -d &quot;,&quot; -f 1 &gt; exercises/zika/runids.txt</code></pre>
+</div>
+</div>
+</div>
+<ol start="4" style="list-style-type: decimal">
+<li>Use the <code>fastq-dump</code> command to download 10,000 single-end reads from each of the runs selected in Q3. Instead of manually creating the command for each run accession number, use a for loop to read each run accession number from the file created in Q3.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>while read RUN; do
+
+  fastq-dump -X 10000 -O exercises/zika ${RUN}
+
+done &lt; exercises/zika/runids.txt</code></pre>
+<pre><code>## Read 10000 spots for SRR14467421
+## Written 10000 spots for SRR14467421
+## Read 10000 spots for SRR14467422
+## Written 10000 spots for SRR14467422</code></pre>
+</div>
+</div>
+</div>
+<ol start="5" style="list-style-type: decimal">
+<li>Use the BWA aligner to index the Zika genome:</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>bwa index exercises/zika/AY632535.fasta</code></pre>
+<pre><code>## [bwa_index] Pack FASTA... 0.00 sec
+## [bwa_index] Construct BWT for the packed sequence...
+## [bwa_index] 0.00 seconds elapse.
+## [bwa_index] Update BWT... 0.00 sec
+## [bwa_index] Pack forward-only FASTA... 0.00 sec
+## [bwa_index] Construct SA from BWT and Occ... 0.00 sec
+## [main] Version: 0.7.17-r1188
+## [main] CMD: bwa index exercises/zika/AY632535.fasta
+## [main] Real time: 0.004 sec; CPU: 0.020 sec</code></pre>
+</div>
+</div>
+</div>
+<ol start="6" style="list-style-type: decimal">
+<li>Align the sequencing reads to the Zika genome use the BWA aligner. Again, use a for loop to construct and run each of the commands.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>while read RUN; do
+
+  bwa mem exercises/zika/AY632535.fasta exercises/zika/${RUN}.fastq &gt; exercises/zika/${RUN}.sam
+
+done &lt; exercises/zika/runids.txt</code></pre>
+<pre><code>## [M::bwa_idx_load_from_disk] read 0 ALT contigs
+## [M::process] read 10000 sequences (1480034 bp)...
+## [M::mem_process_seqs] Processed 10000 reads in 0.587 CPU sec, 0.588 real sec
+## [main] Version: 0.7.17-r1188
+## [main] CMD: bwa mem exercises/zika/AY632535.fasta exercises/zika/SRR14467421.fastq
+## [main] Real time: 0.606 sec; CPU: 0.606 sec
+## [M::bwa_idx_load_from_disk] read 0 ALT contigs
+## [M::process] read 10000 sequences (1461417 bp)...
+## [M::mem_process_seqs] Processed 10000 reads in 0.599 CPU sec, 0.601 real sec
+## [main] Version: 0.7.17-r1188
+## [main] CMD: bwa mem exercises/zika/AY632535.fasta exercises/zika/SRR14467422.fastq
+## [main] Real time: 0.618 sec; CPU: 0.618 sec</code></pre>
+</div>
+</div>
+</div>
+<ol start="7" style="list-style-type: decimal">
+<li>Sort and convert the SAM files to BAM format. Use a loop as before.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>while read RUN; do
+
+  samtools sort exercises/zika/${RUN}.sam &gt; exercises/zika/${RUN}.bam
+
+done &lt; exercises/zika/runids.txt</code></pre>
+</div>
+</div>
+</div>
+<ol start="8" style="list-style-type: decimal">
+<li>Index the sorted BAM files. Loop again.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>while read RUN; do
+
+  samtools index exercises/zika/${RUN}.bam
+
+done &lt; exercises/zika/runids.txt</code></pre>
+</div>
+</div>
+</div>
+<ol start="9" style="list-style-type: decimal">
+<li>Use the <code>merge</code> command to combine the alignments from all of the BAM files into a single BAM file.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>samtools merge exercises/zika/merge.bam exercises/zika/SRR*.bam</code></pre>
+</div>
+</div>
+</div>
+<ol start="10" style="list-style-type: decimal">
+<li>Calculate the read coverage from the merged BAM file and report the percent covered and mean coverage values.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># Percent covered: 5.151%
+# Mean coverage: 238x
+samtools coverage -m exercises/zika/merge.bam</code></pre>
+<pre><code>## AY632535.2 (10.8Kbp)
+## &gt;  90.00% │█                                       │ Number of reads: 23138
+## &gt;  80.00% │█                                       │ 
+## &gt;  70.00% │█                                       │ Covered bases:   556bp
+## &gt;  60.00% │█                                       │ Percent covered: 5.151%
+## &gt;  50.00% │██                                      │ Mean coverage:   238x
+## &gt;  40.00% │██                                      │ Mean baseQ:      34.1
+## &gt;  30.00% │██                                      │ Mean mapQ:       56.7
+## &gt;  20.00% │██           ▃                          │ 
+## &gt;  10.00% │██           █                   ▄      │ Histo bin width: 269bp
+## &gt;   0.00% │██           █                  ▆█      │ Histo max bin:   100%
+##           1        2.7K      5.4K      8.1K      10.8K</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="tuberculosis" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> Tuberculosis</h2>
+<blockquote>
+Tuberculosis (TB) is caused by bacteria (Mycobacterium tuberculosis) and it most often affects the lungs. TB is spread through the air when people with lung TB cough, sneeze or spit. A person needs to inhale only a few germs to become infected. Every year, 10 million people fall ill with tuberculosis (TB). Despite being a preventable and curable disease, 1.5 million people die from TB each year – making it the world’s top infectious killer.
+<footer>
+World Health Organization
+</footer>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>Use the <code>efetch</code> command from EDirect to download and save the Tuberculosis reference genome (AL123456).</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>efetch -db nuccore -id AL123456 -format fasta &gt; exercises/tuberculosis/AL123456.fasta</code></pre>
+</div>
+</div>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>Use the <code>esearch</code> and <code>efetch</code> commands to download and save the run information from a public Tuberculosis sequencing project (PRJNA575883).</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>esearch -db sra -query PRJNA575883 | efetch -format runinfo &gt; exercises/tuberculosis/runinfo.csv</code></pre>
+</div>
+</div>
+</div>
+<!-- The esearch command only works asynchronously -->
+<ol start="3" style="list-style-type: decimal">
+<li>Create a file which contains the run accession numbers of those runs from submission SRA1348739.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>cat exercises/tuberculosis/runinfo.csv | grep &quot;SRA1348739&quot; | cut -d &quot;,&quot; -f 1 &gt; exercises/tuberculosis/runids.txt</code></pre>
+</div>
+</div>
+</div>
+<ol start="4" style="list-style-type: decimal">
+<li>Use the <code>fastq-dump</code> command to download 1,000 paired-end reads from each of the runs selected in Q3. Instead of manually creating the command for each run accession number, use a for loop to read each run accession number from the file created in Q3.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>while read RUN; do
+
+  fastq-dump -X 1000 -O exercises/tuberculosis --split-files ${RUN}
+
+done &lt; exercises/tuberculosis/runids.txt</code></pre>
+<pre><code>## Read 1000 spots for SRR17333997
+## Written 1000 spots for SRR17333997
+## Read 1000 spots for SRR17333996
+## Written 1000 spots for SRR17333996
+## Read 1000 spots for SRR17333995
+## Written 1000 spots for SRR17333995
+## Read 1000 spots for SRR17333994
+## Written 1000 spots for SRR17333994
+## Read 1000 spots for SRR17333993
+## Written 1000 spots for SRR17333993
+## Read 1000 spots for SRR17333992
+## Written 1000 spots for SRR17333992
+## Read 1000 spots for SRR17333991
+## Written 1000 spots for SRR17333991
+## Read 1000 spots for SRR17333990
+## Written 1000 spots for SRR17333990
+## Read 1000 spots for SRR17333989
+## Written 1000 spots for SRR17333989
+## Read 1000 spots for SRR17333998
+## Written 1000 spots for SRR17333998</code></pre>
+</div>
+</div>
+</div>
+<ol start="5" style="list-style-type: decimal">
+<li>Use the Bowtie 2 aligner to index the Tuberculosis genome.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>bowtie2-build exercises/tuberculosis/AL123456.fasta exercises/tuberculosis/AL123456</code></pre>
+<pre><code>## Settings:
+##   Output files: &quot;exercises/tuberculosis/AL123456.*.bt2&quot;
+##   Line rate: 6 (line is 64 bytes)
+##   Lines per side: 1 (side is 64 bytes)
+##   Offset rate: 4 (one in 16)
+##   FTable chars: 10
+##   Strings: unpacked
+##   Max bucket size: default
+##   Max bucket size, sqrt multiplier: default
+##   Max bucket size, len divisor: 4
+##   Difference-cover sample period: 1024
+##   Endianness: little
+##   Actual local endianness: little
+##   Sanity checking: disabled
+##   Assertions: disabled
+##   Random seed: 0
+##   Sizeofs: void*:8, int:4, long:8, size_t:8
+## Input files DNA, FASTA:
+##   exercises/tuberculosis/AL123456.fasta
+## Building a SMALL index
+## Reading reference sizes
+##   Time reading reference sizes: 00:00:00
+## Calculating joined length
+## Writing header
+## Reserving space for joined string
+## Joining reference sequences
+##   Time to join reference sequences: 00:00:00
+## bmax according to bmaxDivN setting: 1102883
+## Using parameters --bmax 827163 --dcv 1024
+##   Doing ahead-of-time memory usage test
+##   Passed!  Constructing with these parameters: --bmax 827163 --dcv 1024
+## Constructing suffix-array element generator
+## Building DifferenceCoverSample
+##   Building sPrime
+##   Building sPrimeOrder
+##   V-Sorting samples
+##   V-Sorting samples time: 00:00:00
+##   Allocating rank array
+##   Ranking v-sort output
+##   Ranking v-sort output time: 00:00:00
+##   Invoking Larsson-Sadakane on ranks
+##   Invoking Larsson-Sadakane on ranks time: 00:00:00
+##   Sanity-checking and returning
+## Building samples
+## Reserving space for 12 sample suffixes
+## Generating random suffixes
+## QSorting 12 sample offsets, eliminating duplicates
+## QSorting sample offsets, eliminating duplicates time: 00:00:00
+## Multikey QSorting 12 samples
+##   (Using difference cover)
+##   Multikey QSorting samples time: 00:00:00
+## Calculating bucket sizes
+## Splitting and merging
+##   Splitting and merging time: 00:00:00
+## Split 1, merged 6; iterating...
+## Splitting and merging
+##   Splitting and merging time: 00:00:00
+## Split 1, merged 1; iterating...
+## Splitting and merging
+##   Splitting and merging time: 00:00:00
+## Split 1, merged 1; iterating...
+## Splitting and merging
+##   Splitting and merging time: 00:00:00
+## Avg bucket size: 630218 (target: 827162)
+## Converting suffix-array elements to index image
+## Allocating ftab, absorbFtab
+## Entering Ebwt loop
+## Getting block 1 of 7
+##   Reserving size (827163) for bucket 1
+##   Calculating Z arrays for bucket 1
+##   Entering block accumulator loop for bucket 1:
+##   bucket 1: 10%
+##   bucket 1: 20%
+##   bucket 1: 30%
+##   bucket 1: 40%
+##   bucket 1: 50%
+##   bucket 1: 60%
+##   bucket 1: 70%
+##   bucket 1: 80%
+##   bucket 1: 90%
+##   bucket 1: 100%
+##   Sorting block of length 645384 for bucket 1
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 645385 for bucket 1
+## Getting block 2 of 7
+##   Reserving size (827163) for bucket 2
+##   Calculating Z arrays for bucket 2
+##   Entering block accumulator loop for bucket 2:
+##   bucket 2: 10%
+##   bucket 2: 20%
+##   bucket 2: 30%
+##   bucket 2: 40%
+##   bucket 2: 50%
+##   bucket 2: 60%
+##   bucket 2: 70%
+##   bucket 2: 80%
+##   bucket 2: 90%
+##   bucket 2: 100%
+##   Sorting block of length 715092 for bucket 2
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 715093 for bucket 2
+## Getting block 3 of 7
+##   Reserving size (827163) for bucket 3
+##   Calculating Z arrays for bucket 3
+##   Entering block accumulator loop for bucket 3:
+##   bucket 3: 10%
+##   bucket 3: 20%
+##   bucket 3: 30%
+##   bucket 3: 40%
+##   bucket 3: 50%
+##   bucket 3: 60%
+##   bucket 3: 70%
+##   bucket 3: 80%
+##   bucket 3: 90%
+##   bucket 3: 100%
+##   Sorting block of length 484041 for bucket 3
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 484042 for bucket 3
+## Getting block 4 of 7
+##   Reserving size (827163) for bucket 4
+##   Calculating Z arrays for bucket 4
+##   Entering block accumulator loop for bucket 4:
+##   bucket 4: 10%
+##   bucket 4: 20%
+##   bucket 4: 30%
+##   bucket 4: 40%
+##   bucket 4: 50%
+##   bucket 4: 60%
+##   bucket 4: 70%
+##   bucket 4: 80%
+##   bucket 4: 90%
+##   bucket 4: 100%
+##   Sorting block of length 491241 for bucket 4
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 491242 for bucket 4
+## Getting block 5 of 7
+##   Reserving size (827163) for bucket 5
+##   Calculating Z arrays for bucket 5
+##   Entering block accumulator loop for bucket 5:
+##   bucket 5: 10%
+##   bucket 5: 20%
+##   bucket 5: 30%
+##   bucket 5: 40%
+##   bucket 5: 50%
+##   bucket 5: 60%
+##   bucket 5: 70%
+##   bucket 5: 80%
+##   bucket 5: 90%
+##   bucket 5: 100%
+##   Sorting block of length 776428 for bucket 5
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 776429 for bucket 5
+## Getting block 6 of 7
+##   Reserving size (827163) for bucket 6
+##   Calculating Z arrays for bucket 6
+##   Entering block accumulator loop for bucket 6:
+##   bucket 6: 10%
+##   bucket 6: 20%
+##   bucket 6: 30%
+##   bucket 6: 40%
+##   bucket 6: 50%
+##   bucket 6: 60%
+##   bucket 6: 70%
+##   bucket 6: 80%
+##   bucket 6: 90%
+##   bucket 6: 100%
+##   Sorting block of length 776107 for bucket 6
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 776108 for bucket 6
+## Getting block 7 of 7
+##   Reserving size (827163) for bucket 7
+##   Calculating Z arrays for bucket 7
+##   Entering block accumulator loop for bucket 7:
+##   bucket 7: 10%
+##   bucket 7: 20%
+##   bucket 7: 30%
+##   bucket 7: 40%
+##   bucket 7: 50%
+##   bucket 7: 60%
+##   bucket 7: 70%
+##   bucket 7: 80%
+##   bucket 7: 90%
+##   bucket 7: 100%
+##   Sorting block of length 523233 for bucket 7
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 523234 for bucket 7
+## Exited Ebwt loop
+## fchr[A]: 0
+## fchr[C]: 758552
+## fchr[G]: 2208550
+## fchr[T]: 3653164
+## fchr[$]: 4411532
+## Exiting Ebwt::buildToDisk()
+## Returning from initFromVector
+## Wrote 5665053 bytes to primary EBWT file: exercises/tuberculosis/AL123456.1.bt2.tmp
+## Wrote 1102888 bytes to secondary EBWT file: exercises/tuberculosis/AL123456.2.bt2.tmp
+## Re-opening _in1 and _in2 as input streams
+## Returning from Ebwt constructor
+## Headers:
+##     len: 4411532
+##     bwtLen: 4411533
+##     sz: 1102883
+##     bwtSz: 1102884
+##     lineRate: 6
+##     offRate: 4
+##     offMask: 0xfffffff0
+##     ftabChars: 10
+##     eftabLen: 20
+##     eftabSz: 80
+##     ftabLen: 1048577
+##     ftabSz: 4194308
+##     offsLen: 275721
+##     offsSz: 1102884
+##     lineSz: 64
+##     sideSz: 64
+##     sideBwtSz: 48
+##     sideBwtLen: 192
+##     numSides: 22977
+##     numLines: 22977
+##     ebwtTotLen: 1470528
+##     ebwtTotSz: 1470528
+##     color: 0
+##     reverse: 0
+## Total time for call to driver() for forward index: 00:00:01
+## Reading reference sizes
+##   Time reading reference sizes: 00:00:00
+## Calculating joined length
+## Writing header
+## Reserving space for joined string
+## Joining reference sequences
+##   Time to join reference sequences: 00:00:00
+##   Time to reverse reference sequence: 00:00:00
+## bmax according to bmaxDivN setting: 1102883
+## Using parameters --bmax 827163 --dcv 1024
+##   Doing ahead-of-time memory usage test
+##   Passed!  Constructing with these parameters: --bmax 827163 --dcv 1024
+## Constructing suffix-array element generator
+## Building DifferenceCoverSample
+##   Building sPrime
+##   Building sPrimeOrder
+##   V-Sorting samples
+##   V-Sorting samples time: 00:00:00
+##   Allocating rank array
+##   Ranking v-sort output
+##   Ranking v-sort output time: 00:00:00
+##   Invoking Larsson-Sadakane on ranks
+##   Invoking Larsson-Sadakane on ranks time: 00:00:00
+##   Sanity-checking and returning
+## Building samples
+## Reserving space for 12 sample suffixes
+## Generating random suffixes
+## QSorting 12 sample offsets, eliminating duplicates
+## QSorting sample offsets, eliminating duplicates time: 00:00:00
+## Multikey QSorting 12 samples
+##   (Using difference cover)
+##   Multikey QSorting samples time: 00:00:00
+## Calculating bucket sizes
+## Splitting and merging
+##   Splitting and merging time: 00:00:00
+## Split 1, merged 5; iterating...
+## Splitting and merging
+##   Splitting and merging time: 00:00:00
+## Avg bucket size: 551441 (target: 827162)
+## Converting suffix-array elements to index image
+## Allocating ftab, absorbFtab
+## Entering Ebwt loop
+## Getting block 1 of 8
+##   Reserving size (827163) for bucket 1
+##   Calculating Z arrays for bucket 1
+##   Entering block accumulator loop for bucket 1:
+##   bucket 1: 10%
+##   bucket 1: 20%
+##   bucket 1: 30%
+##   bucket 1: 40%
+##   bucket 1: 50%
+##   bucket 1: 60%
+##   bucket 1: 70%
+##   bucket 1: 80%
+##   bucket 1: 90%
+##   bucket 1: 100%
+##   Sorting block of length 523071 for bucket 1
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 523072 for bucket 1
+## Getting block 2 of 8
+##   Reserving size (827163) for bucket 2
+##   Calculating Z arrays for bucket 2
+##   Entering block accumulator loop for bucket 2:
+##   bucket 2: 10%
+##   bucket 2: 20%
+##   bucket 2: 30%
+##   bucket 2: 40%
+##   bucket 2: 50%
+##   bucket 2: 60%
+##   bucket 2: 70%
+##   bucket 2: 80%
+##   bucket 2: 90%
+##   bucket 2: 100%
+##   Sorting block of length 549662 for bucket 2
+##   (Using difference cover)
+##   Sorting block time: 00:00:01
+## Returning block of 549663 for bucket 2
+## Getting block 3 of 8
+##   Reserving size (827163) for bucket 3
+##   Calculating Z arrays for bucket 3
+##   Entering block accumulator loop for bucket 3:
+##   bucket 3: 10%
+##   bucket 3: 20%
+##   bucket 3: 30%
+##   bucket 3: 40%
+##   bucket 3: 50%
+##   bucket 3: 60%
+##   bucket 3: 70%
+##   bucket 3: 80%
+##   bucket 3: 90%
+##   bucket 3: 100%
+##   Sorting block of length 532754 for bucket 3
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 532755 for bucket 3
+## Getting block 4 of 8
+##   Reserving size (827163) for bucket 4
+##   Calculating Z arrays for bucket 4
+##   Entering block accumulator loop for bucket 4:
+##   bucket 4: 10%
+##   bucket 4: 20%
+##   bucket 4: 30%
+##   bucket 4: 40%
+##   bucket 4: 50%
+##   bucket 4: 60%
+##   bucket 4: 70%
+##   bucket 4: 80%
+##   bucket 4: 90%
+##   bucket 4: 100%
+##   Sorting block of length 660062 for bucket 4
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 660063 for bucket 4
+## Getting block 5 of 8
+##   Reserving size (827163) for bucket 5
+##   Calculating Z arrays for bucket 5
+##   Entering block accumulator loop for bucket 5:
+##   bucket 5: 10%
+##   bucket 5: 20%
+##   bucket 5: 30%
+##   bucket 5: 40%
+##   bucket 5: 50%
+##   bucket 5: 60%
+##   bucket 5: 70%
+##   bucket 5: 80%
+##   bucket 5: 90%
+##   bucket 5: 100%
+##   Sorting block of length 692173 for bucket 5
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 692174 for bucket 5
+## Getting block 6 of 8
+##   Reserving size (827163) for bucket 6
+##   Calculating Z arrays for bucket 6
+##   Entering block accumulator loop for bucket 6:
+##   bucket 6: 10%
+##   bucket 6: 20%
+##   bucket 6: 30%
+##   bucket 6: 40%
+##   bucket 6: 50%
+##   bucket 6: 60%
+##   bucket 6: 70%
+##   bucket 6: 80%
+##   bucket 6: 90%
+##   bucket 6: 100%
+##   Sorting block of length 618745 for bucket 6
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 618746 for bucket 6
+## Getting block 7 of 8
+##   Reserving size (827163) for bucket 7
+##   Calculating Z arrays for bucket 7
+##   Entering block accumulator loop for bucket 7:
+##   bucket 7: 10%
+##   bucket 7: 20%
+##   bucket 7: 30%
+##   bucket 7: 40%
+##   bucket 7: 50%
+##   bucket 7: 60%
+##   bucket 7: 70%
+##   bucket 7: 80%
+##   bucket 7: 90%
+##   bucket 7: 100%
+##   Sorting block of length 702923 for bucket 7
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 702924 for bucket 7
+## Getting block 8 of 8
+##   Reserving size (827163) for bucket 8
+##   Calculating Z arrays for bucket 8
+##   Entering block accumulator loop for bucket 8:
+##   bucket 8: 10%
+##   bucket 8: 20%
+##   bucket 8: 30%
+##   bucket 8: 40%
+##   bucket 8: 50%
+##   bucket 8: 60%
+##   bucket 8: 70%
+##   bucket 8: 80%
+##   bucket 8: 90%
+##   bucket 8: 100%
+##   Sorting block of length 132135 for bucket 8
+##   (Using difference cover)
+##   Sorting block time: 00:00:00
+## Returning block of 132136 for bucket 8
+## Exited Ebwt loop
+## fchr[A]: 0
+## fchr[C]: 758552
+## fchr[G]: 2208550
+## fchr[T]: 3653164
+## fchr[$]: 4411532
+## Exiting Ebwt::buildToDisk()
+## Returning from initFromVector
+## Wrote 5665053 bytes to primary EBWT file: exercises/tuberculosis/AL123456.rev.1.bt2.tmp
+## Wrote 1102888 bytes to secondary EBWT file: exercises/tuberculosis/AL123456.rev.2.bt2.tmp
+## Re-opening _in1 and _in2 as input streams
+## Returning from Ebwt constructor
+## Headers:
+##     len: 4411532
+##     bwtLen: 4411533
+##     sz: 1102883
+##     bwtSz: 1102884
+##     lineRate: 6
+##     offRate: 4
+##     offMask: 0xfffffff0
+##     ftabChars: 10
+##     eftabLen: 20
+##     eftabSz: 80
+##     ftabLen: 1048577
+##     ftabSz: 4194308
+##     offsLen: 275721
+##     offsSz: 1102884
+##     lineSz: 64
+##     sideSz: 64
+##     sideBwtSz: 48
+##     sideBwtLen: 192
+##     numSides: 22977
+##     numLines: 22977
+##     ebwtTotLen: 1470528
+##     ebwtTotSz: 1470528
+##     color: 0
+##     reverse: 1
+## Total time for backward call to driver() for mirror index: 00:00:01
+## Renaming exercises/tuberculosis/AL123456.3.bt2.tmp to exercises/tuberculosis/AL123456.3.bt2
+## Renaming exercises/tuberculosis/AL123456.4.bt2.tmp to exercises/tuberculosis/AL123456.4.bt2
+## Renaming exercises/tuberculosis/AL123456.1.bt2.tmp to exercises/tuberculosis/AL123456.1.bt2
+## Renaming exercises/tuberculosis/AL123456.2.bt2.tmp to exercises/tuberculosis/AL123456.2.bt2
+## Renaming exercises/tuberculosis/AL123456.rev.1.bt2.tmp to exercises/tuberculosis/AL123456.rev.1.bt2
+## Renaming exercises/tuberculosis/AL123456.rev.2.bt2.tmp to exercises/tuberculosis/AL123456.rev.2.bt2</code></pre>
+</div>
+</div>
+</div>
+<ol start="6" style="list-style-type: decimal">
+<li>Align the sequencing reads to the Tuberculosis genome use the Bowtie 2 aligner. Additionally, sort, convert, and index the SAM file. Again, use a for loop to construct and run each of the commands.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>while read RUN; do
+
+  bowtie2 -x exercises/tuberculosis/AL123456 -1 exercises/tuberculosis/${RUN}_1.fastq -2 exercises/tuberculosis/${RUN}_2.fastq &gt; exercises/tuberculosis/${RUN}.sam
+  
+  samtools sort exercises/tuberculosis/${RUN}.sam &gt; exercises/tuberculosis/${RUN}.bam
+  
+  samtools index exercises/tuberculosis/${RUN}.bam
+
+done &lt; exercises/tuberculosis/runids.txt</code></pre>
+<pre><code>## 1000 reads; of these:
+##   1000 (100.00%) were paired; of these:
+##     157 (15.70%) aligned concordantly 0 times
+##     822 (82.20%) aligned concordantly exactly 1 time
+##     21 (2.10%) aligned concordantly &gt;1 times
+##     ----
+##     157 pairs aligned concordantly 0 times; of these:
+##       65 (41.40%) aligned discordantly 1 time
+##     ----
+##     92 pairs aligned 0 times concordantly or discordantly; of these:
+##       184 mates make up the pairs; of these:
+##         145 (78.80%) aligned 0 times
+##         34 (18.48%) aligned exactly 1 time
+##         5 (2.72%) aligned &gt;1 times
+## 92.75% overall alignment rate
+## 1000 reads; of these:
+##   1000 (100.00%) were paired; of these:
+##     119 (11.90%) aligned concordantly 0 times
+##     865 (86.50%) aligned concordantly exactly 1 time
+##     16 (1.60%) aligned concordantly &gt;1 times
+##     ----
+##     119 pairs aligned concordantly 0 times; of these:
+##       43 (36.13%) aligned discordantly 1 time
+##     ----
+##     76 pairs aligned 0 times concordantly or discordantly; of these:
+##       152 mates make up the pairs; of these:
+##         111 (73.03%) aligned 0 times
+##         40 (26.32%) aligned exactly 1 time
+##         1 (0.66%) aligned &gt;1 times
+## 94.45% overall alignment rate
+## 1000 reads; of these:
+##   1000 (100.00%) were paired; of these:
+##     165 (16.50%) aligned concordantly 0 times
+##     822 (82.20%) aligned concordantly exactly 1 time
+##     13 (1.30%) aligned concordantly &gt;1 times
+##     ----
+##     165 pairs aligned concordantly 0 times; of these:
+##       49 (29.70%) aligned discordantly 1 time
+##     ----
+##     116 pairs aligned 0 times concordantly or discordantly; of these:
+##       232 mates make up the pairs; of these:
+##         164 (70.69%) aligned 0 times
+##         67 (28.88%) aligned exactly 1 time
+##         1 (0.43%) aligned &gt;1 times
+## 91.80% overall alignment rate
+## 1000 reads; of these:
+##   1000 (100.00%) were paired; of these:
+##     158 (15.80%) aligned concordantly 0 times
+##     824 (82.40%) aligned concordantly exactly 1 time
+##     18 (1.80%) aligned concordantly &gt;1 times
+##     ----
+##     158 pairs aligned concordantly 0 times; of these:
+##       42 (26.58%) aligned discordantly 1 time
+##     ----
+##     116 pairs aligned 0 times concordantly or discordantly; of these:
+##       232 mates make up the pairs; of these:
+##         158 (68.10%) aligned 0 times
+##         73 (31.47%) aligned exactly 1 time
+##         1 (0.43%) aligned &gt;1 times
+## 92.10% overall alignment rate
+## 1000 reads; of these:
+##   1000 (100.00%) were paired; of these:
+##     159 (15.90%) aligned concordantly 0 times
+##     824 (82.40%) aligned concordantly exactly 1 time
+##     17 (1.70%) aligned concordantly &gt;1 times
+##     ----
+##     159 pairs aligned concordantly 0 times; of these:
+##       58 (36.48%) aligned discordantly 1 time
+##     ----
+##     101 pairs aligned 0 times concordantly or discordantly; of these:
+##       202 mates make up the pairs; of these:
+##         158 (78.22%) aligned 0 times
+##         43 (21.29%) aligned exactly 1 time
+##         1 (0.50%) aligned &gt;1 times
+## 92.10% overall alignment rate
+## 1000 reads; of these:
+##   1000 (100.00%) were paired; of these:
+##     139 (13.90%) aligned concordantly 0 times
+##     851 (85.10%) aligned concordantly exactly 1 time
+##     10 (1.00%) aligned concordantly &gt;1 times
+##     ----
+##     139 pairs aligned concordantly 0 times; of these:
+##       41 (29.50%) aligned discordantly 1 time
+##     ----
+##     98 pairs aligned 0 times concordantly or discordantly; of these:
+##       196 mates make up the pairs; of these:
+##         136 (69.39%) aligned 0 times
+##         56 (28.57%) aligned exactly 1 time
+##         4 (2.04%) aligned &gt;1 times
+## 93.20% overall alignment rate
+## 1000 reads; of these:
+##   1000 (100.00%) were paired; of these:
+##     187 (18.70%) aligned concordantly 0 times
+##     807 (80.70%) aligned concordantly exactly 1 time
+##     6 (0.60%) aligned concordantly &gt;1 times
+##     ----
+##     187 pairs aligned concordantly 0 times; of these:
+##       86 (45.99%) aligned discordantly 1 time
+##     ----
+##     101 pairs aligned 0 times concordantly or discordantly; of these:
+##       202 mates make up the pairs; of these:
+##         158 (78.22%) aligned 0 times
+##         38 (18.81%) aligned exactly 1 time
+##         6 (2.97%) aligned &gt;1 times
+## 92.10% overall alignment rate
+## 1000 reads; of these:
+##   1000 (100.00%) were paired; of these:
+##     195 (19.50%) aligned concordantly 0 times
+##     790 (79.00%) aligned concordantly exactly 1 time
+##     15 (1.50%) aligned concordantly &gt;1 times
+##     ----
+##     195 pairs aligned concordantly 0 times; of these:
+##       53 (27.18%) aligned discordantly 1 time
+##     ----
+##     142 pairs aligned 0 times concordantly or discordantly; of these:
+##       284 mates make up the pairs; of these:
+##         208 (73.24%) aligned 0 times
+##         75 (26.41%) aligned exactly 1 time
+##         1 (0.35%) aligned &gt;1 times
+## 89.60% overall alignment rate
+## 1000 reads; of these:
+##   1000 (100.00%) were paired; of these:
+##     215 (21.50%) aligned concordantly 0 times
+##     775 (77.50%) aligned concordantly exactly 1 time
+##     10 (1.00%) aligned concordantly &gt;1 times
+##     ----
+##     215 pairs aligned concordantly 0 times; of these:
+##       83 (38.60%) aligned discordantly 1 time
+##     ----
+##     132 pairs aligned 0 times concordantly or discordantly; of these:
+##       264 mates make up the pairs; of these:
+##         229 (86.74%) aligned 0 times
+##         35 (13.26%) aligned exactly 1 time
+##         0 (0.00%) aligned &gt;1 times
+## 88.55% overall alignment rate
+## 1000 reads; of these:
+##   1000 (100.00%) were paired; of these:
+##     254 (25.40%) aligned concordantly 0 times
+##     737 (73.70%) aligned concordantly exactly 1 time
+##     9 (0.90%) aligned concordantly &gt;1 times
+##     ----
+##     254 pairs aligned concordantly 0 times; of these:
+##       131 (51.57%) aligned discordantly 1 time
+##     ----
+##     123 pairs aligned 0 times concordantly or discordantly; of these:
+##       246 mates make up the pairs; of these:
+##         227 (92.28%) aligned 0 times
+##         15 (6.10%) aligned exactly 1 time
+##         4 (1.63%) aligned &gt;1 times
+## 88.65% overall alignment rate</code></pre>
+</div>
+</div>
+</div>
+<ol start="7" style="list-style-type: decimal">
+<li>Filter the BAM files so they contain only properly paired alignments. Remember to index the new BAM file as well.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>while read RUN; do
+
+  # Output BAM (-b)
+
+  # FLAGs present (PROPER_PAIR = 2)
+
+  samtools view -b -f 2 exercises/tuberculosis/${RUN}.bam &gt; exercises/tuberculosis/${RUN}.PROPER_PAIR.bam
+  
+  samtools index exercises/tuberculosis/${RUN}.PROPER_PAIR.bam
+
+done &lt; exercises/tuberculosis/runids.txt</code></pre>
+</div>
+</div>
+</div>
+<ol start="8" style="list-style-type: decimal">
+<li>Calculate the read depth at each position in the genome across all BAM files into a file.</li>
+</ol>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code>samtools depth -H exercises/tuberculosis/*.PROPER_PAIR.bam &gt; exercises/tuberculosis/depth.txt</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<footer class="footer">
+<div class="container footer-container">
+<div class="row">
+
+<div class="footer-left col-sm-6">
+<p class="small">
+<b>2022</b> • <a href="https://www.zifornd.com">Zifo</a>
+</p>
+</div>
+
+<div class="footer-right col-sm-6">
+<p>
+<span>
+  <span class="footericon" style="padding-right:4px; padding-left:4px">
+    <a href="https://www.zifornd.com">
+      <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 496 512"><path d="M248 8C111.03 8 0 119.03 0 256s111.03 248 248 248 248-111.03 248-248S384.97 8 248 8zm82.29 357.6c-3.9 3.88-7.99 7.95-11.31 11.28-2.99 3-5.1 6.7-6.17 10.71-1.51 5.66-2.73 11.38-4.77 16.87l-17.39 46.85c-13.76 3-28 4.69-42.65 4.69v-27.38c1.69-12.62-7.64-36.26-22.63-51.25-6-6-9.37-14.14-9.37-22.63v-32.01c0-11.64-6.27-22.34-16.46-27.97-14.37-7.95-34.81-19.06-48.81-26.11-11.48-5.78-22.1-13.14-31.65-21.75l-.8-.72a114.792 114.792 0 0 1-18.06-20.74c-9.38-13.77-24.66-36.42-34.59-51.14 20.47-45.5 57.36-82.04 103.2-101.89l24.01 12.01C203.48 89.74 216 82.01 216 70.11v-11.3c7.99-1.29 16.12-2.11 24.39-2.42l28.3 28.3c6.25 6.25 6.25 16.38 0 22.63L264 112l-10.34 10.34c-3.12 3.12-3.12 8.19 0 11.31l4.69 4.69c3.12 3.12 3.12 8.19 0 11.31l-8 8a8.008 8.008 0 0 1-5.66 2.34h-8.99c-2.08 0-4.08.81-5.58 2.27l-9.92 9.65a8.008 8.008 0 0 0-1.58 9.31l15.59 31.19c2.66 5.32-1.21 11.58-7.15 11.58h-5.64c-1.93 0-3.79-.7-5.24-1.96l-9.28-8.06a16.017 16.017 0 0 0-15.55-3.1l-31.17 10.39a11.95 11.95 0 0 0-8.17 11.34c0 4.53 2.56 8.66 6.61 10.69l11.08 5.54c9.41 4.71 19.79 7.16 30.31 7.16s22.59 27.29 32 32h66.75c8.49 0 16.62 3.37 22.63 9.37l13.69 13.69a30.503 30.503 0 0 1 8.93 21.57 46.536 46.536 0 0 1-13.72 32.98zM417 274.25c-5.79-1.45-10.84-5-14.15-9.97l-17.98-26.97a23.97 23.97 0 0 1 0-26.62l19.59-29.38c2.32-3.47 5.5-6.29 9.24-8.15l12.98-6.49C440.2 193.59 448 223.87 448 256c0 8.67-.74 17.16-1.82 25.54L417 274.25z"></path>
+      </svg>
+    </a>
+    </span>
+    <span class="footericon" style="padding-right:4px; padding-left:4px">
+      <a href="https://twitter.com/zifornd"><svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path>
+    </svg>
+    </a>
+    </span>
+    <span class="footericon" style="padding-left:4px">
+      <a href="https://www.linkedin.com/company/zifo-technologies">
+        <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path>
+        </svg>
+    </a>
+    </span>
+  </span>
+</p>
+</div>
+
+</div>
+</div>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

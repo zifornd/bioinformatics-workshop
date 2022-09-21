@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Biological Data Sources</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="James Ashmore • 20-Sep-2022" />
+    <script src="libs/header-attrs-2.16/header-attrs.js"></script>
+    <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+    <link id="font-awesome-1-attachment" rel="attachment" href="libs/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/slide.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Biological Data Sources
+]
+.author[
+### <b>James Ashmore</b> • 20-Sep-2022
+]
+.institute[
+### Zifo RnD Solutions
+]
+
+---
+
+exclude: true
+count: false
+
+
+&lt;link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;amp;subset=latin-ext" rel="stylesheet"&gt;
+&lt;link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"&gt;
+
+
+
+
+
+&lt;!-- ------------ Only edit title, subtitle &amp; author above this ------------ --&gt;
+
+
+
+---
+
+## What is biological data?
+
+* Biological data is a very broad and un-specific term - *not helpful!*
+
+* From Wikipedia, the free encyclopedia:
+
+&gt; Biological data refers to a compound or information derived from living organisms and their products. A medicinal compound made from living organisms, such as a serum or a vaccine, could be characterized as biological data. Biological data is highly complex when compared with other forms of data. There are many forms of biological data, including text, sequence data, protein structure, genomic data and amino acids, and links among others.
+
+* It is easier to describe biological data by what it **represents**:
+
+  * Gene sequences
+  * Sequence variation
+  * Genome assembly
+  * Gene annotation
+
+* In bioinformatics, you will need to know where to find such data and how to download it
+
+* This is surprisingly difficult, especially when multiple sources provide similar looking data
+
+* *Off we go down the rabbit hole!*
+
+---
+
+## Where are biological data stored?
+
+* Almost all biological data are stored in **databases**
+
+* From Wikipedia, the free encyclopedia:
+
+&gt; In computing, a database is an organized collection of data stored and accessed electronically. Small databases can be stored on a file system, while large databases are hosted on computer clusters or cloud storage.
+
+* As of 2018, there were roughly **180** biological databases - *how do we classify them all?*
+
+* Biological databases are often defined by what **type** of data they store:
+
+  * Nucleic acid databases
+  * Amino acid / protein databases
+  * Signal transduction pathway databases
+  * Metabolic pathway and protein function databases
+  * Taxonomic databases
+  * And many more!
+
+* *We will not go through each type of database, don't worry!*
+
+---
+
+## Why are databases useful?
+
+* The answer to this question should be obvious:
+
+  * Store very large numbers of records efficiently
+  * Very quick and easy to find **information**
+  * Data can be searched easily
+  * More than one person can access the same database as the same time
+  
+* However, what might not be so obvious:
+
+  * Public data can be re-used for further analysis
+  * Benefit from scientific expertise (manual annotation of genes)
+  * Can be used as backup (store your own data once published)
+  * Normally free to use
+  * Avoid data redundancy - *in theory!*
+
+* *Okay, enough! Show me some databases!*
+
+---
+
+## Primary and secondary databases
+
+* **Primary databases** are populated with experimentally derived data:
+
+  * Experimental results are submitted directly into the database by researchers
+
+  * The data in primary databases are never changed: they form part of the scientific record
+
+* **secondary databases** comprise data derived from the results of analysing primary data:
+
+  * The data are often highly curated (processed before it is presented in the database)
+  
+  * Can be more useful than a primary database - *who wants to do their own data munging?*
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/sources/primary-secondary-databases.jpg" alt="Credit: EMBL-EBI Training" width="95%" /&gt;
+&lt;p class="caption"&gt;Credit: EMBL-EBI Training&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## What databases will you most probably use?
+
+* It is **difficult** to take you on a guided tour of most databases - *so many, but so little time!*
+
+* The grand-daddy of them all is the [NCBI](https://www.ncbi.nlm.nih.gov) which is more of a meta-database:
+
+  * Primary data (raw sequencing data, gene sequences, etc.)
+  * Secondary data (analysis results, software tools, etc.)
+  * Published literature (PubMed)
+
+* However, when it comes solely to genomics there are two main contenders (Ensembl vs UCSC)
+
+&lt;img src="data/sources/godzilla-vs-kong.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## What is Ensembl?
+
+&lt;img src="data/sources/ensembl-logo.png" width="20%" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+* [Ensembl](http://www.ensembl.org/) provides a genome browser that acts as a single point of access to annotated genomes for mainly vertebrate species
+
+* Information about genes, transcripts and other annotations can be retrieved at the genome, gene and protein level.
+
+* This includes information on protein domains, genetic variation, homology, syntenic regions and regulatory elements.
+
+* Ensembl even provide a free online training [course](https://www.ebi.ac.uk/training/online/courses/ensembl-browsing-genomes/) - *lucky you!*
+
+* Here's what Ensembl themselves have to say:
+
+&gt; Ensembl is a genome browser for vertebrate genomes that supports research in comparative genomics, evolution, sequence variation and transcriptional regulation. Ensembl annotate genes, computes multiple alignments, predicts regulatory function and collects disease data. Ensembl tools include BLAST, BLAT, BioMart and the Variant Effect Predictor (VEP) for all supported species.
+
+---
+
+## Ensembl Tour
+
+&lt;iframe src="https://www.ensembl.org/index.html" width="100%" height="550px" data-external="1"&gt;&lt;/iframe&gt;
+
+---
+
+## What is UCSC?
+
+&lt;img src="data/sources/ucsc-logo.png" width="30%" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+* [UCSC](https://genome.ucsc.edu) provides a genome browser that acts as a single point of access to annotated genomes for mainly vertebrate species - *sound familiar?*
+
+* Offers access to genome sequence data from a variety of vertebrate and invertebrate species and major model organisms, integrated with a large collection of aligned annotations
+
+* UCSC also provide free online training [videos](https://genome.ucsc.edu/training/) - *you really are spoiled!*
+
+* Here's what UCSC themselves have to say:
+
+&gt; On June 22, 2000, UCSC and the other members of the International Human Genome Project consortium completed the first working draft of the human genome assembly, forever ensuring free public access to the genome and the information it contains. A few weeks later, on July 7, 2000, the newly assembled genome was released on the web at http://genome.ucsc.edu, along with the initial prototype of a graphical viewing tool, the UCSC Genome Browser. In the ensuing years, the website has grown to include a broad collection of vertebrate and model organism assemblies and annotations, along with a large suite of tools for viewing, analyzing and downloading data.
+
+---
+
+## UCSC Tour
+
+&lt;iframe src="https://genome.ucsc.edu" width="100%" height="550px" data-external="1"&gt;&lt;/iframe&gt;
+
+---
+
+## What data will you most likely want?
+
+* Both Ensembl and UCSC provide a **HUGE** breadth and variety of data
+
+* At some point in your bioinformatics journey, you will need the following:
+
+  * Genome assembly:
+      * Nucleotide sequences from an organism's genome
+      * FASTA/Q format
+
+  * Genomic features
+      * Location of genomic elements (e.g., genes, transcripts)
+      * BED, GTF, GFF3 formats
+
+  * Genome variation:
+      * Gene sequence variation (e.g, SNPs, indels)
+      * VCF format
+
+* Both Ensembl and UCSC provide access to this data through their websites:
+
+  * [Ensembl FTP Download](https://www.ensembl.org/info/data/sources/ftp/index.html)
+  
+  * [UCSC Downloads Page](https://hgdownload.soe.ucsc.edu/downloads.html)
+
+
+---
+
+## Genome assembly
+
+* The **genome assembly** is simply the **genome sequence** produced after chromosomes have been fragmented, those fragments have been sequenced, and the resulting sequences have been put back together. 
+
+* Each species a **reference genome assembly** that is produced by an international genome consortium
+
+* The reference assembly can be compiled from the DNA of one individual, a collection of individuals, a breed or a strain (depends on the species)
+
+* Ensembl and UCSC do **not** generate genome assemblies - that job is left to the [Genomc Research Consortium](https://www.ncbi.nlm.nih.gov/grc) and other specialized institutions
+
+---
+
+## FASTA format
+
+* Text-based format for representing either nucleotide or amino acid sequences
+
+* Nucleotides or amino acids are represented using single-letter codes:
+
+  * IUPAC ambiguous DNA: `GATCRYWSMKHBVDN`
+  * IUPAC protein alphabet of the **20** standard amino acids: `ACDEFGHIKLMNPQRSTVWY`
+
+* A FASTA file uses two or more lines per sequence:
+
+  * The header line begins with '**&gt;**' and gives a unique identifier for the sequence
+  * The sequence line(s) contain the actual sequence and are wrapped every **80** characters
+
+* Filename extensions: `.fasta` `.fna` `.ffn` `.faa` `.frn` `.fa`
+
+
+```fasta
+&gt;seq1
+GTAGATCGCATCGACTACTACTACGTACGTACGATCGTACGTACGATCGATCGATCGATCGATCGATCGACTGAGCACTG
+GATGATCGATGAGCTATACAGTGTC
+&gt;seq2
+GATCGATCGTACGTACGTACGATCACGATCGTACGATCGATCGACTACTACTGATCGATCGATCGATCGATCGATCGTAC
+GTATATAGCCTTCGATCGTACGAGGGCCTCTCTCCGCGATAGATACGAGCGCGCCGATCGATCGATCG
+```
+
+---
+
+## FASTQ format
+
+* Text-based format for storing a nucleotide sequence and its quality scores
+
+* A FASTQ file uses four lines per sequence:
+
+  1. Begins with a '**@**' character followed by a sequence identifier
+  2. Nucleotide sequence
+  3. Begins with a '**+**' character and is optionally followed by the same sequence identifier
+  4. Encodes the quality scores for the nucleotide sequence
+
+* Filename extensions: `.fastq` `.fq`
+
+
+```fastq
+@HWUSI-EAS100R:6:73:941:1973#0/1
+TGAAGNCTATAAACTAAGAAGCAAGCACACTAGGAGTT
++
+AAAAA#EEEEA/EEEEEEE6EAEAEEEEEEEEEEEEEE
+@HWUSI-EAS100R:6:73:942:1973#0/1
+GTCACNATTCTCAAGGCCGTCGTCTTTTTAGTCGGTTT
++
+AAAAA#EEEAEEAEEEEEEEAAAEEEEEE6E/E&lt;E/AE
+```
+
+---
+
+## Genomic features
+
+* Genomic features are defined regions of a genome
+
+* Most often features will represent *interesting* genomic elements
+
+* Examples of genomic elements may include:
+
+  * Genes 
+  * CDS
+  * rRNA
+  * tRNA
+  * Pseudogene
+
+* You can define **any** region as an *interesting* element
+
+* Represented using a minimal genomic coordinate system:
+
+  1. Chromosome name
+  2. Feature start position
+  3. Feature end position
+
+* Three standard `TAB` separated formats: **BED**, **GFF**, **GTF**
+
+---
+
+## BED format
+
+.pull-left-60[
+
+* Text-based format for storing the location of arbitrary genomic features
+
+* Each genomic feature is listed on a separate **data line**
+
+* Each line has fields separated by the `TAB` character
+
+* Each line contains between 3 and 12 fields:
+
+  * The first **3** fields are mandatory
+  
+  * The last **9** fields are optional
+  
+  * The order of fields is binding
+
+* Filename extension: `.bed`
+
+
+```bed
+chr1	127471196	127472363	Reg1	0	+
+chr1	127472363	127473530	Reg2	0	+
+chr1	127473530	127474697	Reg3	0	+
+chr1	127474697	127475864	Reg4	0	+
+chr1	127475864	127477031	Reg5	0	-
+```
+
+]
+
+.pull-right-40[
+
+&lt;table class="table" style="font-size: 13px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Column &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Field &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Description &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; chrom &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Chromosome name &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; chromStart &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Feature start position &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; chromEnd &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Feature end position &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; name &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; Feature description &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; score &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; A numerical value &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; strand &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; Feature strand &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; thickStart &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; Thick start position &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; thickEnd &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; Thick end position &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; itemRgb &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; Display color &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; blockCount &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; Number of blocks &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; blockSizes &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; Block sizes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; 12 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; blockStarts &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #f7f7f7 !important;"&gt; Block start positions &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+---
+
+## GFF format
+
+.pull-left-60[
+
+* Text-based format for storing the location of genes and other features
+
+* Each feature is listed on a separate **data line**
+
+* Each line has fields separated by the `TAB` character
+
+* Each line must contain all 9 fields:
+
+  * The first **8** fields contain a single value
+  
+  * The last field contains multiple values
+  
+  * The order of fields is binding
+  
+* Multiple versions (latest is version 3)
+
+* Filename extension: `.gff` `.gff3`
+
+
+
+```gff
+ctg123	.	mRNA	1300	9000	.	+	.	ID=mrna0001;Name=sonichedgehog
+ctg123	.	exon	1300	1500	.	+	.	ID=exon00001;Parent=mrna0001
+ctg123	.	exon	1050	1500	.	+	.	ID=exon00002;Parent=mrna0001
+ctg123	.	exon	3000	3902	.	+	.	ID=exon00003;Parent=mrna0001
+ctg123	.	exon	5000	5500	.	+	.	ID=exon00004;Parent=mrna0001
+```
+
+]
+
+.pull-right-40[
+
+&lt;table class="table" style="font-size: 13px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Column &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Field &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Description &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; seqid &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Chromosome name &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; source &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Data source &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; type &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Feature type name &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; start &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Feature start position &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; end &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Feature end position &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; score &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; A numerical value &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; strand &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Feature strand &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; phase &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Phase of CDS feature &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; attributes &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; List of tag-value pairs &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+---
+
+## GTF format
+
+.pull-left-60[
+
+* Same as version 2.2 of the GFF format
+
+* Text-based format for storing the location of genes and other features
+
+* Each feature is listed on a separate **data line**
+
+* Each line has fields separated by the `TAB` character
+
+* Each line must contain all 9 fields:
+
+  * The first **8** fields contain a single value
+  
+  * The last field contains multiple values
+  
+  * The order of fields is binding
+
+* Filename extension: `.gtf`
+
+
+```gtf
+X	.	exon	24191	24191	42	.	.	hid=trf; hstart=1; hend=21
+X	.	exon	24191	24194	250	-	.	hid=AluSx; hstart=1; hend=303
+X	.	exon	24191	24191	0	.	.	hid=dust; hstart=2419108; hend=2419128
+X	.	mRNA	24166	24187	450	-	2	genscan=GENSCAN00000019335
+X	.	exon	24134	24134	.	+	.	
+```
+
+]
+
+.pull-right-40[
+
+&lt;table class="table" style="font-size: 13px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Column &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Field &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Description &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; seqname &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Chromosome name &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; source &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Data source &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; feature &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Feature type name &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; start &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Feature start position &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; end &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Feature end position &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; score &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; A numerical value &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; strand &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Feature strand &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; frame &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Frame of CDS feature &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; attribute &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; List of tag-value pairs &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+---
+
+## Genome variation
+
+* Areas of the genome that differ between individual genomes ("variants")
+
+* Variants can be associated with particular diseases and phenotypes
+
+* There are different types of variants for several species:
+
+    * Single nucleotide polymorphisms (SNPs)
+    
+    * Short nucleotide insertions and/or deletions
+    
+    * Longer variants classified as structural variants (including CNVs)
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/sources/structural-variation.png" alt="Credit: Wikipedia" width="70%" /&gt;
+&lt;p class="caption"&gt;Credit: Wikipedia&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## VCF format
+
+.pull-left-60[
+
+* Text-based format for representing sequence variation:
+
+  * SNPs (`G` to `A`)
+  * Indels (`GTC` to `G`)
+
+* The standard format includes groups of lines:
+
+  * Meta-information lines (prefixed with `##`)
+
+  * Header line (prefixed with `#`)
+
+  * Data lines containing information about a position in the reference genome
+  
+* Data lines contain **8** mandatory fields
+
+* Example of a VCF file is shown overleaf
+  
+* Filename extension: `.vcf`
+
+]
+
+.pull-right-40[
+
+&lt;table class="table" style="font-size: 13px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Column &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Field &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Description &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; CHROM &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Chromosome &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; POS &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Position &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; ID &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Identifier &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; REF &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Reference base &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; ALT &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Alternate base &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; QUAL &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Quality &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; FILTER &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Filter status &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; INFO &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: #edf8e9 !important;"&gt; Additional information &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+---
+
+## VCF format
+
+### Meta-information
+
+* File meta-information is included after the `##` and must be `key=value` pairs
+
+* Meta-information lines are optional, but it is recommended to include them
+
+
+```vcf
+##fileformat=VCFv4.2
+##fileDate=20090805
+##source=myImputationProgramV3.1
+##reference=file:///seq/references/1000GenomesPilot-NCBI36.fasta
+##contig=&lt;ID=20,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species="Homo sapiens",taxonomy=x&gt;
+##phasing=partial
+##INFO=&lt;ID=NS,Number=1,Type=Integer,Description="Number of Samples With Data"&gt;
+##INFO=&lt;ID=DP,Number=1,Type=Integer,Description="Total Depth"&gt;
+##INFO=&lt;ID=AF,Number=A,Type=Float,Description="Allele Frequency"&gt;
+##INFO=&lt;ID=AA,Number=1,Type=String,Description="Ancestral Allele"&gt;
+##INFO=&lt;ID=DB,Number=0,Type=Flag,Description="dbSNP membership, build 129"&gt;
+##INFO=&lt;ID=H2,Number=0,Type=Flag,Description="HapMap2 membership"&gt;
+##FILTER=&lt;ID=q10,Description="Quality below 10"&gt;
+##FILTER=&lt;ID=s50,Description="Less than 50% of samples have data"&gt;
+##FORMAT=&lt;ID=GT,Number=1,Type=String,Description="Genotype"&gt;
+##FORMAT=&lt;ID=GQ,Number=1,Type=Integer,Description="Genotype Quality"&gt;
+##FORMAT=&lt;ID=DP,Number=1,Type=Integer,Description="Read Depth"&gt;
+##FORMAT=&lt;ID=HQ,Number=2,Type=Integer,Description="Haplotype Quality"&gt;
+```
+
+---
+
+## VCF format
+
+### Header line
+
+* The header line names the 8 fixed, mandatory columns
+
+* If genotype data is present, these are followed by a FORMAT column then sample IDs
+
+
+```vcf
+#CHROM POS ID REF ALT QUAL FILTER INFO FORMAT NA00001 NA00002 NA00003
+```
+
+### Data lines
+
+* All data lines are `TAB` delimited and missing values are specified with a `.`
+
+* The example below shows (in order):
+
+  1. SNP
+  2. SNP filtered out because its quality is below 10
+  3. Site with two alternate alleles (G, T)
+  4. Site with no alternate alleles
+  5. Microsatellite with two alternate alleles
+
+
+```vcf
+20 14370   rs6054257 G   A      29 PASS NS=3;DP=14;AF=0.5;DB;H2           GT:GQ:DP:HQ 0|0:48:1:51,51 1|0:48:8:51,51 1/1:43:5:.,.
+20 17330   .         T   A      3  q10  NS=3;DP=11;AF=0.017               GT:GQ:DP:HQ 0|0:49:3:58,50 0|1:3:5:65,3   0/0:41:3
+20 1110696 rs6040355 A   G,T    67 PASS NS=2;DP=10;AF=0.333,0.667;AA=T;DB GT:GQ:DP:HQ 1|2:21:6:23,27 2|1:2:0:18,2   2/2:35:4
+20 1230237 .         T   .      47 PASS NS=3;DP=13;AA=T                   GT:GQ:DP:HQ 0|0:54:7:56,60 0|0:48:4:51,51 0/0:61:2
+20 1234567 microsat1 GTC G,GTCT 50 PASS NS=3;DP=9;AA=G                    GT:GQ:DP    0/1:35:4       0/2:17:2       1/1:40:3
+```
+
+---
+
+## What is the difference between Ensembl and UCSC?
+
+* Both use the *same* genome assembly but with different names:
+
+  * Human genome assembly: GRCh38 (Ensmebl) vs hg38 (UCSC)
+  * Mouse genome assembly: GRCm38 (Ensembl) vs mm10 (UCSC)
+
+* Use *different* pipelines to annotate the genome assembly:
+
+  * Ensembl gene annotation: Ensembl/GENCODE
+  * UCSC gene annotation: UCSC/RefSeq
+
+* The difference between annotations is sensitivity versus specificity:
+
+  * Ensembl is more **sensitive** (more transcripts, weaker evidence)
+  * UCSC is more **specific** (less transcripts, stronger evidence)
+
+* Use different conventions for naming chromosomes:
+
+  * Ensembl uses numbers and letters: 1, 2, 3
+  * UCSC prefixes each chromosome name with 'chr': chr1, chr2, chr3
+
+* Which should you pick? Any significant differences are yet to be understood
+
+* *Practically, it comes down to how you feel about the naming scheme... seriously!*
+
+---
+
+## Summary
+
+* Biological data is best described by what it **represents**
+
+* Almost all biological data is stored in databases which can be accessed online
+
+* Ensembl and UCSC provider genomics data for a wide variety of organisms
+
+* You will most often want need to download the following:
+
+  * Genome assembly data in FASTA format
+  
+  * Genomic feature data in BED, GFF, or GTF formats
+  
+  * Genome variation data in VCF format
+
+&lt;!-- --------------------- Do not edit this and below --------------------- --&gt;
+
+---
+name: end_slide
+class: end-slide, middle
+count: false
+
+# Thank you. Questions?
+
+
+.end-text[
+&lt;p class="smaller"&gt;
+&lt;span class="small" style="line-height: 1.2;"&gt;Graphics from &lt;/span&gt;&lt;img src="./assets/freepik.jpg" style="max-height:20px; vertical-align:middle;"&gt;&lt;br&gt;
+Created: 20-Sep-2022 • James Ashmore • &lt;a href="https://www.zifornd.com"&gt;Zifo&lt;/a&gt;
+&lt;/p&gt;
+]
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="assets/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "4:3",
+"highlightLanguage": "r",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

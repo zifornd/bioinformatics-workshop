@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to bioinformatics</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="James Ashmore • 20-Sep-2022" />
+    <script src="libs/header-attrs-2.16/header-attrs.js"></script>
+    <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+    <link id="font-awesome-1-attachment" rel="attachment" href="libs/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+    <link href="libs/vembedr-0.1.5/css/vembedr.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/slide.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Introduction to bioinformatics
+]
+.author[
+### <b>James Ashmore</b> • 20-Sep-2022
+]
+.institute[
+### Zifo RnD Solutions
+]
+
+---
+
+exclude: true
+count: false
+
+
+&lt;link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;amp;subset=latin-ext" rel="stylesheet"&gt;
+&lt;link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"&gt;
+
+
+
+
+
+&lt;!-- ------------ Only edit title, subtitle &amp; author above this ------------ --&gt;
+
+---
+
+## What is bioinformatics?
+
+According to the National Human Genome Research Institute:
+
+&gt; Bioinformatics is a subdiscipline of biology and computer science concerned with the acquisition, storage, analysis, and dissemination of biological data, most often DNA and amino acid sequences. Bioinformatics uses computer programs for a variety of applications, including determining gene and protein functions, establishing evolutionary relationships, and predicting the three-dimensional shapes of proteins.
+
+Let's break down that definition into the important phrases:
+
+* Sub-discipline of biology and computer science
+
+* Acquisition, storage, analysis, and dissemination of biological data
+
+* Use computer programs for a variety of applications
+
+---
+
+## What is a bioinformatician?
+
+Generally we like to define a bioinformatician as someone who:
+
+&gt; Combines **BIOLOGY, STATISTICS, and PROGRAMMING** skills to develop software or perform analysis which solves a biological problem
+
+However, some prefer to distinguish between those who develop software and those who use software for analysis only:
+
+&gt; **COMPUTATIONAL BIOLOGY** uses algorithms to mathematically (statistically) analyze biological problems and tries to build a model to infer solutions using a computational approach. On the other hand, **ANALYTICAL BIOINFORMATICS** uses bioinformatics tools to conduct analyses in a biological context
+
+In our opinion, definitions often do more harm than good.
+
+What matters is whether the person has the right skills to tackle the problem.
+
+---
+
+## What is a bioinformatician?
+
+* Bioinformaticians taken on multiple roles:
+
+  * Biologist
+  * Statistician
+  * Computer programmer
+
+* It is very difficult to be fully versed in each of these roles
+
+* An effective bioinformatician knows just enough in each area
+
+&lt;img src="data/introduction/bioinformatics-venn.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## What is genomics?
+
+Before starting your training, it is necessary to have a good understanding of genomics
+
+&gt; Genomics is the study of the body’s **GENES**, their **FUNCTIONS** and their **INFLUENCE** on the growth, development and working of the body
+
+Without a good understanding of genomics it would be very difficult to understand the output from almost all bioinformatics software
+
+In the following slides we will learn:
+
+  * What is DNA?
+  * What is RNA?
+  * What is protein?
+
+**Buckle up and we'll get started!**
+
+---
+
+## What is DNA?
+
+.pull-left-50[
+
+* DNA stands for **D**eoxyribo**N**ucleic **A**cid
+
+* Molecule that stores genetic *instructions*
+
+* Double-stranded (two DNA molecules)
+
+* Forms a 'double-helix' structure
+
+]
+
+.pull-right-50[
+
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="data/introduction/double-helix.png" alt="The structure of the DNA double helix" width="400" /&gt;
+&lt;p class="caption"&gt;The structure of the DNA double helix&lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+---
+
+## The building blocks of DNA
+
+.pull-left-50[
+
+* DNA is made of repeating units
+
+* Units are called nucleotide bases
+
+* There are four types of base:
+
+  * Adenine (A)
+  * Cytosine (C)
+  * Guanine (G)
+  * Thymine (T)
+
+* A nucleotide base consists of:
+
+  * Phosphate group
+  * Sugar
+  * Nitrogenous base
+
+]
+
+.pull-right-50[
+
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="data/introduction/nucleotide-bases.jpeg" alt="The composition of nucleotide bases" width="300" /&gt;
+&lt;p class="caption"&gt;The composition of nucleotide bases&lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+---
+
+## The helical structure of DNA
+
+.pull-left-50[
+
+
+* Double-stranded (two DNA molecules)
+
+* DNA is like a ladder:
+
+  * Each pole of the ladder is a separate DNA molecule
+  
+  * Each rung of the ladder is a base pair
+
+* Nucleotide bases joined by sugar-phosphate bonds
+
+* Base pairs joined by hydrogen bonds
+
+* Complementary base pairing:
+
+  * A with T
+  * C with G
+
+]
+
+.pull-right-50[
+
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="data/introduction/dna-structure.png" alt="The structure of the DNA double helix" width="300" /&gt;
+&lt;p class="caption"&gt;The structure of the DNA double helix&lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+---
+
+## The directionality of DNA
+
+.pull-left-50[
+
+* DNA consists of two strands:
+
+  * Forward strand (Sense)
+  * Reverse strand (Antisense)
+
+* Each strand has a beginning and an end:
+
+  * Five prime (5')
+  * Three prime (3')
+
+* Strands run in opposite directions:
+
+  * Forward strand is 5' to 3'
+  * Reverse strand is 3' to 5'
+
+* The choice is arbitrary but consistent
+
+]
+
+.pull-right-50[
+  
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/introduction/directionality-dna.png" alt="Directionality of DNA molecule" width="100%" /&gt;
+&lt;p class="caption"&gt;Directionality of DNA molecule&lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+---
+
+## What is a genome?
+
+.pull-left-55[
+
+* The total genetic information of an organism
+
+* In plants and animals, the genome is arranged in thread-like structures called chromosomes:
+
+  1. Single length of DNA
+
+  2. Wrapped to form nucleosomes
+  
+  3. Nucleosomes coil to create chromatin loops
+  
+  4. Chromatin loops packed into chromosomes
+  
+* Genomes can contain multiple chromosomes:
+
+  * Humans (46)
+  
+  * Mice (40)
+  
+  * Earthworms (36)
+  
+  * Blackberry (308)
+
+]
+
+.pull-right-45[
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/introduction/chromosome-dna.png" alt="The major structures " width="75%" /&gt;
+&lt;p class="caption"&gt;The major structures &lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+---
+
+## The purpose of a genome
+
+* A genome contains all of the genetic information for an organism
+
+* The genome provides *instructions* needed to develop and direct the organism
+
+* Each instruction is encoded in a region of DNA called a **gene**
+
+* Genes are the basic physical and functional unit of heredity (eg. eye colour)
+
+&lt;br&gt;
+
+&lt;img src="data/introduction/chromosome-gene.svg" width="75%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## The human genome
+
+.pull-left-55[
+
+* The Human Genome Project (HGP)
+
+  * Determine DNA of the human genome
+  
+  * International research effort
+  
+  * First draft completed in 2003 (92%)
+  
+  * Fully finished in [2021](https://www.theatlantic.com/science/archive/2021/06/the-human-genome-is-finally-complete/619172/)
+
+* Humans have 46 chromosomes:
+
+    * Get 23 from each parent:
+        
+        * 1 sex chromosome (X or Y)
+  
+        * 22 numbered chromosomes (1-22)
+    
+    * Total size is around 3 billion bases
+    
+    * Contains around 20 thousands genes
+
+]
+
+.pull-right-45[
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/introduction/human-chromosome.png" alt="An image of the 46 chromosomes making up the diploid genome of a human male" width="100%" /&gt;
+&lt;p class="caption"&gt;An image of the 46 chromosomes making up the diploid genome of a human male&lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+---
+
+## Alleles and inheritence
+
+.pull-left-55[
+
+* Chromosomes contain genes for given traits
+
+* Humans chromosomes are paired (23)
+
+* Humans therefore have 2 copies of each gene
+
+* Each copy of a gene is referred to as an allele:
+
+    * Alleles are dominant or recessive
+    
+    * Dominant alleles are evident
+    
+    * For example, eye colour
+
+* Zygosity is the combination of alleles: 
+
+  * Alleles are the same (Homozygous)
+
+  * Alleles are different (Heterozygous)
+
+  *  Only one allele (Hemizygous)
+  
+]
+
+.pull-right-45[
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/introduction/allele-punnet.jpeg" alt="Example of allele inheritence for eye colour" width="80%" /&gt;
+&lt;p class="caption"&gt;Example of allele inheritence for eye colour&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/introduction/zygosity.jpeg" alt="Types of zygosity in humans" width="90%" /&gt;
+&lt;p class="caption"&gt;Types of zygosity in humans&lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+---
+
+## Gene structure
+
+* The structure of a gene consists of many functional elements
+
+* There are three main functional units: the *promoter*, the *terminator*, and the *coding* region
+
+* The promoter controls **when** and in **what** tissue it is expressed
+
+* The coding region specifies the **structure of the protein**
+
+* The terminator region marks the **end of a gene**
+
+&lt;br&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/introduction/gene-structure-simple.jpeg" alt="The structure of a eukaryotic protein-coding gene" width="85%" /&gt;
+&lt;p class="caption"&gt;The structure of a eukaryotic protein-coding gene&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## What is RNA?
+
+* In many cases, the functional product of a gene is a protein
+
+* How exactly does DNA direct the construction of a protein?
+
+* The gene instructions are first copied into a *message*
+
+* This message is written as an RNA molecule (or messenger RNA)
+
+&lt;br&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/introduction/dna-vs-rna.png" alt="The difference between DNA and RNA" width="60%" /&gt;
+&lt;p class="caption"&gt;The difference between DNA and RNA&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## DNA Transcription
+
+* Transcription is the process of copying DNA into RNA
+
+* Transcription proceeds in the following general steps:
+
+  1. RNA polymerase binds to a segment on DNA
+  
+  2. RNA polymerase separates the two strands of DNA
+  
+  3. RNA polymerase adds RNA nucleotides (complementary to the DNA strand)
+  
+  4. RNA polymerase stops and releases the RNA molecule
+
+&lt;img src="data/introduction/transcription-diagram.png" width="65%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## DNA Transcription (Video)
+
+&lt;br&gt;
+
+&lt;center&gt;
+
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/5MfSYnItYvg" width="844" height="475" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+
+&lt;/center&gt;
+
+---
+
+## Gene expression
+
+* How does the promoter exert spatial and temporal control?
+
+    * Specific nucleotide sequences in the promoter region **(cis-acting factors)**
+    * Proteins that interact with promoter DNA and RNA polymerase II **(trans-acting factors)**
+
+* The coding region undergoes post-transcription modification:
+
+    1. Splice together exons (remove introns)
+    2. Adding a cap to the 5′ end
+    3. Adding a poly-A tail to the 3′ end
+
+&lt;img src="data/introduction/gene-structure-advanced.svg" width="75%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## What is a protein?
+
+.pull-left-50[
+
+* Proteins are large molecules made up of multiple amino acids
+
+* Proteins have a vast array of functions:
+
+  * Responding to stimuli
+  * Providing structure to cells
+  * Transporting molecules
+  
+* There are 20 amino acids in the human body:
+
+  * Essential (9)
+  * Non-essential (11)
+
+* Amino acids differ in their side chains:
+
+  * Structure
+  * Electrical charge
+  * Polarity
+
+* The amino acid chain folds to make the final shape of the protein
+
+* The shape of the protein dictates what it can do in the cell
+
+]
+
+.pull-right-50[
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/introduction/amino-acids.jpeg" alt="The 20 different amino acids" width="80%" /&gt;
+&lt;p class="caption"&gt;The 20 different amino acids&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;br&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/introduction/amino-acid-structure.png" alt="The structure of amino acids" width="50%" /&gt;
+&lt;p class="caption"&gt;The structure of amino acids&lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+---
+
+&lt;img src="data/introduction/common-amino-acids.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## RNA Translation
+
+.pull-left-45[
+
+* Translation is the process of creating proteins from messenger RNA
+
+* Ribosomes link amino acids together in the order specified by the mRNA
+
+* The mRNA is read by the ribosome in groups of three (codons)
+
+* Each codon specifies a particular amino acid (see codon usage table)
+
+* Translation proceeds in three general phases:
+
+  1. Initiation - The ribosome assembles around the mRNA
+  
+  2. Elongation - The ribosome moves along the mRNA adding amino acids from tRNA molecules
+  
+  3. Termination - The ribosome releases the amino acid chain
+
+]
+
+.pull-right-55[
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/introduction/codon-table.png" alt="The codon usage table" width="55%" /&gt;
+&lt;p class="caption"&gt;The codon usage table&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/introduction/ribosome-cartoon.png" alt="A cartoon of translation" width="100%" /&gt;
+&lt;p class="caption"&gt;A cartoon of translation&lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+---
+
+## RNA Translation (Video)
+
+&lt;br&gt;
+
+&lt;center&gt;
+
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/8dsTvBaUMvw" width="844" height="475" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+
+&lt;/center&gt;
+
+---
+
+## Protein structure
+
+.pull-left-55[
+
+* The shape and structure of the protein dictates its function within the cell
+
+* The protein's structure can be characterized at different levels:
+
+  * Linear amino acid sequence (Primary)
+  
+  * Formation of substructures (Secondary)
+  
+      * Alpha helix
+      * Beta sheet
+  
+  * 3D structure of the protein (Tertiary)
+  
+  * Interaction between proteins (Quaternary)
+  
+* Proteins range in size from tens to several thousand amino acids
+
+* Titin is the largest protein in the human body (27,000 amino acids)
+
+]
+
+
+.pull-right-45[
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/introduction/protein-structures.png" alt="The structure of proteins" width="90%" /&gt;
+&lt;p class="caption"&gt;The structure of proteins&lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+---
+
+## Summary
+
+* Bioinformatics is a sub-discipline of biology and computer science concerned with the acquisition, storage, analysis, and dissemination of biological data
+
+* Bioinformaticians use their biology, statistics, and programming skills to develop software or perform analysis which solves a biological problem
+
+* The central dogma of molecular biology is an explanation of the flow of genetic information within a biological system: *"DNA makes RNA, and RNA makes protein"*
+
+* Genomes contain all the genetic information of an organism and are organised into thread-like structures called chromosomes
+
+* Genes are the basic physical and functional unit of heredity (eg. eye colour)
+
+* The main functional units of a gene are the promoter, terminator, and coding region
+
+* Transcription is the process by which the information in a strand of DNA is copied into messenger RNA
+
+* Translation is the process of translating the messenger RNA into a sequence of amino acids for protein synthesis
+
+* Proteins have at least three structures: primary, secondary, and tertiary structure.
+
+---
+
+## Resources
+
+### Websites
+
+  * [YourGenome Education](https://www.yourgenome.org)
+  
+  * [Khan Academy Biology](https://www.khanacademy.org/science/ap-biology)
+
+### Videos
+
+  * [Crash Course Biology](https://youtu.be/gMOoMcsGTO4)
+
+  * [Ninja Nerd Cell Biology](https://youtu.be/LUDws4JrIiI)
+
+### Books
+
+  * [Molecular Biology of the Cell](https://www.molbiolcell.org)
+
+
+&lt;!-- --------------------- Do not edit this and below --------------------- --&gt;
+
+---
+name: end_slide
+class: end-slide, middle
+count: false
+
+# Thank you. Questions?
+
+
+.end-text[
+&lt;p class="smaller"&gt;
+&lt;span class="small" style="line-height: 1.2;"&gt;Graphics from &lt;/span&gt;&lt;img src="./assets/freepik.jpg" style="max-height:20px; vertical-align:middle;"&gt;&lt;br&gt;
+Created: 20-Sep-2022 • James Ashmore • &lt;a href="https://www.zifornd.com"&gt;Zifo&lt;/a&gt;
+&lt;/p&gt;
+]
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="assets/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "4:3",
+"highlightLanguage": "r",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

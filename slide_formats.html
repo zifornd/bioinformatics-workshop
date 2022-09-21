@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>FASTA/Q</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Haris Khan • 18-Sep-2022" />
+    <script src="libs/header-attrs-2.16/header-attrs.js"></script>
+    <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+    <link id="font-awesome-1-attachment" rel="attachment" href="libs/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+    <link href="libs/vembedr-0.1.5/css/vembedr.css" rel="stylesheet" />
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/slide.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# FASTA/Q
+]
+.author[
+### <b>Haris Khan</b> • 18-Sep-2022
+]
+.institute[
+### Zifo RnD Solutions
+]
+
+---
+
+exclude: true
+count: false
+
+
+&lt;link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;amp;subset=latin-ext" rel="stylesheet"&gt;
+&lt;link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"&gt;
+
+
+
+
+
+&lt;!-- ------------ Only edit title, subtitle &amp; author above this ------------ --&gt;
+
+
+
+
+
+---
+
+## Introduction
+
+* One of the hardest things in bioinformatics is developing a **good** file format
+
+* It might seem trivial, but a lot of effort is put into developing file formats that are **efficient** yet can be **quickly** and **easily** parsed
+
+* Around the storage of primary sequences, FASTA/Q have become the de-facto standard
+
+* Many have tried to come up with *better* formats, but none have prevailed
+
+&lt;br&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/formats/xkcd-standards.png" alt="xkcd: Standards" width="50%" /&gt;
+&lt;p class="caption"&gt;xkcd: Standards&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## FASTA
+
+### Overview
+
+* Text-based format for representing either nucleotide or amino acid sequences
+
+* Nucleotides or amino acids are represented using single-letter codes:
+
+  * IUPAC ambiguous DNA: `GATCRYWSMKHBVDN`
+  * IUPAC protein alphabet of the **20** standard amino acids: `ACDEFGHIKLMNPQRSTVWY`
+
+* A FASTA file uses two or more lines per record:
+
+  * The header line begins with `&gt;` and gives a unique identifier for the sequence
+  * The sequence line(s) contain the actual sequence and are wrapped every **80** characters
+
+* Filename extensions: `.fasta` `.fa`
+
+
+```fasta
+&gt;seq1
+GTAGATCGCATCGACTACTACTACGTACGTACGATCGTACGTACGATCGATCGATCGATCGATCGATCGACTGAGCACTG
+GATGATCGATGAGCTATACAGTGTC
+&gt;seq2
+GATCGATCGTACGTACGTACGATCACGATCGTACGATCGATCGACTACTACTGATCGATCGATCGATCGATCGATCGTAC
+GTATATAGCCTTCGATCGTACGAGGGCCTCTCTCCGCGATAGATACGAGCGCGCCGATCGATCGATCG
+&gt;seq3
+GCTATTAGTACGATCGATCGACTATCTACGACATCGACGATCGACGATCGATCGATCGATCATCGACACACACTAGGCGA
+GCTACGTACGTACATCATCGACTGATCG
+&gt;seq4
+TTAGACTACGAGATCGATCATGGCCCCTATTAGCGCGCGCGCGCTACGACTACTTTATCGACTCTCGATATAGCGCATCG
+GATCATCGACGTATCGTACATTATATTATTTTTTTCGCGCTAGCATCGTACGATCTCTCTCGCGACGTACGATCGA
+```
+
+---
+
+## FASTA
+
+### Header line
+
+&lt;br&gt;
+
+&lt;img src="data/formats/fasta-identifier-coloured.jpg" width="85%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+
+* The header line begins with `&gt;` and gives a unique identifier for the sequence
+
+* The header line may also contain additional information:
+
+    * NCBI Identifiers:
+    
+        * GenInfo integrated database `gi|integer`
+        * GenBank `gb|accession`
+        * Definition `text`
+        * Organism `[organism]`
+
+---
+
+## FASTA
+
+### Sequence lines(s)
+
+&lt;br&gt;
+
+&lt;img src="data/formats/fasta-sequence-coloured.jpg" width="85%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+
+* The sequence line(s) contain the actual sequence and are wrapped every **80** characters
+
+* Expected to be represented in the standard IUB/IUPAC amino acid and nucleic acid codes
+
+* In genome assembly sequences, repeat regions are sometimes masked:
+
+  * Sort mask: `atatatatatat`
+  
+  * Hard mask: `NNNNNNNNNNNN`
+  
+* *Warning! Always check the wrapping on your sequences and the validation performed by the bioinformatics software - some poorly written software will only read the first 80 characters, skipping any which appear afterward!*
+
+---
+
+## FASTA
+
+### Alignment representation
+
+.pull-left-50[
+
+* The FASTA format can also be used to store multiple sequence alignment output
+
+* Sequences are padded using the `-` character to represent insertions and deletions 
+
+* The FASTA format was originally designed as a protein sequence similarity searching format (FASTP) in the 1980's
+
+* Over time the need grew for a simple and flexible way to query DNA and protein sequences against entire databases
+
+]
+
+.pull-right-50[
+
+&lt;img src="data/formats/fasta-alignment.jpg" width="100%" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+
+## Sequencing
+
+*A quick refresher before the next section...*
+
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/fCd6B5HRaZ8" width="844" height="475" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+
+---
+
+## FASTQ
+
+### Overview
+
+.pull-left-55[
+
+* An extension of FASTA format to handle base quality metrics from sequencing machines
+
+* Each sequence is represented by 4 lines:
+
+  1. Identifier of the sequence starting with `@`
+  2. Actual sequence
+  3. Optional identifier starting with `+`
+  4. Quality scores for each base
+  
+* FASTQ files are created and compressed with extension `.fastq.gz`
+
+* For each sample per flow cell lane:
+
+  * Single-end: `.fastq.gz`
+  * Paired-end: `_1.fastq.gz` `_2.fastq.gz`
+  
+]
+
+.pull-right-45[
+
+
+```fastq
+@HWUSI-EAS100R:6:73:941:1973#0/1
+TGAAGNCTATAAACTAAGAAGCAAGCACACTAGGAGTT
++
+AAAAA#EEEEA/EEEEEEE6EAEAEEEEEEEEEEEEEE
+@HWUSI-EAS100R:6:73:942:1973#0/1
+GTCACNATTCTCAAGGCCGTCGTCTTTTTAGTCGGTTT
++
+AAAAA#EEEAEEAEEEEEEEAAAEEEEEE6E/E&lt;E/AE
+@HWUSI-EAS100R:6:73:943:1973#0/1
+GTCGCTAAGCTCTATATAGCGCGCGGGGGTATAGCTCG
++
+AAAAA#EEEAEEAEEEEEEEEEEEEEEEE6E/E&lt;EEEE
+```
+
+]
+
+---
+
+## FASTQ
+
+### Sequence identifier
+
+&lt;br&gt;
+
+&lt;img src="data/formats/fastq-identifier-coloured.jpg" width="60%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+
+.pull-left-45[
+
+* Contains information about the sequencing run and the cluster
+
+* Contents vary based on the BCL to FASTQ software version
+
+* Record starts with the `@` character
+
+* Line contains 11 elements separated by the `:` character
+
+]
+
+.pull-right-50[
+
+&lt;div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; "&gt;&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"&gt; Element &lt;/th&gt;
+   &lt;th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"&gt; Description &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: #62b183 !important;"&gt; @ &lt;/td&gt;
+   &lt;td style="text-align:left;color: #62b183 !important;"&gt; Record entry &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: #7046c8 !important;"&gt; &amp;lt;instrument&amp;gt; &lt;/td&gt;
+   &lt;td style="text-align:left;color: #7046c8 !important;"&gt; Instrument ID &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: #76b73f !important;"&gt; &amp;lt;run number&amp;gt; &lt;/td&gt;
+   &lt;td style="text-align:left;color: #76b73f !important;"&gt; Run number on instrument &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: #cd53bf !important;"&gt; &amp;lt;flowcell ID&amp;gt; &lt;/td&gt;
+   &lt;td style="text-align:left;color: #cd53bf !important;"&gt; Flowcell ID &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: #4f642f !important;"&gt; &amp;lt;lane&amp;gt; &lt;/td&gt;
+   &lt;td style="text-align:left;color: #4f642f !important;"&gt; Lane number &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: #8787c9 !important;"&gt; &amp;lt;tile&amp;gt; &lt;/td&gt;
+   &lt;td style="text-align:left;color: #8787c9 !important;"&gt; Tile number &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: #d34d37 !important;"&gt; &amp;lt;x_pos&amp;gt; &lt;/td&gt;
+   &lt;td style="text-align:left;color: #d34d37 !important;"&gt; X coordinate of cluster &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: #519bb4 !important;"&gt; &amp;lt;y_pos&amp;gt; &lt;/td&gt;
+   &lt;td style="text-align:left;color: #519bb4 !important;"&gt; Y coordinate of cluster &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: #c6974c !important;"&gt; &amp;lt;read&amp;gt; &lt;/td&gt;
+   &lt;td style="text-align:left;color: #c6974c !important;"&gt; Read number (1 or 2) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: #5e3872 !important;"&gt; &amp;lt;is filtered&amp;gt; &lt;/td&gt;
+   &lt;td style="text-align:left;color: #5e3872 !important;"&gt; Filtered read (Y or N) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: #7d3e33 !important;"&gt; &amp;lt;control number&amp;gt; &lt;/td&gt;
+   &lt;td style="text-align:left;color: #7d3e33 !important;"&gt; Control read &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: #ce6687 !important;"&gt; &amp;lt;sample number&amp;gt; &lt;/td&gt;
+   &lt;td style="text-align:left;color: #ce6687 !important;"&gt; Sample number &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;&lt;/div&gt;
+
+]
+
+---
+
+## FASTQ
+
+### Sequence
+
+&lt;br&gt;
+
+&lt;img src="data/formats/fastq-sequence-coloured.jpg" width="60%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+
+* Contains the **base calls** for the sequenced read
+
+* Read length refers to the number of base calls: `36`
+
+* The base calls are limited to `ACGTN`
+
+* An `N` means the software was not able to make a call for this base
+
+* Multiple `N` base calls may indicate a problem with the sequencing
+
+---
+
+## FASTQ
+
+### Optional identifier
+
+&lt;br&gt;
+
+&lt;img src="data/formats/fastq-description-coloured.jpg" width="60%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+
+* Contains **optional** identifier or description
+
+* Begins with a `+` character
+
+* Somtimes contains a copy of the sequence identifier
+
+---
+
+## FASTQ
+
+### Quality scores
+
+&lt;br&gt;
+
+&lt;img src="data/formats/fastq-quality-coloured.jpg" width="60%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+
+.pull-left-50[
+
+* A quality score is an integer mapping of the probability of an **incorrect** base call
+
+* Use ASCII characters to represent the numerical probability
+
+* Phred quality score calculation: `\(Q=-10\log_{{10}}P\)`
+
+]
+
+.pull-right-45[
+
+&lt;table class="table" style="font-size: 15px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; Phred quality score &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Probability of incorrect base call &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Base call accuracy &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 in 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 90% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 in 100 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 99% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 in 1000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 99.9% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 40 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 in 10,000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 99.99% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 in 100,000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 99.999% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 60 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 in 1,000,000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 99.9999% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+---
+
+## FASTQ
+
+### Quality encoding
+
+* Different sequencing manufacturers use different quality encoding schemes
+
+* Encodings are limited to the **printable** ASCII characters (33-126)
+
+* Most data you will encounter will use **Phred+33** encoding - *but always check!*
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/formats/quality-encoding.jpg" alt="Phred quality score encoding (Wikipedia)" width="75%" /&gt;
+&lt;p class="caption"&gt;Phred quality score encoding (Wikipedia)&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Processing FASTA/Q
+
+* There are multiple libraries and tools available to process FASTA/Q files
+
+* Because FASTA/Q files can be very large, there has been a lot of effort devoted to developing faster and faster algorithms for reading such files
+
+* See this [blog post](http://lh3.github.io/2020/05/17/fast-high-level-programming-languages) by Heng Li if you are *algorithimically inclined*
+
+* Examples of some popular libraries:
+
+  * [Biopython](https://biopython.org)
+  
+  * [Biostrings](https://bioconductor.org/packages/release/bioc/html/Biostrings.html) and [ShortRead](https://bioconductor.org/packages/release/bioc/html/ShortRead.html) from [Bioconductor](https://www.bioconductor.org) 
+
+* Examples of some popular tools:
+
+  * [Seqkit](https://bioinf.shenwei.me/seqkit/)
+  
+  * [seqtk](https://github.com/lh3/seqtk)
+
+---
+
+## Biopython
+
+### Overview
+
+&lt;img src="data/formats/biopython-logo.png" width="20%" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+* Biopython is a set of freely available tools for biological computation written in Python by an international team of developers
+
+* It is a distributed collaborative effort to develop Python libraries and applications which address the needs of current and future work in bioinformatics
+
+* It contains classes to represent biological sequences and sequence annotations, and it is able to read and write to a variety of file formats
+
+* It also allows for a programmatic means of accessing online databases of biological information, such as those at NCBI
+
+* Separate modules extend Biopython's capabilities to sequence alignment, protein structure, population genetics, phylogenetics, sequence motifs, and machine learning
+
+---
+
+## Biopython
+
+### Tour
+
+&lt;iframe src="https://biopython.org" width="100%" height="500px" data-external="1"&gt;&lt;/iframe&gt;
+
+---
+
+## Biopython
+
+### Parsing FASTA
+
+
+
+
+```python
+from Bio import SeqIO
+
+for record in SeqIO.parse("data/formats/virus.fasta", "fasta"):
+
+  print("Header:", record.id)
+  
+  print("Sequence :", repr(record.seq))
+
+  print("Length:", len(record))
+  
+  print("---")
+```
+
+```
+## Header: lcl|EU163411.1_prot_ABW06765.1_1
+## Sequence : Seq('MATKCDLGRHHWMRADNAVCVRPLVPETTSNLLTRWFVSRYEAGELPSKGYMSV...VVS')
+## Length: 94
+## ---
+## Header: lcl|EU163411.1_prot_ABW06766.1_2
+## Sequence : Seq('MAQNGTGGGSRRPRRGRRNNNNNNSTARDKALLALTQQVNRLANIASSNAPSLQ...PTR')
+## Length: 79
+## ---
+## Header: lcl|AF170445.1_prot_AAD55052.1_1
+## Sequence : Seq('MKALLAWAVIAIALYQPVAAENITQWNLSDNGTSGIQRAMYLRGVNRSLHGIWP...TGK')
+## Length: 233
+## ---
+```
+
+---
+
+## Biopython
+
+### Parsing FASTQ
+
+
+```python
+from Bio import SeqIO
+
+total = 0
+
+count = 0
+
+for record in SeqIO.parse("data/formats/reads.fastq", "fastq"):
+  
+  total += 1
+  
+  min_phred_quality = min(record.letter_annotations["phred_quality"])
+  
+  if min_phred_quality &gt;= 20:
+    
+    count += 1
+
+print("Total:", total)
+
+print("Passed:", count)
+
+print("Percent:", count / total)
+```
+
+```
+## Total: 100
+## Passed: 50
+## Percent: 0.5
+```
+
+---
+
+## Bioconductor
+
+### Overview
+
+&lt;img src="data/formats/bioconductor-logo.png" width="30%" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+* Bioconductor is a free, open source and open development software project for the analysis and comprehension of genomic data generated by wet lab experiments in molecular biology
+
+* Bioconductor is based primarily on the statistical R programming language, but does contain contributions in other programming languages
+
+* Most Bioconductor components are distributed as R packages, which are add-on modules for R
+
+* The **Biostrings** and **ShortRead** packages can be used for FASTA/Q processing
+
+---
+
+## Bioconductor
+
+### Tour
+
+&lt;iframe src="https://bioconductor.org" width="100%" height="500px" data-external="1"&gt;&lt;/iframe&gt;
+
+---
+
+## Bioconductor
+
+### Parsing FASTA
+
+
+```r
+library(Biostrings)
+
+records &lt;- readDNAStringSet("data/formats/virus.fasta", format = "fasta")
+
+print(records)
+
+print(paste("Total:", length(records)))
+
+print(paste("Length(s):", paste(width(records), collapse = ",")))
+
+print("Alphabet Frequency Table:")
+
+alphabetFrequency(records)
+```
+
+```
+## DNAStringSet object of length 3:
+##     width seq                                                                                             names               
+## [1]    70 MATKCDGRHHWMRADNAVCVRVTTSNTRWVSRYAGSKGYMSVVCAVTRTVTSDAGSRYADGDKRADAVVS                          lcl|EU163411.1_pr...
+## [2]    62 MANGTGGGSRRRRGRRNNNNNNSTARDKAATVNRANASSNASHTASKKCRAGYTYTSDVRTR                                  lcl|EU163411.1_pr...
+## [3]   168 MKAAWAVAAYVAANTWNSDNGTSGRAMYRGVNRSHGWKCKGVTHAT...GTVGCNNVSVDYGDHCGSDTAYDGMTNTKARGAARVTSWGRSTTGK lcl|AF170445.1_pr...
+## [1] "Total: 3"
+## [1] "Length(s): 70,62,168"
+## [1] "Alphabet Frequency Table:"
+##       A C  G  T M  R W S Y  K  V H  D B  N - + .
+## [1,]  9 3  5  7 3  8 2 7 3  3 10 2  6 0  2 0 0 0
+## [2,]  9 1  6  7 1 11 0 7 2  3  2 1  2 0 10 0 0 0
+## [3,] 18 9 18 23 6 14 8 9 7 10 12 5 10 0 19 0 0 0
+```
+
+---
+
+## Bioconductor
+
+### Parsing FASTQ
+
+
+```r
+library(ShortRead)
+
+records &lt;- readFastq("data/formats/reads.fastq", format = "fastq")
+
+print(records)
+
+print(quality(records))
+```
+
+```
+## class: ShortReadQ
+## length: 100 reads; width: 35..38 cycles
+## class: FastqQuality
+## quality:
+## BStringSet object of length 100:
+##       width seq
+##   [1]    35 ###################################
+##   [2]    38 AAAAA#EEEEA/EEEEEEE6EAEAEEEEEEEEEEEEEE
+##   [3]    38 AAAAA#EEEAEEAEEEEEEEAAAEEEEEE6E/E&lt;E/AE
+##   [4]    38 AAAAA#EEEEEEEEEEEEAEEEEEEEEEEEEEEEEEEE
+##   [5]    37 AAAAA#EEEEEEEEEEEEAEEEE/EEEEEEEEEEEEE
+##   ...   ... ...
+##  [96]    38 AAAAA/EEEEEE/EEEEE&lt;EEEE/EAEEEAEEAEEEE/
+##  [97]    38 AAAAAEEEEEEEEEEEEEEEEEAEEEEEEEEEEEEEEE
+##  [98]    38 AAAAAEEEE/EEEEEEEEEEEEEEEEEEEEEEEEEEAE
+##  [99]    37 /AAAAA/AEEEAA/EEEAEE&lt;A///E/E/AEEE//EE
+## [100]    37 AAAAAAEEAEEEEEA&lt;EEEAEEEEEEEEAEEEEEEEE
+```
+
+---
+
+## SeqKit
+
+### Overview
+
+* SeqKit is a cross-platform ultrafast comprehensive toolkit for FASTA/Q processing
+
+* SeqKit provides executable binary files for all major operating systems, including Windows, Linux, and Mac OSX
+
+* Seqkit can be used to process FASTA/FASTQ files in the following ways:
+
+  * [Transform](https://bioinf.shenwei.me/seqkit/usage/#seq) sequences (extract ID, filter by length, remove gaps...)
+
+  * [Statistics](https://bioinf.shenwei.me/seqkit/usage/#stats) (seqs, min/max_len, N50, Q20%, Q30%…)
+
+  * [Search](https://bioinf.shenwei.me/seqkit/usage/#grep) sequences by identifier, name, sequence, and sequence motifs
+
+  * [Locate](https://bioinf.shenwei.me/seqkit/usage/#locate) sub-sequences and motifs
+
+---
+
+## SeqKit
+
+### Tour
+
+&lt;iframe src="https://bioinf.shenwei.me/seqkit/" width="100%" height="500px" data-external="1"&gt;&lt;/iframe&gt;
+
+---
+
+## SeqKit
+
+### Examples
+
+
+
+* Produce an overview of FASTA/Q files:
+
+
+```
+## file                      format  type     num_seqs  sum_len  min_len  avg_len  max_len
+## data/formats/virus.fasta  FASTA   Protein         3      406       79    135.3      233
+## data/formats/reads.fastq  FASTQ   DNA           100    3,762       35     37.6       38
+```
+
+* Get GC content of every sequence in FASTA/Q file:
+
+
+```
+## lcl|EU163411.1_prot_ABW06765.1_1	8.51
+## lcl|EU163411.1_prot_ABW06766.1_2	8.86
+## lcl|AF170445.1_prot_AAD55052.1_1	11.59
+```
+
+* Locate motif in FASTA/Q sequences:
+
+
+```
+## seqID	patternName	pattern	strand	start	end	matched
+## SRR4413869.67	AACGCA	AACGCA	-	13	18	AACGCA
+## SRR4413869.96	AACGCA	AACGCA	+	22	27	AACGCA
+```
+
+---
+
+## Summary
+
+* FASTA is used  store sequence information from DNA, RNA or protein sequences
+
+* FASTQ is used to store DNA output from sequencing machines
+
+* FASTQ file format is an extension of FASTA containing quality scores for the base calls
+
+* FAST/Q file formats can be processed using a variety of libraries and tools
+
+* Biopython/Bioconductor can be used to access and manipulate FASTA/Q files
+
+* Seqkit/seqtk have many useful functions (parse, edit, search, convert) to process FASTA/Q files
+
+---
+
+## Resources
+
+- [FASTA &amp; FASTQ file formats](https://compgenomr.github.io/book/fasta-and-fastq-formats.html)
+
+- [Interpreting quality scores from FASTQ files](https://support.illumina.com/help/BaseSpace_OLH_009008/Content/Source/Informatics/BS/QualityScoreEncoding_swBS.htm)
+
+&lt;!-- --------------------- Do not edit this and below --------------------- --&gt;
+
+---
+name: end_slide
+class: end-slide, middle
+count: false
+
+# Thank you. Questions?
+
+
+.end-text[
+&lt;p class="smaller"&gt;
+&lt;span class="small" style="line-height: 1.2;"&gt;Graphics from &lt;/span&gt;&lt;img src="./assets/freepik.jpg" style="max-height:20px; vertical-align:middle;"&gt;&lt;br&gt;
+Created: 18-Sep-2022 • James Ashmore • &lt;a href="https://www.zifornd.com"&gt;Zifo&lt;/a&gt;
+&lt;/p&gt;
+]
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="assets/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "4:3",
+"highlightLanguage": "r",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

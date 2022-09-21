@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Read mapping</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="James Ashmore • 20-Sep-2022" />
+    <script src="libs/header-attrs-2.16/header-attrs.js"></script>
+    <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+    <link id="font-awesome-1-attachment" rel="attachment" href="libs/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+    <link href="libs/vembedr-0.1.5/css/vembedr.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/slide.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Read mapping
+]
+.author[
+### <b>James Ashmore</b> • 20-Sep-2022
+]
+.institute[
+### Zifo RnD Solutions
+]
+
+---
+
+exclude: true
+count: false
+
+
+&lt;link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;amp;subset=latin-ext" rel="stylesheet"&gt;
+&lt;link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"&gt;
+
+
+
+
+
+&lt;!-- ------------ Only edit title, subtitle &amp; author above this ------------ --&gt;
+
+
+
+---
+
+# Introduction
+
+* The advent of DNA sequencers that could rapidly and inexpensively sequence billions of bases has transformed genomic science
+
+* For example, production-scale Illumina machines can sequence up to 20 billion reads within just 44 hours
+
+* These sequences are the technology of choice for whole-genome sequencing and a variety of sequencing-based assays
+
+* The traditional algorithms used to align sequences (e.g., BLAST or BLAT) are not suitable for such large volumes of data
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/mapping/sequencing-platforms.png" alt="Benchtop and Production-scale Sequencers" width="100%" /&gt;
+&lt;p class="caption"&gt;Benchtop and Production-scale Sequencers&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+# Read mapping
+
+* A challenge presented by this sequencing technology is the so-called 'read mapping' problem
+
+* Sequencing machines produce short sequences of 25-100 base pairs called 'reads'
+
+* To make sense of the reads, their positions with the reference sequence must be determined
+
+* This process is known as aligning or ‘mapping’ the read to the reference
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/mapping/read-mapping.png" alt="Illustration of the mapping process" width="65%" /&gt;
+&lt;p class="caption"&gt;Illustration of the mapping process&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+# Challenges of mapping short reads
+
+*A short introduction by Ben Langmead (developer of Bowtie)*
+
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/PMGstYcBgTY" width="889" height="500" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+
+---
+
+# Challenges of mapping short reads
+
+*The first problem is practical*
+
+.pull-left-50[
+
+* Reference genomes can be very large:
+
+  * For example, the human genome is around 3 billion base pairs
+  
+  * The number of possible sequence alignments increase rapidly with sequence length
+
+* Number of reads can be very large:
+
+  * DNA sequencers produce millions of reads per run
+  
+  * Completed assays may involve many runs
+  
+  * May need to map millions or billions of reads
+
+]
+
+.pull-right-50[
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/mapping/genome-sizes.png" alt="How big are genomes?" width="100%" /&gt;
+&lt;p class="caption"&gt;How big are genomes?&lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+---
+
+# Challenges of mapping short reads
+
+*The second problem is strategic*
+
+* Genomes contain a huge number of repeated sequences:
+
+  * Patterns of nucleic acids that occur in multiple copies throughout the genome
+  
+  * In many organisms, a significant fraction of the genomic DNA is highly repetitive
+  
+  * Over two-thirds of the human genome consists of repetitive elements
+
+* The aligner must pick which copy of a repeat the read belongs
+
+* Sequencing errors or variation between the reads and genome exacerbate this problem
+
+&lt;br&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/mapping/repeat-types.png" alt="Various named classes of repeat in the human genome" width="80%" /&gt;
+&lt;p class="caption"&gt;Various named classes of repeat in the human genome&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+# Ambiguities in read mapping
+
+* Ambiguities can arise from both the presence or repeat sequences and the scoring scheme for the alignment (e.g., penalty of mismatch versus penalty of deletion)
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/mapping/mapping-confidence.png" alt="Read-mapping confidence versus repeat-copy similarity" width="65%" /&gt;
+&lt;p class="caption"&gt;Read-mapping confidence versus repeat-copy similarity&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/mapping/mapping-ambiguity.png" alt="Ambiguity in read mapping" width="60%" /&gt;
+&lt;p class="caption"&gt;Ambiguity in read mapping&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+# Short-read mappers
+
+.pull-left-50[
+
+* A computer grid could be used to map reads using traditional algorithms (e.g., BLAST or BLAT)
+
+* These grids are large and expensive and most people do not have access to them
+
+* Researchers have created a new generation of alignment programs capable of mapping hundreds of millions of short reads on a single desktop computer
+
+* Capable of mapping millions of reads per hour while minimizing both processing time and memory requirements
+
+* THe figure on the right compares the time and memory required to map 10 WGS samples using a variety of short read aligners
+
+]
+
+.pull-right-50[
+
+&lt;img src="data/mapping/aligner-comparison.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+]
+
+
+---
+
+# Indexing
+
+.pull-left-50[
+
+* To speed up mapping, programs use a computational strategy known as ‘indexing’
+
+* This is analogous to the index in the back of the book, helping you quickly find the page number for a particular topic
+
+* An index of a DNA sequence allows one to rapidly find shorter sequences within it
+
+* There are two popular strategies for building an index
+
+  1. Spaced seeds (e.g., Maq)
+  
+  2. Burrows-Wheeler (e.g., Bowtie/BWA)
+
+]
+
+.pull-right-50[
+
+&lt;img src="data/mapping/index-comparison.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+
+# Spaced seeds
+
+.pull-left-50[
+
+* Each position in the reference is cut into equal-sized pieces called ‘seeds’
+
+* These seeds are paired and stored in a lookup table
+
+* Each read is also cut up according to this sceheme
+
+* Pairs of seeds are used as keys to look up matching positions in the reference
+
+* If the pairs match, the position is confirmed by checking the other seeds
+
+]
+
+.pull-right-50[
+
+&lt;img src="data/mapping/spaced-seeds.png" width="72%" style="display: block; margin: auto;" /&gt;
+
+]
+
+
+---
+
+# Burrows-Wheeler
+
+.pull-left-50[
+
+* A memory-efficient representation of the genome is built (Burrows-Wheeler transform)
+
+* Reads are aligned character by character from right to left against the transformed genome
+
+* With each new character, the algorithm updates an interval (indicated
+by blue ‘beams’) in the transformed string
+
+* When all characters in the read have been processed, alignments are represented by any positions within the interval
+
+]
+
+.pull-right-50[
+
+&lt;img src="data/mapping/burrows-wheeler.png" width="72%" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+
+# Short-read mappers timeline
+
+DNA mappers are plotted in blue, RNA mappers in red, miRNA mappers in green and bisulphite mappers in purple. Grey dotted lines connect related mappers (extensions or new versions).
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/mapping/mappers-timeline.jpeg" alt="https://doi.org/10.1093/bioinformatics/bts605" width="57%" /&gt;
+&lt;p class="caption"&gt;https://doi.org/10.1093/bioinformatics/bts605&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+# Strategies for mapping multi-reads
+
+* There are multiple strategies for mapping multi-reads:
+
+  1. The ‘unique’ strategy reports only those reads that are uniquely mappable
+
+  2. The ‘best match’ strategy reports the best possible alignment for each read
+
+  3. The ‘all matches’ strategy reports all alignments for each multi-read
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/mapping/mapping-strategy.png" alt="Three strategies for mapping multi-reads" width="85%" /&gt;
+&lt;p class="caption"&gt;Three strategies for mapping multi-reads&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+# Spliced-read mappers
+
+* The spliced alignment problem, in which cDNA (from processed mRNA) sequences are aligned back to genomic DNA, requires more specialized algorithms
+
+* Reads sampled from exon-exon junctions need to be mapped differently from reads that are contained entirely within exons
+
+* To align cDNA reads from RNA-Seq experiments
+
+  * Use the positions of exons and introns within known genes as a guide, and then construct the sequences spanning exon-exon junctions and include them as reference sequences
+  
+  * Initial alignment pass to identify exons that fully contain some of the reads, and then align the remaining reads to junctions between those exons
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="data/mapping/exon-mapping.png" alt="Spliced-read mapping" width="45%" /&gt;
+&lt;p class="caption"&gt;Spliced-read mapping&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+# Summary
+
+* Read mapping is the process of aligning sequencing reads to a reference genome
+
+* This is challenging because genomes can be very large, and there can be billions of reads
+
+* Short-read mappers were designed to efficiently align billions of reads using comparatively low memory requirements
+
+* Mappers use an index to speed up the process of finding the position of reads in the genome
+
+* The most popular indexing strategy is based on the Burrows-Wheeler transformation
+
+* Spliced-read mappers were designed to help align RNA-seq data
+
+---
+
+# Learning resources
+
+## Papers
+
+* [How to map billions of short reads onto genomes](https://doi.org/10.1038/nbt0509-455) by Cole Trapnell &amp; Steven L Salzberg
+
+* [Fast gapped-read alignment with Bowtie 2](https://doi.org/10.1038/nmeth.1923) by Ben Langmead &amp; Steven L Salzberg
+
+* [Repetitive DNA and next-generation sequencing](https://doi.org/10.1038/nrg3117) by Todd J Treangen &amp; Steven L Salzberg
+
+* [A survey of sequence alignment algorithms for next-generation sequencing](https://doi.org/10.1093/bib/bbq015) by Heng Li &amp; Nils Homer
+
+## Videos
+
+* [Algorithms for DNA sequencing](https://www.youtube.com/playlist?list=PL2mpR0RYFQsBiCWVJSvVAO3OJ2t7DzoHA) by Ben Langmead
+
+* [Indexing](https://www.youtube.com/playlist?list=PL2mpR0RYFQsADmYpW2YWBrXJZ_6EL_3nu) by Ben Langmead
+
+## Manuals
+
+* [Bowtie 2](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml) by Ben Langmead
+
+* [BWA](http://bio-bwa.sourceforge.net/bwa.shtml) by Heng Li
+
+## Tutorials
+
+* [Read mapping or alignment](https://www.ebi.ac.uk/training/online/courses/functional-genomics-ii-common-technologies-and-data-analysis-methods/rna-sequencing/performing-a-rna-seq-experiment/data-analysis/read-mapping-or-alignment/) by EMBL-EBI Training
+
+
+
+&lt;!-- --------------------- Do not edit this and below --------------------- --&gt;
+
+---
+name: end_slide
+class: end-slide, middle
+count: false
+
+# Thank you. Questions?
+
+
+.end-text[
+&lt;p class="smaller"&gt;
+&lt;span class="small" style="line-height: 1.2;"&gt;Graphics from &lt;/span&gt;&lt;img src="./assets/freepik.jpg" style="max-height:20px; vertical-align:middle;"&gt;&lt;br&gt;
+Created: 20-Sep-2022 • James Ashmore • &lt;a href="https://www.zifornd.com"&gt;Zifo&lt;/a&gt;
+&lt;/p&gt;
+]
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="assets/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "4:3",
+"highlightLanguage": "r",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

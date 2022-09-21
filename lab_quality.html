@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Quality Control</title>
+
+<script src="lab_quality_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lab_quality_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="lab_quality_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lab_quality_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lab_quality_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="lab_quality_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="lab_quality_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="lab_quality_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="lab_quality_files/navigation-1.1/tabsets.js"></script>
+<link href="lab_quality_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="lab_quality_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="lab_quality_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="lab_quality_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="lab_quality_files/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+#TOC {
+  display: none !important;
+}
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img src="assets/logo.svg" id="logo" style="height:20px;margin:0;"/></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="home_schedule.html">Schedule</a>
+</li>
+<li>
+  <a href="home_content.html">Content</a>
+</li>
+<li>
+  <a href="home_precourse.html">Precourse</a>
+</li>
+<li>
+  <a href="home_info.html">Info</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Quality Control</h1>
+<h4 class="date">21 September, 2022</h4>
+
+</div>
+
+
+<!-- rmd lab header -->
+<p><br></p>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<div id="what-is-fastqc" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> What is FastQC?</h2>
+<ul>
+<li><p>Modern high throughput sequencers can generate hundreds of millions of sequences in a single run. Before analysing this sequence to draw biological conclusions you should always perform some simple quality control checks to ensure that the raw data looks good and there are no problems or biases in your data which may affect how you can usefully use it.</p></li>
+<li><p>Most sequencers will generate a QC report as part of their analysis pipeline, but this is usually only focused on identifying problems which were generated by the sequencer itself. FastQC aims to provide a QC report which can spot problems which originate either in the sequencer or in the starting library material.</p></li>
+<li><p>FastQC can be run in one of two modes. It can either run as a stand alone interactive application for the immediate analysis of small numbers of FastQ files, or it can be run in a non-interactive mode where it would be suitable for integrating into a larger analysis pipeline for the systematic processing of large numbers of files.</p></li>
+</ul>
+</div>
+<div id="what-is-cutadapt" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> What is Cutadapt?</h2>
+<ul>
+<li><p>Cutadapt finds and removes adapter sequences, primers, poly-A tails and other types of unwanted sequence from your high-throughput sequencing reads.</p></li>
+<li><p>Cutadapt helps with trimming tasks by finding the adapter or primer sequences in an error-tolerant way. It can also modify and filter single-end and paired-end reads in various ways. Adapter sequences can contain IUPAC wildcard characters. Cutadapt can also demultiplex your reads.</p></li>
+</ul>
+</div>
+</div>
+<div id="objectives" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Objectives</h1>
+<ul>
+<li><a href="#install-fastqc">Install FastQC</a></li>
+<li><a href="#install-cutadapt">Install Cutadapt</a></li>
+<li><a href="#sequence-quality">Sequence quality</a></li>
+<li><a href="#read-trimming">Read trimming</a></li>
+</ul>
+</div>
+<div id="tutorial" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Tutorial</h1>
+<p>In this tutorial we are going to learn how to use FastQC and Cutadapt to quality control and trim adapter sequences from FASTQ files. The first thing to do is create a directory to store all the tutorial data. It is good practice to create a new directory for each project you work on, this ensures files do not get mixed up and all the results are self-contained.</p>
+<p>Create a ‘tutorial’ directory to store output files:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>mkdir tutorial</code></pre>
+</div>
+<p>Download the tutorial and exercise data:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>curl https://raw.githubusercontent.com/zifornd/workshop-template-rmd-ga/master/data/quality/data.tar.gz --output tutorial/data.tar.gz</code></pre>
+<pre><code>##   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+##                                  Dload  Upload   Total   Spent    Left  Speed
+## 
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  0 61.4M    0  2234    0     0   1017      0 17:36:02  0:00:02 17:36:00  1021
+  0 61.4M    0 97440    0     0  43248      0  0:24:50  0:00:02  0:24:48 43383
+  3 61.4M    3 1951k    0     0   599k      0  0:01:44  0:00:03  0:01:41  601k
+  6 61.4M    6 3807k    0     0   895k      0  0:01:10  0:00:04  0:01:06  896k
+  9 61.4M    9 5695k    0     0  1084k      0  0:00:58  0:00:05  0:00:53 1417k
+ 11 61.4M   11 7487k    0     0  1197k      0  0:00:52  0:00:06  0:00:46 1844k
+ 14 61.4M   14 9375k    0     0  1292k      0  0:00:48  0:00:07  0:00:41 1856k
+ 17 61.4M   17 10.9M    0     0  1364k      0  0:00:46  0:00:08  0:00:38 1862k
+ 20 61.4M   20 12.8M    0     0  1420k      0  0:00:44  0:00:09  0:00:35 1868k
+ 23 61.4M   23 14.6M    0     0  1463k      0  0:00:42  0:00:10  0:00:32 1862k
+ 26 61.4M   26 16.4M    0     0  1498k      0  0:00:41  0:00:11  0:00:30 1875k
+ 29 61.4M   29 18.3M    0     0  1530k      0  0:00:41  0:00:12  0:00:29 1875k
+ 32 61.4M   32 20.1M    0     0  1553k      0  0:00:40  0:00:13  0:00:27 1865k
+ 35 61.4M   35 21.9M    0     0  1577k      0  0:00:39  0:00:14  0:00:25 1867k
+ 38 61.4M   38 23.7M    0     0  1595k      0  0:00:39  0:00:15  0:00:24 1865k
+ 41 61.4M   41 25.6M    0     0  1613k      0  0:00:39  0:00:16  0:00:23 1871k
+ 44 61.4M   44 27.4M    0     0  1629k      0  0:00:38  0:00:17  0:00:21 1872k
+ 47 61.4M   47 29.2M    0     0  1642k      0  0:00:38  0:00:18  0:00:20 1878k
+ 50 61.4M   50 31.1M    0     0  1654k      0  0:00:38  0:00:19  0:00:19 1875k
+ 53 61.4M   53 32.9M    0     0  1666k      0  0:00:37  0:00:20  0:00:17 1881k
+ 56 61.4M   56 34.7M    0     0  1675k      0  0:00:37  0:00:21  0:00:16 1877k
+ 59 61.4M   59 36.6M    0     0  1684k      0  0:00:37  0:00:22  0:00:15 1875k
+ 62 61.4M   62 38.4M    0     0  1692k      0  0:00:37  0:00:23  0:00:14 1875k
+ 65 61.4M   65 40.2M    0     0  1698k      0  0:00:37  0:00:24  0:00:13 1868k
+ 68 61.4M   68 42.0M    0     0  1705k      0  0:00:36  0:00:25  0:00:11 1865k
+ 71 61.4M   71 43.8M    0     0  1711k      0  0:00:36  0:00:26  0:00:10 1865k
+ 74 61.4M   74 45.7M    0     0  1717k      0  0:00:36  0:00:27  0:00:09 1862k
+ 77 61.4M   77 47.4M    0     0  1721k      0  0:00:36  0:00:28  0:00:08 1856k
+ 80 61.4M   80 49.3M    0     0  1726k      0  0:00:36  0:00:29  0:00:07 1862k
+ 83 61.4M   83 51.1M    0     0  1731k      0  0:00:36  0:00:30  0:00:06 1862k
+ 86 61.4M   86 52.9M    0     0  1735k      0  0:00:36  0:00:31  0:00:05 1859k
+ 89 61.4M   89 54.7M    0     0  1739k      0  0:00:36  0:00:32  0:00:04 1862k
+ 92 61.4M   92 56.5M    0     0  1742k      0  0:00:36  0:00:33  0:00:03 1862k
+ 95 61.4M   95 58.4M    0     0  1747k      0  0:00:36  0:00:34  0:00:02 1868k
+ 97 61.4M   97 60.1M    0     0  1746k      0  0:00:36  0:00:35  0:00:01 1833k
+100 61.4M  100 61.4M    0     0  1748k      0  0:00:35  0:00:35 --:--:-- 1836k</code></pre>
+</div>
+<p>Extract the archive file into the tutorial directory:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>tar xf tutorial/data.tar.gz --directory=tutorial</code></pre>
+</div>
+<p>The software we are going to use in this tutorial can be installed using the conda package manager. Please refer to the previous conda workshop for details on installing software and creating conda environments.</p>
+<div id="install-fastqc" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Install FastQC</h2>
+<p>Create a new environment with FastQC installed:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda create --yes --name fastqc fastqc</code></pre>
+<pre><code>## Collecting package metadata (current_repodata.json): ...working... done
+## Solving environment: ...working... done
+## 
+## ## Package Plan ##
+## 
+##   environment location: /opt/miniconda3/envs/fastqc
+## 
+##   added / updated specs:
+##     - fastqc
+## 
+## 
+## The following packages will be downloaded:
+## 
+##     package                    |            build
+##     ---------------------------|-----------------
+##     fontconfig-2.14.0          |       h5bb23bf_1         277 KB  conda-forge
+##     ------------------------------------------------------------
+##                                            Total:         277 KB
+## 
+## The following NEW packages will be INSTALLED:
+## 
+##   expat              conda-forge/osx-64::expat-2.4.8-h96cf925_0
+##   fastqc             bioconda/noarch::fastqc-0.11.9-hdfd78af_1
+##   font-ttf-dejavu-s~ conda-forge/noarch::font-ttf-dejavu-sans-mono-2.37-hab24e00_0
+##   fontconfig         conda-forge/osx-64::fontconfig-2.14.0-h5bb23bf_1
+##   freetype           conda-forge/osx-64::freetype-2.12.1-h3f81eb7_0
+##   libcxx             conda-forge/osx-64::libcxx-14.0.6-hccf4f1f_0
+##   libpng             conda-forge/osx-64::libpng-1.6.38-ha978bb4_0
+##   libzlib            conda-forge/osx-64::libzlib-1.2.12-hfd90126_3
+##   openjdk            conda-forge/osx-64::openjdk-17.0.3-hbc0c0cd_2
+##   perl               conda-forge/osx-64::perl-5.32.1-2_h0d85af4_perl5
+## 
+## 
+## 
+## Downloading and Extracting Packages
+## 
+fontconfig-2.14.0    | 277 KB    |            |   0% 
+fontconfig-2.14.0    | 277 KB    | 5          |   6% 
+fontconfig-2.14.0    | 277 KB    | #####1     |  52% 
+fontconfig-2.14.0    | 277 KB    | ########## | 100% 
+fontconfig-2.14.0    | 277 KB    | ########## | 100% 
+## Preparing transaction: ...working... done
+## Verifying transaction: ...working... done
+## Executing transaction: ...working... done
+## #
+## # To activate this environment, use
+## #
+## #     $ conda activate fastqc
+## #
+## # To deactivate an active environment, use
+## #
+## #     $ conda deactivate
+## 
+## Retrieving notices: ...working... done</code></pre>
+</div>
+<p>Activate the new environment to use it:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate fastqc</code></pre>
+</div>
+<p>Test that the <code>fastqc</code> command is available:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>which fastqc</code></pre>
+<pre><code>## /opt/miniconda3/envs/fastqc/bin/fastqc</code></pre>
+</div>
+<div id="install-cutadapt" class="section level3" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> Install Cutadapt</h3>
+<p>Create a new environment with Cutadapt installed:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda create --yes --name cutadapt cutadapt</code></pre>
+<pre><code>## Collecting package metadata (current_repodata.json): ...working... done
+## Solving environment: ...working... done
+## 
+## ## Package Plan ##
+## 
+##   environment location: /opt/miniconda3/envs/cutadapt
+## 
+##   added / updated specs:
+##     - cutadapt
+## 
+## 
+## The following packages will be downloaded:
+## 
+##     package                    |            build
+##     ---------------------------|-----------------
+##     cutadapt-4.1               |  py310hd528523_1         199 KB  bioconda
+##     dnaio-0.9.1                |  py310hd528523_1          76 KB  bioconda
+##     python-isal-1.0.1          |  py310h3c08dca_0          45 KB  conda-forge
+##     xopen-1.6.0                |  py310h2ec42d9_0          27 KB  conda-forge
+##     ------------------------------------------------------------
+##                                            Total:         346 KB
+## 
+## The following NEW packages will be INSTALLED:
+## 
+##   bzip2              conda-forge/osx-64::bzip2-1.0.8-h0d85af4_4
+##   ca-certificates    conda-forge/osx-64::ca-certificates-2022.9.14-h033912b_0
+##   cutadapt           bioconda/osx-64::cutadapt-4.1-py310hd528523_1
+##   dnaio              bioconda/osx-64::dnaio-0.9.1-py310hd528523_1
+##   isa-l              conda-forge/osx-64::isa-l-2.30.0-h0d85af4_4
+##   libffi             conda-forge/osx-64::libffi-3.4.2-h0d85af4_5
+##   libsqlite          conda-forge/osx-64::libsqlite-3.39.3-ha978bb4_0
+##   libzlib            conda-forge/osx-64::libzlib-1.2.12-hfd90126_3
+##   ncurses            conda-forge/osx-64::ncurses-6.3-h96cf925_1
+##   openssl            conda-forge/osx-64::openssl-3.0.5-hfd90126_2
+##   pbzip2             conda-forge/osx-64::pbzip2-1.1.13-h9d27c22_1
+##   pigz               conda-forge/osx-64::pigz-2.6-h5dbffcc_0
+##   pip                conda-forge/noarch::pip-22.2.2-pyhd8ed1ab_0
+##   python             conda-forge/osx-64::python-3.10.6-hc14f532_0_cpython
+##   python-isal        conda-forge/osx-64::python-isal-1.0.1-py310h3c08dca_0
+##   python_abi         conda-forge/osx-64::python_abi-3.10-2_cp310
+##   readline           conda-forge/osx-64::readline-8.1.2-h3899abd_0
+##   setuptools         conda-forge/noarch::setuptools-65.3.0-pyhd8ed1ab_1
+##   tk                 conda-forge/osx-64::tk-8.6.12-h5dbffcc_0
+##   tzdata             conda-forge/noarch::tzdata-2022c-h191b570_0
+##   wheel              conda-forge/noarch::wheel-0.37.1-pyhd8ed1ab_0
+##   xopen              conda-forge/osx-64::xopen-1.6.0-py310h2ec42d9_0
+##   xz                 conda-forge/osx-64::xz-5.2.6-h775f41a_0
+##   zlib               conda-forge/osx-64::zlib-1.2.12-hfd90126_3
+## 
+## 
+## 
+## Downloading and Extracting Packages
+## 
+xopen-1.6.0          | 27 KB     |            |   0% 
+xopen-1.6.0          | 27 KB     | #####8     |  59% 
+xopen-1.6.0          | 27 KB     | ########## | 100% 
+## 
+dnaio-0.9.1          | 76 KB     |            |   0% 
+dnaio-0.9.1          | 76 KB     | ##1        |  21% 
+dnaio-0.9.1          | 76 KB     | ########## | 100% 
+## 
+cutadapt-4.1         | 199 KB    |            |   0% 
+cutadapt-4.1         | 199 KB    | 8          |   8% 
+cutadapt-4.1         | 199 KB    | #####6     |  56% 
+cutadapt-4.1         | 199 KB    | ########## | 100% 
+## 
+python-isal-1.0.1    | 45 KB     |            |   0% 
+python-isal-1.0.1    | 45 KB     | ###5       |  36% 
+python-isal-1.0.1    | 45 KB     | ########## | 100% 
+## Preparing transaction: ...working... done
+## Verifying transaction: ...working... done
+## Executing transaction: ...working... done
+## #
+## # To activate this environment, use
+## #
+## #     $ conda activate cutadapt
+## #
+## # To deactivate an active environment, use
+## #
+## #     $ conda deactivate
+## 
+## Retrieving notices: ...working... done</code></pre>
+</div>
+<p>Activate the new environment to use it:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate cutadapt</code></pre>
+</div>
+<p>Test that the <code>cutadapt</code> command is available:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>which cutadapt</code></pre>
+<pre><code>## /opt/miniconda3/envs/cutadapt/bin/cutadapt</code></pre>
+</div>
+</div>
+</div>
+<div id="sequence-quality" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Sequence quality</h2>
+<p>Quality control is an important step in the processing of any type of data. It tells the researcher whether the data is suitable for analysis and whether the conclusions drawn can be trusted. Data integrity however is just one part of the quality control procedure and many other issues, outside of the data, may remain.</p>
+<p>In the example data directory are two FASTQ files. The ‘good’ file has no quality problems and passes all of the FastQC modules. The ‘bad’ file has lots of problems and would not be suitable for data analysis. Lets run FastQC on both files and compare the results.</p>
+<p>Activate the <code>fastqc</code> environment:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate fastqc</code></pre>
+</div>
+<p>Print the help information for the <code>fastqc</code> command:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>fastqc --help</code></pre>
+<pre><code>## 
+##             FastQC - A high throughput sequence QC analysis tool
+## 
+## SYNOPSIS
+## 
+##  fastqc seqfile1 seqfile2 .. seqfileN
+## 
+##     fastqc [-o output dir] [--(no)extract] [-f fastq|bam|sam] 
+##            [-c contaminant file] seqfile1 .. seqfileN
+## 
+## DESCRIPTION
+## 
+##     FastQC reads a set of sequence files and produces from each one a quality
+##     control report consisting of a number of different modules, each one of 
+##     which will help to identify a different potential type of problem in your
+##     data.
+##     
+##     If no files to process are specified on the command line then the program
+##     will start as an interactive graphical application.  If files are provided
+##     on the command line then the program will run with no user interaction
+##     required.  In this mode it is suitable for inclusion into a standardised
+##     analysis pipeline.
+##     
+##     The options for the program as as follows:
+##     
+##     -h --help       Print this help file and exit
+##     
+##     -v --version    Print the version of the program and exit
+##     
+##     -o --outdir     Create all output files in the specified output directory.
+##                     Please note that this directory must exist as the program
+##                     will not create it.  If this option is not set then the 
+##                     output file for each sequence file is created in the same
+##                     directory as the sequence file which was processed.
+##                     
+##     --casava        Files come from raw casava output. Files in the same sample
+##                     group (differing only by the group number) will be analysed
+##                     as a set rather than individually. Sequences with the filter
+##                     flag set in the header will be excluded from the analysis.
+##                     Files must have the same names given to them by casava
+##                     (including being gzipped and ending with .gz) otherwise they
+##                     won&#39;t be grouped together correctly.
+##                     
+##     --nano          Files come from nanopore sequences and are in fast5 format. In
+##                     this mode you can pass in directories to process and the program
+##                     will take in all fast5 files within those directories and produce
+##                     a single output file from the sequences found in all files.                    
+##                     
+##     --nofilter      If running with --casava then don&#39;t remove read flagged by
+##                     casava as poor quality when performing the QC analysis.
+##                    
+##     --extract       If set then the zipped output file will be uncompressed in
+##                     the same directory after it has been created.  By default
+##                     this option will be set if fastqc is run in non-interactive
+##                     mode.
+##                     
+##     -j --java       Provides the full path to the java binary you want to use to
+##                     launch fastqc. If not supplied then java is assumed to be in
+##                     your path.
+##                    
+##     --noextract     Do not uncompress the output file after creating it.  You
+##                     should set this option if you do not wish to uncompress
+##                     the output when running in non-interactive mode.
+##                     
+##     --nogroup       Disable grouping of bases for reads &gt;50bp. All reports will
+##                     show data for every base in the read.  WARNING: Using this
+##                     option will cause fastqc to crash and burn if you use it on
+##                     really long reads, and your plots may end up a ridiculous size.
+##                     You have been warned!
+##                     
+##     --min_length    Sets an artificial lower limit on the length of the sequence
+##                     to be shown in the report.  As long as you set this to a value
+##                     greater or equal to your longest read length then this will be
+##                     the sequence length used to create your read groups.  This can
+##                     be useful for making directly comaparable statistics from 
+##                     datasets with somewhat variable read lengths.
+##                     
+##     -f --format     Bypasses the normal sequence file format detection and
+##                     forces the program to use the specified format.  Valid
+##                     formats are bam,sam,bam_mapped,sam_mapped and fastq
+##                     
+##     -t --threads    Specifies the number of files which can be processed
+##                     simultaneously.  Each thread will be allocated 250MB of
+##                     memory so you shouldn&#39;t run more threads than your
+##                     available memory will cope with, and not more than
+##                     6 threads on a 32 bit machine
+##                   
+##     -c              Specifies a non-default file which contains the list of
+##     --contaminants  contaminants to screen overrepresented sequences against.
+##                     The file must contain sets of named contaminants in the
+##                     form name[tab]sequence.  Lines prefixed with a hash will
+##                     be ignored.
+## 
+##     -a              Specifies a non-default file which contains the list of
+##     --adapters      adapter sequences which will be explicity searched against
+##                     the library. The file must contain sets of named adapters
+##                     in the form name[tab]sequence.  Lines prefixed with a hash
+##                     will be ignored.
+##                     
+##     -l              Specifies a non-default file which contains a set of criteria
+##     --limits        which will be used to determine the warn/error limits for the
+##                     various modules.  This file can also be used to selectively 
+##                     remove some modules from the output all together.  The format
+##                     needs to mirror the default limits.txt file found in the
+##                     Configuration folder.
+##                     
+##    -k --kmers       Specifies the length of Kmer to look for in the Kmer content
+##                     module. Specified Kmer length must be between 2 and 10. Default
+##                     length is 7 if not specified.
+##                     
+##    -q --quiet       Supress all progress messages on stdout and only report errors.
+##    
+##    -d --dir         Selects a directory to be used for temporary files written when
+##                     generating report images. Defaults to system temp directory if
+##                     not specified.
+##                     
+## BUGS
+## 
+##     Any bugs in fastqc should be reported either to simon.andrews@babraham.ac.uk
+##     or in www.bioinformatics.babraham.ac.uk/bugzilla/
+##                    
+## </code></pre>
+</div>
+<p>Create a <code>fastqc</code> output directory:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>mkdir tutorial/fastqc</code></pre>
+</div>
+<p>Run FastQC to generate a quality control report for the ‘good’ data:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>fastqc -o tutorial/fastqc tutorial/data/good.fastq.gz</code></pre>
+<pre><code>## Started analysis of good.fastq.gz
+## Approx 5% complete for good.fastq.gz
+## Approx 10% complete for good.fastq.gz
+## Approx 15% complete for good.fastq.gz
+## Approx 20% complete for good.fastq.gz
+## Approx 25% complete for good.fastq.gz
+## Approx 30% complete for good.fastq.gz
+## Approx 35% complete for good.fastq.gz
+## Approx 40% complete for good.fastq.gz
+## Approx 45% complete for good.fastq.gz
+## Approx 50% complete for good.fastq.gz
+## Approx 55% complete for good.fastq.gz
+## Approx 60% complete for good.fastq.gz
+## Approx 65% complete for good.fastq.gz
+## Approx 70% complete for good.fastq.gz
+## Approx 75% complete for good.fastq.gz
+## Approx 80% complete for good.fastq.gz
+## Approx 85% complete for good.fastq.gz
+## Approx 90% complete for good.fastq.gz
+## Approx 95% complete for good.fastq.gz
+## Approx 100% complete for good.fastq.gz
+## Analysis complete for good.fastq.gz</code></pre>
+</div>
+<p>Inspect the <code>fastqc</code> output directory:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>ls tutorial/fastqc</code></pre>
+<pre><code>## good_fastqc.html
+## good_fastqc.zip</code></pre>
+</div>
+<p>You should see that FastQC generates a <code>.html</code> report and a <code>.zip</code> folder. The HTML report contains the results from a number of tests which FastQC runs on the sequencing data. For an explanation of the tests, please refer to the FastQC documentation for each one:</p>
+<ul>
+<li><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/1%20Basic%20Statistics.html">Basic statistics</a></li>
+<li><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/2%20Per%20Base%20Sequence%20Quality.html">Per base sequence quality</a></li>
+<li><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/3%20Per%20Sequence%20Quality%20Scores.html">Per sequence quality scores</a></li>
+<li><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/4%20Per%20Base%20Sequence%20Content.html">Per base sequence content</a></li>
+<li><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/5%20Per%20Sequence%20GC%20Content.html">Per sequence GC content</a></li>
+<li><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/6%20Per%20Base%20N%20Content.html">Per base N content</a></li>
+<li><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/7%20Sequence%20Length%20Distribution.html">Sequence length distribution</a></li>
+<li><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/8%20Duplicate%20Sequences.html">Sequence duplication levels</a></li>
+<li><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/9%20Overrepresented%20Sequences.html">Overrepresented sequences</a></li>
+<li><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/10%20Adapter%20Content.html">Adapter content</a></li>
+</ul>
+<p>Inspect the quality control report for the ‘good’ data:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+Output
+</div>
+<iframe src="tutorial/fastqc/good_fastqc.html" width="100%" height="800px" data-external="1">
+</iframe>
+</div>
+<p>The report uses a traffic light system (Green, Yellow, Red) to grade the result from each test (Pass, Warn, Fail). For this particular example, the data passed all of the tests. Once your data passes the majority of these tests it is safe to proceed with any downstream analysis or processing.</p>
+<p>Importantly, while these tests are useful, do not rely on them to absolve you of any responsibility. Data which passes all of these tests may still exhibit biases which are not detected, and vice versa. It is important to think about what the tests are measuring and whether those measurements make sense for your particular data.</p>
+<p>Lets now extract the <code>.zip</code> folder and see what it contains:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>unzip -o tutorial/fastqc/good_fastqc.zip -d tutorial/fastqc</code></pre>
+<pre><code>## Archive:  tutorial/fastqc/good_fastqc.zip
+##    creating: tutorial/fastqc/good_fastqc/
+##    creating: tutorial/fastqc/good_fastqc/Icons/
+##    creating: tutorial/fastqc/good_fastqc/Images/
+##   inflating: tutorial/fastqc/good_fastqc/Icons/fastqc_icon.png  
+##   inflating: tutorial/fastqc/good_fastqc/Icons/warning.png  
+##   inflating: tutorial/fastqc/good_fastqc/Icons/error.png  
+##   inflating: tutorial/fastqc/good_fastqc/Icons/tick.png  
+##   inflating: tutorial/fastqc/good_fastqc/summary.txt  
+##   inflating: tutorial/fastqc/good_fastqc/Images/per_base_quality.png  
+##   inflating: tutorial/fastqc/good_fastqc/Images/per_tile_quality.png  
+##   inflating: tutorial/fastqc/good_fastqc/Images/per_sequence_quality.png  
+##   inflating: tutorial/fastqc/good_fastqc/Images/per_base_sequence_content.png  
+##   inflating: tutorial/fastqc/good_fastqc/Images/per_sequence_gc_content.png  
+##   inflating: tutorial/fastqc/good_fastqc/Images/per_base_n_content.png  
+##   inflating: tutorial/fastqc/good_fastqc/Images/sequence_length_distribution.png  
+##   inflating: tutorial/fastqc/good_fastqc/Images/duplication_levels.png  
+##   inflating: tutorial/fastqc/good_fastqc/Images/adapter_content.png  
+##   inflating: tutorial/fastqc/good_fastqc/fastqc_report.html  
+##   inflating: tutorial/fastqc/good_fastqc/fastqc_data.txt  
+##   inflating: tutorial/fastqc/good_fastqc/fastqc.fo</code></pre>
+</div>
+<p>List all files in the extracted folder:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>ls tutorial/fastqc/good_fastqc</code></pre>
+<pre><code>## Icons
+## Images
+## fastqc.fo
+## fastqc_data.txt
+## fastqc_report.html
+## summary.txt</code></pre>
+</div>
+<p>The folder contains images and supplementary data. The images are those present in the <code>.html</code> report so we don’t need to look at these again. The others we will look at are the <code>fastqc_data.txt</code> and <code>summary.txt</code> files.</p>
+<p>First, lets display the contents of the <code>fastqc_data.txt</code> file:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>cat tutorial/fastqc/good_fastqc/fastqc_data.txt</code></pre>
+<pre><code>## ##FastQC 0.11.9
+## &gt;&gt;Basic Statistics   pass
+## #Measure Value
+## Filename good.fastq.gz
+## File type    Conventional base calls
+## Encoding Illumina 1.5
+## Total Sequences  250000
+## Sequences flagged as poor quality    0
+## Sequence length  40
+## %GC  45
+## &gt;&gt;END_MODULE
+## &gt;&gt;Per base sequence quality  pass
+## #Base    Mean    Median  Lower Quartile  Upper Quartile  10th Percentile 90th Percentile
+## 1    37.018596   38.0    38.0    38.0    35.0    38.0
+## 2    36.964208   38.0    37.0    38.0    35.0    38.0
+## 3    37.128464   38.0    37.0    38.0    35.0    38.0
+## 4    37.111792   38.0    37.0    38.0    35.0    38.0
+## 5    37.154904   38.0    38.0    38.0    36.0    38.0
+## 6    37.205776   38.0    38.0    38.0    36.0    38.0
+## 7    37.206184   38.0    38.0    38.0    36.0    38.0
+## 8    37.169392   38.0    38.0    38.0    36.0    38.0
+## 9    37.15452    38.0    38.0    38.0    35.0    38.0
+## 10   37.126808   38.0    37.0    38.0    35.0    38.0
+## 11   36.82764    38.0    37.0    38.0    35.0    38.0
+## 12   36.893108   38.0    37.0    38.0    35.0    38.0
+## 13   36.979468   38.0    37.0    38.0    35.0    38.0
+## 14   36.996272   38.0    37.0    38.0    35.0    38.0
+## 15   36.903852   38.0    37.0    38.0    35.0    38.0
+## 16   37.063328   38.0    37.0    38.0    35.0    38.0
+## 17   37.044728   38.0    37.0    38.0    35.0    38.0
+## 18   37.005588   38.0    37.0    38.0    35.0    38.0
+## 19   37.023184   38.0    37.0    38.0    35.0    38.0
+## 20   37.025436   38.0    37.0    38.0    35.0    38.0
+## 21   36.98352    38.0    37.0    38.0    35.0    38.0
+## 22   36.962568   38.0    37.0    38.0    35.0    38.0
+## 23   36.94942    38.0    37.0    38.0    35.0    38.0
+## 24   36.937728   38.0    37.0    38.0    35.0    38.0
+## 25   36.913956   38.0    37.0    38.0    35.0    38.0
+## 26   36.838288   38.0    37.0    38.0    35.0    38.0
+## 27   36.810176   38.0    37.0    38.0    35.0    38.0
+## 28   36.779396   38.0    37.0    38.0    35.0    38.0
+## 29   36.764576   38.0    37.0    38.0    35.0    38.0
+## 30   36.739352   38.0    37.0    38.0    35.0    38.0
+## 31   36.680796   38.0    37.0    38.0    35.0    38.0
+## 32   36.6185 38.0    37.0    38.0    35.0    38.0
+## 33   36.577148   38.0    37.0    38.0    34.0    38.0
+## 34   36.517688   38.0    36.0    38.0    34.0    38.0
+## 35   36.448552   38.0    36.0    38.0    34.0    38.0
+## 36   36.356024   38.0    36.0    38.0    34.0    38.0
+## 37   36.196704   38.0    36.0    38.0    33.0    38.0
+## 38   36.226052   38.0    36.0    38.0    33.0    38.0
+## 39   36.107872   38.0    36.0    38.0    33.0    38.0
+## 40   35.623204   37.0    36.0    38.0    32.0    38.0
+## &gt;&gt;END_MODULE
+## &gt;&gt;Per tile sequence quality  pass
+## #Tile    Base    Mean
+## 1    1   0.0
+## 1    2   0.0
+## 1    3   0.0
+## 1    4   0.0
+## 1    5   0.0
+## 1    6   0.0
+## 1    7   0.0
+## 1    8   0.0
+## 1    9   0.0
+## 1    10  0.0
+## 1    11  0.0
+## 1    12  0.0
+## 1    13  0.0
+## 1    14  0.0
+## 1    15  0.0
+## 1    16  0.0
+## 1    17  0.0
+## 1    18  0.0
+## 1    19  0.0
+## 1    20  0.0
+## 1    21  0.0
+## 1    22  0.0
+## 1    23  0.0
+## 1    24  0.0
+## 1    25  0.0
+## 1    26  0.0
+## 1    27  0.0
+## 1    28  0.0
+## 1    29  0.0
+## 1    30  0.0
+## 1    31  0.0
+## 1    32  0.0
+## 1    33  0.0
+## 1    34  0.0
+## 1    35  0.0
+## 1    36  0.0
+## 1    37  0.0
+## 1    38  0.0
+## 1    39  0.0
+## 1    40  0.0
+## &gt;&gt;END_MODULE
+## &gt;&gt;Per sequence quality scores    pass
+## #Quality Count
+## 2    58.0
+## 3    1.0
+## 4    0.0
+## 5    2.0
+## 6    3.0
+## 7    3.0
+## 8    4.0
+## 9    5.0
+## 10   8.0
+## 11   4.0
+## 12   14.0
+## 13   20.0
+## 14   22.0
+## 15   28.0
+## 16   42.0
+## 17   35.0
+## 18   65.0
+## 19   114.0
+## 20   101.0
+## 21   128.0
+## 22   178.0
+## 23   213.0
+## 24   292.0
+## 25   380.0
+## 26   517.0
+## 27   796.0
+## 28   1142.0
+## 29   1485.0
+## 30   2171.0
+## 31   2900.0
+## 32   4039.0
+## 33   5175.0
+## 34   7369.0
+## 35   11430.0
+## 36   25412.0
+## 37   179886.0
+## 38   5958.0
+## &gt;&gt;END_MODULE
+## &gt;&gt;Per base sequence content  pass
+## #Base    G   A   T   C
+## 1    20.016690271096543  26.817975742937726  28.279979297644502  24.88535468832122
+## 2    21.0868 26.802  28.2756 23.8356
+## 3    21.0276 25.516  28.7004 24.756
+## 4    21.5552 25.175199999999997  27.971200000000003  25.298399999999997
+## 5    19.8816 25.629600000000003  29.1024 25.3864
+## 6    19.877269690654014  25.550546245884654  28.133963252913247  26.438220810548085
+## 7    19.584  25.311600000000002  29.321199999999997  25.7832
+## 8    19.2504 25.3576 29.3064 26.0856
+## 9    19.0136 25.2044 29.3124 26.4696
+## 10   19.1928 25.523200000000003  28.650399999999998  26.6336
+## 11   19.1492 25.7216 28.875600000000002  26.2536
+## 12   19.3004 25.258399999999998  28.9476 26.4936
+## 13   19.3076 25.269599999999997  29.1224 26.300400000000003
+## 14   18.9756 25.4816 29.212  26.3308
+## 15   18.92   25.4032 29.1968 26.479999999999997
+## 16   19.0192 25.352400000000003  29.053600000000003  26.5748
+## 17   18.9208 25.338  29.2972 26.444000000000003
+## 18   18.9768 25.274  29.014  26.7352
+## 19   18.9368 25.3268 28.871599999999997  26.8648
+## 20   18.9652 25.3764 28.9264 26.732
+## 21   18.9752 25.272  28.6188 27.134000000000004
+## 22   19.0024 25.354  28.8404 26.8032
+## 23   19.0588 25.137999999999998  28.8488 26.9544
+## 24   18.9376 25.0708 28.8868 27.1048
+## 25   19.016  25.163200000000003  28.9584 26.862399999999997
+## 26   18.9668 25.0468 28.9968 26.989600000000003
+## 27   18.9696 25.0456 28.967599999999997  27.017200000000003
+## 28   18.788552775799857  25.150610843980765  28.99288748789913   27.06794889232025
+## 29   18.859101745627928  25.167602681642908  28.884862157794526  27.088433414934638
+## 30   18.996399999999998  25.243199999999998  28.708  27.0524
+## 31   18.903200000000002  25.0704 28.792  27.234399999999997
+## 32   18.9176 25.2032 28.7708 27.1084
+## 33   19.056  24.9164 28.7568 27.2708
+## 34   18.944  25.190800000000003  28.721200000000003  27.144000000000002
+## 35   18.7776 24.898  29.1236 27.2008
+## 36   18.7084 24.7668 29.164  27.3608
+## 37   18.706  25.014799999999997  28.8904 27.388800000000003
+## 38   18.6152 25.1504 28.898000000000003  27.3364
+## 39   18.692  24.8808 28.861199999999997  27.566000000000003
+## 40   18.691899070385126  25.036000576009215  28.817661082577324  27.454439271028335
+## &gt;&gt;END_MODULE
+## &gt;&gt;Per sequence GC content    pass
+## #GC Content  Count
+## 0    9.0
+## 1    5.5
+## 2    2.0
+## 3    2.0
+## 4    8.0
+## 5    14.0
+## 6    26.0
+## 7    38.0
+## 8    38.0
+## 9    53.5
+## 10   69.0
+## 11   125.0
+## 12   181.0
+## 13   181.0
+## 14   255.0
+## 15   329.0
+## 16   460.0
+## 17   591.0
+## 18   591.0
+## 19   801.5
+## 20   1012.0
+## 21   1333.0
+## 22   1654.0
+## 23   1654.0
+## 24   2291.5
+## 25   2929.0
+## 26   3727.5
+## 27   4526.0
+## 28   4526.0
+## 29   6006.5
+## 30   7487.0
+## 31   9478.5
+## 32   11470.0
+## 33   11470.0
+## 34   13628.0
+## 35   15786.0
+## 36   16785.5
+## 37   17785.0
+## 38   17785.0
+## 39   18616.0
+## 40   19447.0
+## 41   20321.5
+## 42   21196.0
+## 43   21196.0
+## 44   21714.5
+## 45   22233.0
+## 46   22642.0
+## 47   23051.0
+## 48   23051.0
+## 49   23179.5
+## 50   23308.0
+## 51   22107.5
+## 52   20907.0
+## 53   20907.0
+## 54   19226.5
+## 55   17546.0
+## 56   15523.5
+## 57   13501.0
+## 58   13501.0
+## 59   11574.5
+## 60   9648.0
+## 61   8011.0
+## 62   6374.0
+## 63   6374.0
+## 64   5222.5
+## 65   4071.0
+## 66   3167.0
+## 67   2263.0
+## 68   2263.0
+## 69   1707.5
+## 70   1152.0
+## 71   877.0
+## 72   602.0
+## 73   602.0
+## 74   485.5
+## 75   369.0
+## 76   277.0
+## 77   185.0
+## 78   185.0
+## 79   151.0
+## 80   117.0
+## 81   88.0
+## 82   59.0
+## 83   59.0
+## 84   52.5
+## 85   46.0
+## 86   32.5
+## 87   19.0
+## 88   19.0
+## 89   15.5
+## 90   12.0
+## 91   9.0
+## 92   6.0
+## 93   6.0
+## 94   4.5
+## 95   3.0
+## 96   2.0
+## 97   1.0
+## 98   1.0
+## 99   1.5
+## 100  2.0
+## &gt;&gt;END_MODULE
+## &gt;&gt;Per base N content pass
+## #Base    N-Count
+## 1    0.30119999999999997
+## 2    0.0
+## 3    0.0
+## 4    0.0
+## 5    0.0
+## 6    0.0084
+## 7    0.0
+## 8    0.0
+## 9    0.0
+## 10   0.0
+## 11   0.0
+## 12   0.0
+## 13   0.0
+## 14   0.0
+## 15   0.0
+## 16   0.0
+## 17   0.0
+## 18   0.0
+## 19   0.0
+## 20   0.0
+## 21   0.0
+## 22   0.0
+## 23   0.0
+## 24   0.0
+## 25   0.0
+## 26   0.0
+## 27   0.0
+## 28   0.0072
+## 29   0.0015999999999999999
+## 30   0.0
+## 31   0.0
+## 32   0.0
+## 33   0.0
+## 34   0.0
+## 35   0.0
+## 36   0.0
+## 37   0.0
+## 38   0.0
+## 39   0.0
+## 40   0.0015999999999999999
+## &gt;&gt;END_MODULE
+## &gt;&gt;Sequence Length Distribution   pass
+## #Length  Count
+## 40   250000.0
+## &gt;&gt;END_MODULE
+## &gt;&gt;Sequence Duplication Levels    pass
+## #Total Deduplicated Percentage   94.81007801740206
+## #Duplication Level   Percentage of deduplicated  Percentage of total
+## 1    98.82446040062165   93.695548006106
+## 2    0.8184774289647235  1.5519981779125618
+## 3    0.13770282308459525 0.39166846199600974
+## 4    0.05196687276280436 0.1970793304384755
+## 5    0.02849674855564644 0.13508894769015645
+## 6    0.013177264859977599    0.07496025056582681
+## 7    0.008639504778333843    0.05733784854458847
+## 8    0.006845752143545901    0.05192370358539074
+## 9    0.002127511777105116    0.018153860181324994
+## &gt;10  0.09248166995806788 2.7312695332740327
+## &gt;50  0.013090397224314817    0.7826947074312642
+## &gt;100 0.002533625269222222    0.31227717227436624
+## &gt;500 0.0 0.0
+## &gt;1k  0.0 0.0
+## &gt;5k  0.0 0.0
+## &gt;10k+    0.0 0.0
+## &gt;&gt;END_MODULE
+## &gt;&gt;Overrepresented sequences  pass
+## &gt;&gt;END_MODULE
+## &gt;&gt;Adapter Content    pass
+## #Position    Illumina Universal Adapter  Illumina Small RNA 3&#39; Adapter   Illumina Small RNA 5&#39; Adapter   Nextera Transposase Sequence    SOLID Small RNA Adapter
+## 1    0.0 0.0 0.0 0.0 0.0
+## 2    0.0 0.0 0.0 0.0 0.0
+## 3    0.0 0.0 0.0 0.0 0.0
+## 4    0.0 0.0 0.0 0.0 0.0
+## 5    0.0 0.0 0.0 0.0 0.0
+## 6    0.0 0.0 0.0 0.0 4.0E-4
+## 7    0.0 0.0 0.0 0.0 4.0E-4
+## 8    0.0 0.0 0.0 0.0 4.0E-4
+## 9    0.0 0.0 0.0 0.0 4.0E-4
+## 10   0.0 0.0 0.0 0.0 4.0E-4
+## 11   0.0 0.0 0.0 0.0 4.0E-4
+## 12   0.0 0.0 0.0 0.0 4.0E-4
+## 13   0.0 0.0 0.0 0.0 4.0E-4
+## 14   0.0 0.0 0.0 0.0 4.0E-4
+## 15   0.0 0.0 0.0 0.0 4.0E-4
+## 16   0.0 0.0 0.0 0.0 4.0E-4
+## 17   0.0 0.0 0.0 0.0 4.0E-4
+## 18   0.0 0.0 0.0 0.0 4.0E-4
+## 19   0.0 0.0 0.0 0.0 4.0E-4
+## 20   0.0036  0.0 0.0 0.0 4.0E-4
+## 21   0.0044  0.0 0.0 0.0 4.0E-4
+## 22   0.0044  0.0 0.0 0.0 4.0E-4
+## 23   0.0052  0.0 0.0 0.0 4.0E-4
+## 24   0.0052  0.0 0.0 0.0 4.0E-4
+## 25   0.0052  0.0 0.0 0.0 4.0E-4
+## 26   0.0052  0.0 0.0 0.0 4.0E-4
+## 27   0.0052  0.0 0.0 0.0 4.0E-4
+## 28   0.0052  0.0 0.0 4.0E-4  4.0E-4
+## 29   0.0052  0.0 0.0 4.0E-4  4.0E-4
+## &gt;&gt;END_MODULE</code></pre>
+</div>
+<p>As you may have guessed, this file contains all of the data FastQC calculates when running each of the test modules. The layout of the file is not really amenable to processing on the command line so we won’t inspect it any further.</p>
+<p>Next, display the contents of the <code>summary.txt</code> file:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>cat tutorial/fastqc/good_fastqc/summary.txt</code></pre>
+<pre><code>## PASS Basic Statistics    good.fastq.gz
+## PASS Per base sequence quality   good.fastq.gz
+## PASS Per tile sequence quality   good.fastq.gz
+## PASS Per sequence quality scores good.fastq.gz
+## PASS Per base sequence content   good.fastq.gz
+## PASS Per sequence GC content good.fastq.gz
+## PASS Per base N content  good.fastq.gz
+## PASS Sequence Length Distribution    good.fastq.gz
+## PASS Sequence Duplication Levels good.fastq.gz
+## PASS Overrepresented sequences   good.fastq.gz
+## PASS Adapter Content good.fastq.gz</code></pre>
+</div>
+<p>Obviously, this file contains a summary of the results for each test module. The first column lists the result, the second is the test module and the third is the input file. For comparison, lets now run FastQC on the ‘bad’ file included in the example data directory.</p>
+<p>Run FastQC to generate a quality control report for the ‘bad’ data:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>fastqc -o tutorial/fastqc tutorial/data/bad.fastq.gz</code></pre>
+<pre><code>## Started analysis of bad.fastq.gz
+## Approx 5% complete for bad.fastq.gz
+## Approx 10% complete for bad.fastq.gz
+## Approx 15% complete for bad.fastq.gz
+## Approx 20% complete for bad.fastq.gz
+## Approx 25% complete for bad.fastq.gz
+## Approx 30% complete for bad.fastq.gz
+## Approx 35% complete for bad.fastq.gz
+## Approx 40% complete for bad.fastq.gz
+## Approx 45% complete for bad.fastq.gz
+## Approx 50% complete for bad.fastq.gz
+## Approx 55% complete for bad.fastq.gz
+## Approx 60% complete for bad.fastq.gz
+## Approx 65% complete for bad.fastq.gz
+## Approx 70% complete for bad.fastq.gz
+## Approx 75% complete for bad.fastq.gz
+## Approx 80% complete for bad.fastq.gz
+## Approx 85% complete for bad.fastq.gz
+## Approx 90% complete for bad.fastq.gz
+## Approx 95% complete for bad.fastq.gz
+## Approx 100% complete for bad.fastq.gz
+## Analysis complete for bad.fastq.gz</code></pre>
+</div>
+<p>Inspect the quality control report:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+Output
+</div>
+<iframe src="tutorial/fastqc/bad_fastqc.html" width="100%" height="800px" data-external="1">
+</iframe>
+</div>
+<p>As expected, this data has a lot of problems:</p>
+<ul>
+<li>The base sequence quality severely decreases toward the end of the reads</li>
+<li>The tile sequence quality exhibits spots of poor read quality</li>
+<li>The per base sequence content shows a bias toward thymine</li>
+<li>The per sequence GC content does not match the theoretical distribution</li>
+<li>There are lots of over-represented sequences with no identifiable origin</li>
+<li>There appears to be some adapter contamination from the Illumina Paired End PCR Primer 2</li>
+</ul>
+<p>So what can we do about this? It would be impractical to re-do the sequencing again and again until we end up with ‘good’ quality data. Instead, we can process or ‘clean’ the data using read trimming software.</p>
+</div>
+<div id="read-trimming" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Read trimming</h2>
+<p>Read trimming is used to ‘clean’ reads which exhibit adapter contamination or low-quality bases. There is an endless number of read trimming programs available, but all of them basically do the same thing. How fast and how many options they have is usually what differentiates them. We are going to use Cutadapt mainly because of the extensive documentation. Do not underestimate how important and rare well organised and detailed documentation is in the world of bioinformatics software.</p>
+<p>In the example data directory is a ‘contaminated’ FASTQ file. We are going to use this file to demonstrate the effect read trimming has on the quality of the data, as measured by the FastQC report.</p>
+<p>Run FastQC to generate a quality control report before trimming:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>fastqc -o tutorial/fastqc tutorial/data/contam.fastq.gz</code></pre>
+<pre><code>## Started analysis of contam.fastq.gz
+## Approx 5% complete for contam.fastq.gz
+## Approx 10% complete for contam.fastq.gz
+## Approx 15% complete for contam.fastq.gz
+## Approx 20% complete for contam.fastq.gz
+## Approx 25% complete for contam.fastq.gz
+## Approx 30% complete for contam.fastq.gz
+## Approx 35% complete for contam.fastq.gz
+## Approx 40% complete for contam.fastq.gz
+## Approx 45% complete for contam.fastq.gz
+## Approx 50% complete for contam.fastq.gz
+## Approx 55% complete for contam.fastq.gz
+## Approx 60% complete for contam.fastq.gz
+## Approx 65% complete for contam.fastq.gz
+## Approx 70% complete for contam.fastq.gz
+## Approx 75% complete for contam.fastq.gz
+## Approx 80% complete for contam.fastq.gz
+## Approx 85% complete for contam.fastq.gz
+## Approx 90% complete for contam.fastq.gz
+## Approx 95% complete for contam.fastq.gz
+## Approx 100% complete for contam.fastq.gz
+## Analysis complete for contam.fastq.gz</code></pre>
+</div>
+<p>Inspect the quality control report:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+Output
+</div>
+<iframe src="tutorial/fastqc/contam_fastqc.html" width="100%" height="800px" data-external="1">
+</iframe>
+</div>
+<p>The un-trimmed data has the following issues:</p>
+<ul>
+<li>The per base sequence quality degrades massively</li>
+<li>The per sequence quality scores are quite variable</li>
+<li>The per sequence GC content does not match the theoretical distribution</li>
+<li>At least 10% of the reads have adapter contamination (Illumina Universal Adapter)</li>
+</ul>
+<p>We can use Cutadapt to address these issues by performing read quality and adapter trimming. Cutadapt has a number of options and it would be worth you reading through these at some point to get a sense of what problems can and can’t be addressed.</p>
+<p>Activate the <code>cutadapt</code> environment:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate cutadapt</code></pre>
+</div>
+<p>Print the help information for the <code>cutadapt</code> command:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>cutadapt --help</code></pre>
+<pre><code>## cutadapt version 4.1
+## 
+## Copyright (C) 2010-2022 Marcel Martin &lt;marcel.martin@scilifelab.se&gt;
+## 
+## cutadapt removes adapter sequences from high-throughput sequencing reads.
+## 
+## Usage:
+##     cutadapt -a ADAPTER [options] [-o output.fastq] input.fastq
+## 
+## For paired-end reads:
+##     cutadapt -a ADAPT1 -A ADAPT2 [options] -o out1.fastq -p out2.fastq in1.fastq in2.fastq
+## 
+## Replace &quot;ADAPTER&quot; with the actual sequence of your 3&#39; adapter. IUPAC wildcard
+## characters are supported. All reads from input.fastq will be written to
+## output.fastq with the adapter sequence removed. Adapter matching is
+## error-tolerant. Multiple adapter sequences can be given (use further -a
+## options), but only the best-matching adapter will be removed.
+## 
+## Input may also be in FASTA format. Compressed input and output is supported and
+## auto-detected from the file name (.gz, .xz, .bz2). Use the file name &#39;-&#39; for
+## standard input/output. Without the -o option, output is sent to standard output.
+## 
+## Citation:
+## 
+## Marcel Martin. Cutadapt removes adapter sequences from high-throughput
+## sequencing reads. EMBnet.Journal, 17(1):10-12, May 2011.
+## http://dx.doi.org/10.14806/ej.17.1.200
+## 
+## Run &quot;cutadapt --help&quot; to see all command-line options.
+## See https://cutadapt.readthedocs.io/ for full documentation.
+## 
+## Options:
+##   -h, --help            Show this help message and exit
+##   --version             Show version number and exit
+##   --debug               Print debug log. Use twice to also print DP matrices
+##   -j CORES, --cores CORES
+##                         Number of CPU cores to use. Use 0 to auto-detect.
+##                         Default: 1
+## 
+## Finding adapters:
+##   Parameters -a, -g, -b specify adapters to be removed from each read (or from
+##   R1 if data is paired-end. If specified multiple times, only the best
+##   matching adapter is trimmed (but see the --times option). Use notation
+##   &#39;file:FILE&#39; to read adapter sequences from a FASTA file.
+## 
+##   -a ADAPTER, --adapter ADAPTER
+##                         Sequence of an adapter ligated to the 3&#39; end (paired
+##                         data: of the first read). The adapter and subsequent
+##                         bases are trimmed. If a &#39;$&#39; character is appended
+##                         (&#39;anchoring&#39;), the adapter is only found if it is a
+##                         suffix of the read.
+##   -g ADAPTER, --front ADAPTER
+##                         Sequence of an adapter ligated to the 5&#39; end (paired
+##                         data: of the first read). The adapter and any preceding
+##                         bases are trimmed. Partial matches at the 5&#39; end are
+##                         allowed. If a &#39;^&#39; character is prepended (&#39;anchoring&#39;),
+##                         the adapter is only found if it is a prefix of the read.
+##   -b ADAPTER, --anywhere ADAPTER
+##                         Sequence of an adapter that may be ligated to the 5&#39; or
+##                         3&#39; end (paired data: of the first read). Both types of
+##                         matches as described under -a and -g are allowed. If the
+##                         first base of the read is part of the match, the
+##                         behavior is as with -g, otherwise as with -a. This
+##                         option is mostly for rescuing failed library
+##                         preparations - do not use if you know which end your
+##                         adapter was ligated to!
+##   -e E, --error-rate E, --errors E
+##                         Maximum allowed error rate (if 0 &lt;= E &lt; 1), or absolute
+##                         number of errors for full-length adapter match (if E is
+##                         an integer &gt;= 1). Error rate = no. of errors divided by
+##                         length of matching region. Default: 0.1 (10%)
+##   --no-indels           Allow only mismatches in alignments. Default: allow both
+##                         mismatches and indels
+##   -n COUNT, --times COUNT
+##                         Remove up to COUNT adapters from each read. Default: 1
+##   -O MINLENGTH, --overlap MINLENGTH
+##                         Require MINLENGTH overlap between read and adapter for
+##                         an adapter to be found. Default: 3
+##   --match-read-wildcards
+##                         Interpret IUPAC wildcards in reads. Default: False
+##   -N, --no-match-adapter-wildcards
+##                         Do not interpret IUPAC wildcards in adapters.
+##   --action {trim,retain,mask,lowercase,none}
+##                         What to do if a match was found. trim: trim adapter and
+##                         up- or downstream sequence; retain: trim, but retain
+##                         adapter; mask: replace with &#39;N&#39; characters; lowercase:
+##                         convert to lowercase; none: leave unchanged. Default:
+##                         trim
+##   --rc, --revcomp       Check both the read and its reverse complement for
+##                         adapter matches. If match is on reverse-complemented
+##                         version, output that one. Default: check only read
+## 
+## Additional read modifications:
+##   -u LENGTH, --cut LENGTH
+##                         Remove bases from each read (first read only if paired).
+##                         If LENGTH is positive, remove bases from the beginning.
+##                         If LENGTH is negative, remove bases from the end. Can be
+##                         used twice if LENGTHs have different signs. This is
+##                         applied *before* adapter trimming.
+##   --nextseq-trim 3&#39;CUTOFF
+##                         NextSeq-specific quality trimming (each read). Trims
+##                         also dark cycles appearing as high-quality G bases.
+##   -q [5&#39;CUTOFF,]3&#39;CUTOFF, --quality-cutoff [5&#39;CUTOFF,]3&#39;CUTOFF
+##                         Trim low-quality bases from 5&#39; and/or 3&#39; ends of each
+##                         read before adapter removal. Applied to both reads if
+##                         data is paired. If one value is given, only the 3&#39; end
+##                         is trimmed. If two comma-separated cutoffs are given,
+##                         the 5&#39; end is trimmed with the first cutoff, the 3&#39; end
+##                         with the second.
+##   --quality-base N      Assume that quality values in FASTQ are encoded as
+##                         ascii(quality + N). This needs to be set to 64 for some
+##                         old Illumina FASTQ files. Default: 33
+##   --length LENGTH, -l LENGTH
+##                         Shorten reads to LENGTH. Positive values remove bases at
+##                         the end while negative ones remove bases at the
+##                         beginning. This and the following modifications are
+##                         applied after adapter trimming.
+##   --trim-n              Trim N&#39;s on ends of reads.
+##   --length-tag TAG      Search for TAG followed by a decimal number in the
+##                         description field of the read. Replace the decimal
+##                         number with the correct length of the trimmed read. For
+##                         example, use --length-tag &#39;length=&#39; to correct fields
+##                         like &#39;length=123&#39;.
+##   --strip-suffix STRIP_SUFFIX
+##                         Remove this suffix from read names if present. Can be
+##                         given multiple times.
+##   -x PREFIX, --prefix PREFIX
+##                         Add this prefix to read names. Use {name} to insert the
+##                         name of the matching adapter.
+##   -y SUFFIX, --suffix SUFFIX
+##                         Add this suffix to read names; can also include {name}
+##   --rename TEMPLATE     Rename reads using TEMPLATE containing variables such as
+##                         {id}, {adapter_name} etc. (see documentation)
+##   --zero-cap, -z        Change negative quality values to zero.
+## 
+## Filtering of processed reads:
+##   Filters are applied after above read modifications. Paired-end reads are
+##   always discarded pairwise (see also --pair-filter).
+## 
+##   -m LEN[:LEN2], --minimum-length LEN[:LEN2]
+##                         Discard reads shorter than LEN. Default: 0
+##   -M LEN[:LEN2], --maximum-length LEN[:LEN2]
+##                         Discard reads longer than LEN. Default: no limit
+##   --max-n COUNT         Discard reads with more than COUNT &#39;N&#39; bases. If COUNT
+##                         is a number between 0 and 1, it is interpreted as a
+##                         fraction of the read length.
+##   --max-expected-errors ERRORS, --max-ee ERRORS
+##                         Discard reads whose expected number of errors (computed
+##                         from quality values) exceeds ERRORS.
+##   --discard-trimmed, --discard
+##                         Discard reads that contain an adapter. Use also -O to
+##                         avoid discarding too many randomly matching reads.
+##   --discard-untrimmed, --trimmed-only
+##                         Discard reads that do not contain an adapter.
+##   --discard-casava      Discard reads that did not pass CASAVA filtering (header
+##                         has :Y:).
+## 
+## Output:
+##   --quiet               Print only error messages.
+##   --report {full,minimal}
+##                         Which type of report to print: &#39;full&#39; or &#39;minimal&#39;.
+##                         Default: full
+##   --json FILE           Dump report in JSON format to FILE
+##   -o FILE, --output FILE
+##                         Write trimmed reads to FILE. FASTQ or FASTA format is
+##                         chosen depending on input. Summary report is sent to
+##                         standard output. Use &#39;{name}&#39; for demultiplexing (see
+##                         docs). Default: write to standard output
+##   --fasta               Output FASTA to standard output even on FASTQ input.
+##   -Z                    Use compression level 1 for gzipped output files
+##                         (faster, but uses more space)
+##   --info-file FILE      Write information about each read and its adapter
+##                         matches into FILE. See the documentation for the file
+##                         format.
+##   -r FILE, --rest-file FILE
+##                         When the adapter matches in the middle of a read, write
+##                         the rest (after the adapter) to FILE.
+##   --wildcard-file FILE  When the adapter has N wildcard bases, write adapter
+##                         bases matching wildcard positions to FILE. (Inaccurate
+##                         with indels.)
+##   --too-short-output FILE
+##                         Write reads that are too short (according to length
+##                         specified by -m) to FILE. Default: discard reads
+##   --too-long-output FILE
+##                         Write reads that are too long (according to length
+##                         specified by -M) to FILE. Default: discard reads
+##   --untrimmed-output FILE
+##                         Write reads that do not contain any adapter to FILE.
+##                         Default: output to same file as trimmed reads
+## 
+## Paired-end options:
+##   The -A/-G/-B/-U/-Q options work like their lowercase counterparts, but are
+##   applied to R2 (second read in pair)
+## 
+##   -A ADAPTER            3&#39; adapter to be removed from R2
+##   -G ADAPTER            5&#39; adapter to be removed from R2
+##   -B ADAPTER            5&#39;/3 adapter to be removed from R2
+##   -U LENGTH             Remove LENGTH bases from R2
+##   -Q [5&#39;CUTOFF,]3&#39;CUTOFF
+##                         Quality-trimming cutoff for R2. Default: same as for R1
+##   -p FILE, --paired-output FILE
+##                         Write R2 to FILE.
+##   --pair-adapters       Treat adapters given with -a/-A etc. as pairs. Either
+##                         both or none are removed from each read pair.
+##   --pair-filter {any,both,first}
+##                         Which of the reads in a paired-end read have to match
+##                         the filtering criterion in order for the pair to be
+##                         filtered. Default: any
+##   --interleaved         Read and/or write interleaved paired-end reads.
+##   --untrimmed-paired-output FILE
+##                         Write second read in a pair to this FILE when no adapter
+##                         was found. Use with --untrimmed-output. Default: output
+##                         to same file as trimmed reads
+##   --too-short-paired-output FILE
+##                         Write second read in a pair to this file if pair is too
+##                         short.
+##   --too-long-paired-output FILE
+##                         Write second read in a pair to this file if pair is too
+##                         long.</code></pre>
+</div>
+<p>Create a directory for the <code>cutadapt</code> output files:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>mkdir tutorial/cutadapt</code></pre>
+</div>
+<p>Before we perform read trimming, we need to get the sequence of the contaminating adapter. You can either ask the person who prepared the libraries for the adapter sequence they used or simply search online for the corresponding sequence. Helpfully, Illumina maintains an <a href="https://emea.support.illumina.com/downloads/illumina-adapter-sequences-document-1000000002694.html">adapter sequences document</a> which lists all of the adapters used in their library preparation kits.</p>
+<p>Lets now run Cutadapt to trim the adapter sequence and low quality bases:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code># -q 28             | Trim low-quality bases from 3&#39; end of each read
+# -a AGATCGGAAGAGC  | Illumina adapter sequence ligated to the 3&#39; end
+# -m 26             | Discard reads shorter than 26 bases
+cutadapt -q 28 -a AGATCGGAAGAGC -m 36 -o tutorial/cutadapt/trimmed.fastq.gz tutorial/data/contam.fastq.gz</code></pre>
+<pre><code>## This is cutadapt 4.1 with Python 3.10.6
+## Command line parameters: -q 28 -a AGATCGGAAGAGC -m 36 -o tutorial/cutadapt/trimmed.fastq.gz tutorial/data/contam.fastq.gz
+## Processing single-end reads on 1 core ...
+## Finished in 3.90 s (16 µs/read; 3.85 M reads/minute).
+## 
+## === Summary ===
+## 
+## Total reads processed:                 250,000
+## Reads with adapters:                    23,895 (9.6%)
+## 
+## == Read fate breakdown ==
+## Reads that were too short:              11,389 (4.6%)
+## Reads written (passing filters):       238,611 (95.4%)
+## 
+## Total basepairs processed:    62,750,000 bp
+## Quality-trimmed:              24,964,552 bp (39.8%)
+## Total written (filtered):     36,658,201 bp (58.4%)
+## 
+## === Adapter 1 ===
+## 
+## Sequence: AGATCGGAAGAGC; Type: regular 3&#39;; Length: 13; Trimmed: 23895 times
+## 
+## Minimum overlap: 3
+## No. of allowed errors:
+## 1-9 bp: 0; 10-13 bp: 1
+## 
+## Bases preceding removed adapters:
+##   A: 26.5%
+##   C: 27.0%
+##   G: 22.8%
+##   T: 23.6%
+##   none/other: 0.1%
+## 
+## Overview of removed sequences
+## length   count   expect  max.err error counts
+## 3    2209    3906.2  0   2209
+## 4    397 976.6   0   397
+## 5    397 244.1   0   397
+## 6    295 61.0    0   295
+## 7    276 15.3    0   276
+## 8    114 3.8 0   114
+## 9    78  1.0 0   70 8
+## 10   66  0.2 1   57 9
+## 11   37  0.1 1   37
+## 12   41  0.0 1   36 5
+## 13   53  0.0 1   52 1
+## 14   77  0.0 1   68 9
+## 15   110 0.0 1   102 8
+## 16   137 0.0 1   116 21
+## 17   714 0.0 1   696 18
+## 18   829 0.0 1   815 14
+## 19   65  0.0 1   63 2
+## 20   96  0.0 1   94 2
+## 21   56  0.0 1   54 2
+## 22   108 0.0 1   104 4
+## 23   48  0.0 1   45 3
+## 24   42  0.0 1   37 5
+## 25   176 0.0 1   167 9
+## 26   75  0.0 1   74 1
+## 27   90  0.0 1   81 9
+## 28   405 0.0 1   397 8
+## 29   285 0.0 1   264 21
+## 30   548 0.0 1   540 8
+## 31   51  0.0 1   41 10
+## 32   103 0.0 1   95 8
+## 33   115 0.0 1   103 12
+## 34   820 0.0 1   790 30
+## 35   1033    0.0 1   1020 13
+## 36   133 0.0 1   129 4
+## 37   57  0.0 1   57
+## 38   28  0.0 1   20 8
+## 39   142 0.0 1   139 3
+## 40   297 0.0 1   291 6
+## 41   69  0.0 1   58 11
+## 42   594 0.0 1   570 24
+## 43   1474    0.0 1   1457 17
+## 44   200 0.0 1   189 11
+## 45   216 0.0 1   211 5
+## 46   74  0.0 1   65 9
+## 47   222 0.0 1   208 14
+## 48   664 0.0 1   651 13
+## 49   134 0.0 1   128 6
+## 50   69  0.0 1   65 4
+## 51   45  0.0 1   43 2
+## 52   42  0.0 1   41 1
+## 53   89  0.0 1   81 8
+## 54   525 0.0 1   500 25
+## 55   761 0.0 1   756 5
+## 56   38  0.0 1   30 8
+## 57   118 0.0 1   117 1
+## 58   64  0.0 1   62 2
+## 59   17  0.0 1   16 1
+## 60   123 0.0 1   123
+## 61   149 0.0 1   149
+## 62   74  0.0 1   66 8
+## 63   535 0.0 1   527 8
+## 64   341 0.0 1   331 10
+## 65   524 0.0 1   497 27
+## 66   1652    0.0 1   1627 25
+## 67   426 0.0 1   422 4
+## 68   256 0.0 1   253 3
+## 69   361 0.0 1   349 12
+## 70   493 0.0 1   476 17
+## 71   740 0.0 1   711 29
+## 72   816 0.0 1   796 20
+## 73   626 0.0 1   617 9
+## 74   426 0.0 1   420 6
+## 75   209 0.0 1   205 4
+## 76   72  0.0 1   70 2
+## 77   13  0.0 1   13
+## 78   4   0.0 1   3 1
+## 80   1   0.0 1   1
+## 82   1   0.0 1   1
+## 85   1   0.0 1   0 1
+## 86   1   0.0 1   0 1
+## 87   2   0.0 1   2
+## 89   1   0.0 1   1
+## 90   2   0.0 1   2
+## 92   2   0.0 1   2
+## 93   2   0.0 1   2
+## 102  1   0.0 1   1
+## 103  1   0.0 1   0 1
+## 104  2   0.0 1   2
+## 105  4   0.0 1   4
+## 106  1   0.0 1   1
+## 111  1   0.0 1   1
+## 120  1   0.0 1   1
+## 123  1   0.0 1   0 1
+## 125  1   0.0 1   0 1
+## 126  1   0.0 1   0 1
+## 136  1   0.0 1   1
+## 138  1   0.0 1   0 1
+## 139  1   0.0 1   0 1
+## 148  1   0.0 1   0 1
+## 162  1   0.0 1   0 1
+## 164  1   0.0 1   0 1
+## 169  1   0.0 1   0 1
+## 179  1   0.0 1   0 1
+## 188  1   0.0 1   0 1
+## 198  1   0.0 1   0 1</code></pre>
+</div>
+<p>Activate the <code>fastqc</code> environment:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>conda activate fastqc</code></pre>
+</div>
+<p>Run FastQC to generate a quality control report after trimming:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>fastqc -o tutorial/fastqc tutorial/cutadapt/trimmed.fastq.gz</code></pre>
+<pre><code>## Started analysis of trimmed.fastq.gz
+## Approx 5% complete for trimmed.fastq.gz
+## Approx 10% complete for trimmed.fastq.gz
+## Approx 15% complete for trimmed.fastq.gz
+## Approx 20% complete for trimmed.fastq.gz
+## Approx 25% complete for trimmed.fastq.gz
+## Approx 30% complete for trimmed.fastq.gz
+## Approx 35% complete for trimmed.fastq.gz
+## Approx 40% complete for trimmed.fastq.gz
+## Approx 45% complete for trimmed.fastq.gz
+## Approx 50% complete for trimmed.fastq.gz
+## Approx 55% complete for trimmed.fastq.gz
+## Approx 60% complete for trimmed.fastq.gz
+## Approx 65% complete for trimmed.fastq.gz
+## Approx 70% complete for trimmed.fastq.gz
+## Approx 75% complete for trimmed.fastq.gz
+## Approx 80% complete for trimmed.fastq.gz
+## Approx 85% complete for trimmed.fastq.gz
+## Approx 90% complete for trimmed.fastq.gz
+## Approx 95% complete for trimmed.fastq.gz
+## Analysis complete for trimmed.fastq.gz</code></pre>
+</div>
+<p>Inspect the trimmed quality control report:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+Output
+</div>
+<iframe src="tutorial/fastqc/trimmed_fastqc.html" width="100%" height="800px" data-external="1">
+</iframe>
+</div>
+<p>You should see that FastQC no longer reports any issues with the per base sequence quality or adapter contamination. However, we still receive a warning for the per sequence GC content. Is this a problem? Remember what I said previously about blindly following the FastQC test results. Does it matter that the GC content is different to this ‘theoretical’ distribution? What if the data we generated was from an assay that sampled just high GC regions on the genome? An understanding of the data generating process is crucial to assess the FastQC test results in their proper context. Having said that, it appears we have successfully ‘cleaned’ this data and can proceed with our analysis.</p>
+</div>
+</div>
+<div id="exercises" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Exercises</h1>
+<p>The exercises below are designed to strengthen your knowledge of using FastQC and Cutadapt to perform quality control on sequencing data. The solution to each problem is blurred, only after attempting to solve the problem yourself should you look at the solution. Should you need any help, please ask one of the instructors.</p>
+<p>Create a directory to store the output files from each exercise:</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<pre class="bash"><code>mkdir exercises
+mkdir exercises/chipseq
+mkdir exercises/rnaseq
+mkdir exercises/atacseq</code></pre>
+</div>
+<div id="chip-sequencing" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> ChIP sequencing</h2>
+<blockquote>
+<p>ChIP sequencing, also known as ChIP-seq, is a method used to analyze protein interactions with DNA. ChIP-seq combines chromatin immunoprecipitation (ChIP) with massively parallel DNA sequencing to identify the binding sites of DNA-associated proteins. It can be used to map global binding sites precisely for any protein of interest.</p>
+</blockquote>
+<p>In the data directory is a file called <code>chipseq.fastq.gz</code> which contains sequencing data from a ChIP-seq experiment. Use FastQC and Cutadapt to quality check and clean the data if necessary. Pay close attention to the ‘Overrepresented sequences’ module. Can you clean the data so it passes this module?</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># Run FastQC on the raw data
+conda activate fastqc
+fastqc -o exercises/chipseq tutorial/data/chipseq.fastq.gz
+
+# Trim the Illumina TruSeq adapter sequence
+# Remove over represented sequences containing any N base calls
+conda activate cutadapt
+cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA --max-n 1 -o exercises/chipseq/chipseq_trimmed.fastq.gz tutorial/data/chipseq.fastq.gz
+
+# Run FastQC on the trimmed data
+conda activate fastqc
+fastqc -o exercises/chipseq exercises/chipseq/chipseq_trimmed.fastq.gz</code></pre>
+<pre><code>## Started analysis of chipseq.fastq.gz
+## Approx 5% complete for chipseq.fastq.gz
+## Approx 10% complete for chipseq.fastq.gz
+## Approx 15% complete for chipseq.fastq.gz
+## Approx 20% complete for chipseq.fastq.gz
+## Approx 25% complete for chipseq.fastq.gz
+## Approx 30% complete for chipseq.fastq.gz
+## Approx 35% complete for chipseq.fastq.gz
+## Approx 40% complete for chipseq.fastq.gz
+## Approx 45% complete for chipseq.fastq.gz
+## Approx 50% complete for chipseq.fastq.gz
+## Approx 55% complete for chipseq.fastq.gz
+## Approx 60% complete for chipseq.fastq.gz
+## Approx 65% complete for chipseq.fastq.gz
+## Approx 70% complete for chipseq.fastq.gz
+## Approx 75% complete for chipseq.fastq.gz
+## Approx 80% complete for chipseq.fastq.gz
+## Approx 85% complete for chipseq.fastq.gz
+## Approx 90% complete for chipseq.fastq.gz
+## Approx 95% complete for chipseq.fastq.gz
+## Approx 100% complete for chipseq.fastq.gz
+## Analysis complete for chipseq.fastq.gz
+## This is cutadapt 4.1 with Python 3.10.6
+## Command line parameters: -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA --max-n 1 -o exercises/chipseq/chipseq_trimmed.fastq.gz tutorial/data/chipseq.fastq.gz
+## Processing single-end reads on 1 core ...
+## Finished in 0.73 s (7 µs/read; 8.19 M reads/minute).
+## 
+## === Summary ===
+## 
+## Total reads processed:                 100,000
+## Reads with adapters:                     1,670 (1.7%)
+## 
+## == Read fate breakdown ==
+## Reads with too many N:                     640 (0.6%)
+## Reads written (passing filters):        99,360 (99.4%)
+## 
+## Total basepairs processed:     3,751,129 bp
+## Total written (filtered):      3,707,971 bp (98.8%)
+## 
+## === Adapter 1 ===
+## 
+## Sequence: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA; Type: regular 3&#39;; Length: 33; Trimmed: 1670 times
+## 
+## Minimum overlap: 3
+## No. of allowed errors:
+## 1-9 bp: 0; 10-19 bp: 1; 20-29 bp: 2; 30-33 bp: 3
+## 
+## Bases preceding removed adapters:
+##   A: 25.4%
+##   C: 15.5%
+##   G: 20.4%
+##   T: 12.3%
+##   none/other: 26.3%
+## 
+## Overview of removed sequences
+## length   count   expect  max.err error counts
+## 3    1041    1562.5  0   1041
+## 4    150 390.6   0   150
+## 5    32  97.7    0   32
+## 6    2   24.4    0   2
+## 9    1   0.4 0   0 1
+## 10   1   0.1 1   0 1
+## 37   5   0.0 3   0 1 4
+## 38   438 0.0 3   0 416 20 2
+## Started analysis of chipseq_trimmed.fastq.gz
+## Approx 5% complete for chipseq_trimmed.fastq.gz
+## Approx 10% complete for chipseq_trimmed.fastq.gz
+## Approx 15% complete for chipseq_trimmed.fastq.gz
+## Approx 20% complete for chipseq_trimmed.fastq.gz
+## Approx 25% complete for chipseq_trimmed.fastq.gz
+## Approx 30% complete for chipseq_trimmed.fastq.gz
+## Approx 35% complete for chipseq_trimmed.fastq.gz
+## Approx 40% complete for chipseq_trimmed.fastq.gz
+## Approx 45% complete for chipseq_trimmed.fastq.gz
+## Approx 50% complete for chipseq_trimmed.fastq.gz
+## Approx 55% complete for chipseq_trimmed.fastq.gz
+## Approx 60% complete for chipseq_trimmed.fastq.gz
+## Approx 65% complete for chipseq_trimmed.fastq.gz
+## Approx 70% complete for chipseq_trimmed.fastq.gz
+## Approx 75% complete for chipseq_trimmed.fastq.gz
+## Approx 80% complete for chipseq_trimmed.fastq.gz
+## Approx 85% complete for chipseq_trimmed.fastq.gz
+## Approx 90% complete for chipseq_trimmed.fastq.gz
+## Approx 95% complete for chipseq_trimmed.fastq.gz
+## Analysis complete for chipseq_trimmed.fastq.gz</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="rna-sequencing" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> RNA sequencing</h2>
+<blockquote>
+<p>RNA-Seq (named as an abbreviation of RNA sequencing) is a sequencing technique which uses next-generation sequencing (NGS) to reveal the presence and quantity of RNA in a biological sample at a given moment, analyzing the continuously changing cellular transcriptome.</p>
+</blockquote>
+<p>In the data directory is a file called `rnaseq.fastq.gz`` which contains sequencing data from an RNA-seq experiment. Use FastQC and Cutadapt to quality check and clean the data if necessary. Pay close attention to the ‘Per sequence GC content’ and ‘Overrepresented sequences’ modules. Can you clean the data so both of these modules pass? Should you?</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># This is an RNA-seq library.
+# Depending on the cell type and condition, the GC content of expressed genes might be very skewed.
+# The assumptions of the theoretical distribution do not hold for this particular type of data.
+# Additionally, it is not clear whether the over-represented sequences are from contamination.
+# In an RNA-seq library we expect to see thousands of copies of the same DNA fragment, because a particular gene might be highly expressed.
+# The over-represented sequences you observe actually come from a highly expressed gene in the library, not contamination.</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="atac-sequencing" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> ATAC sequencing</h2>
+<blockquote>
+<p>ATAC-seq (Assay for Transposase-Accessible Chromatin using sequencing) is a technique used in molecular biology to assess genome-wide chromatin accessibility. ATAC-seq identifies accessible DNA regions by probing open chromatin with hyperactive mutant Tn5 Transposase that inserts sequencing adapters into open regions of the genome.</p>
+</blockquote>
+<p>In the data directory is a file called <code>atacseq.fastq.gz</code> which contains sequencing data from an ATAC-seq experiment. Use FastQC and Cutadapt to quality check and clean the data if necessary. Pay close attention to the ‘Per base sequence content’ and ‘Overrepresented sequences’ modules. Can you clean the data so both of these modules pass? If not, think about why?</p>
+<div class="chunk-title-parent">
+<div class="chunk-title small">
+bash
+</div>
+<div class="blur-outer">
+<div class="blur-title">
+
+</div>
+<div class="blur-content">
+<pre class="bash"><code># Run FastQC on the raw data
+conda activate fastqc
+fastqc -o exercises/atacseq tutorial/data/atacseq.fastq.gz
+
+# Trim the Illumina TruSeq adapter sequence
+# Remove over represented sequences containing N base calls
+conda activate cutadapt
+cutadapt --max-n 1 -o exercises/atacseq/atacseq_trimmed.fastq.gz tutorial/data/atacseq.fastq.gz
+
+# Run FastQC on the trimmed data
+conda activate fastqc
+fastqc -o exercises/atacseq exercises/atacseq/chipseq_trimmed.fastq.gz
+
+# The &#39;Per base sequence content&#39; module fails because of the strange pattern at the beginning of the read.
+# This is not due to contamination or a probably with the library.
+# The ATAC-seq protocol uses a Tn5 transposase which inserts itself into regions of open DNA.
+# Those regions of open DNA are what go on to be sequenced.
+# The strange pattern you observe is due to a bias in the Tn5 transposase itself - it has a tendency to insert itself into regions of the DNA with a particular sequence composition.</code></pre>
+<pre><code>## Started analysis of atacseq.fastq.gz
+## Approx 5% complete for atacseq.fastq.gz
+## Approx 10% complete for atacseq.fastq.gz
+## Approx 15% complete for atacseq.fastq.gz
+## Approx 20% complete for atacseq.fastq.gz
+## Approx 25% complete for atacseq.fastq.gz
+## Approx 30% complete for atacseq.fastq.gz
+## Approx 35% complete for atacseq.fastq.gz
+## Approx 40% complete for atacseq.fastq.gz
+## Approx 45% complete for atacseq.fastq.gz
+## Approx 50% complete for atacseq.fastq.gz
+## Approx 55% complete for atacseq.fastq.gz
+## Approx 60% complete for atacseq.fastq.gz
+## Approx 65% complete for atacseq.fastq.gz
+## Approx 70% complete for atacseq.fastq.gz
+## Approx 75% complete for atacseq.fastq.gz
+## Approx 80% complete for atacseq.fastq.gz
+## Approx 85% complete for atacseq.fastq.gz
+## Approx 90% complete for atacseq.fastq.gz
+## Approx 95% complete for atacseq.fastq.gz
+## Approx 100% complete for atacseq.fastq.gz
+## Analysis complete for atacseq.fastq.gz
+## This is cutadapt 4.1 with Python 3.10.6
+## Command line parameters: --max-n 1 -o exercises/atacseq/atacseq_trimmed.fastq.gz tutorial/data/atacseq.fastq.gz
+## Processing single-end reads on 1 core ...
+## Finished in 0.87 s (9 µs/read; 6.86 M reads/minute).
+## 
+## === Summary ===
+## 
+## Total reads processed:                 100,000
+## 
+## == Read fate breakdown ==
+## Reads with too many N:                   1,784 (1.8%)
+## Reads written (passing filters):        98,216 (98.2%)
+## 
+## Total basepairs processed:     7,117,244 bp
+## Total written (filtered):      7,053,624 bp (99.1%)
+## Skipping &#39;exercises/atacseq/chipseq_trimmed.fastq.gz&#39; which didn&#39;t exist, or couldn&#39;t be read</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<footer class="footer">
+<div class="container footer-container">
+<div class="row">
+
+<div class="footer-left col-sm-6">
+<p class="small">
+<b>2022</b> • <a href="https://www.zifornd.com">Zifo</a>
+</p>
+</div>
+
+<div class="footer-right col-sm-6">
+<p>
+<span>
+  <span class="footericon" style="padding-right:4px; padding-left:4px">
+    <a href="https://www.zifornd.com">
+      <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 496 512"><path d="M248 8C111.03 8 0 119.03 0 256s111.03 248 248 248 248-111.03 248-248S384.97 8 248 8zm82.29 357.6c-3.9 3.88-7.99 7.95-11.31 11.28-2.99 3-5.1 6.7-6.17 10.71-1.51 5.66-2.73 11.38-4.77 16.87l-17.39 46.85c-13.76 3-28 4.69-42.65 4.69v-27.38c1.69-12.62-7.64-36.26-22.63-51.25-6-6-9.37-14.14-9.37-22.63v-32.01c0-11.64-6.27-22.34-16.46-27.97-14.37-7.95-34.81-19.06-48.81-26.11-11.48-5.78-22.1-13.14-31.65-21.75l-.8-.72a114.792 114.792 0 0 1-18.06-20.74c-9.38-13.77-24.66-36.42-34.59-51.14 20.47-45.5 57.36-82.04 103.2-101.89l24.01 12.01C203.48 89.74 216 82.01 216 70.11v-11.3c7.99-1.29 16.12-2.11 24.39-2.42l28.3 28.3c6.25 6.25 6.25 16.38 0 22.63L264 112l-10.34 10.34c-3.12 3.12-3.12 8.19 0 11.31l4.69 4.69c3.12 3.12 3.12 8.19 0 11.31l-8 8a8.008 8.008 0 0 1-5.66 2.34h-8.99c-2.08 0-4.08.81-5.58 2.27l-9.92 9.65a8.008 8.008 0 0 0-1.58 9.31l15.59 31.19c2.66 5.32-1.21 11.58-7.15 11.58h-5.64c-1.93 0-3.79-.7-5.24-1.96l-9.28-8.06a16.017 16.017 0 0 0-15.55-3.1l-31.17 10.39a11.95 11.95 0 0 0-8.17 11.34c0 4.53 2.56 8.66 6.61 10.69l11.08 5.54c9.41 4.71 19.79 7.16 30.31 7.16s22.59 27.29 32 32h66.75c8.49 0 16.62 3.37 22.63 9.37l13.69 13.69a30.503 30.503 0 0 1 8.93 21.57 46.536 46.536 0 0 1-13.72 32.98zM417 274.25c-5.79-1.45-10.84-5-14.15-9.97l-17.98-26.97a23.97 23.97 0 0 1 0-26.62l19.59-29.38c2.32-3.47 5.5-6.29 9.24-8.15l12.98-6.49C440.2 193.59 448 223.87 448 256c0 8.67-.74 17.16-1.82 25.54L417 274.25z"></path>
+      </svg>
+    </a>
+    </span>
+    <span class="footericon" style="padding-right:4px; padding-left:4px">
+      <a href="https://twitter.com/zifornd"><svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path>
+    </svg>
+    </a>
+    </span>
+    <span class="footericon" style="padding-left:4px">
+      <a href="https://www.linkedin.com/company/zifo-technologies">
+        <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path>
+        </svg>
+    </a>
+    </span>
+  </span>
+</p>
+</div>
+
+</div>
+</div>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
