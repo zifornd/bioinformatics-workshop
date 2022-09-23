@@ -5,7 +5,7 @@ institute: Zifo RnD Solutions
 output:
   xaringan::moon_reader:
     encoding: 'UTF-8'
-    self_contained: false
+    self_contained: true
     chakra: 'assets/remark-latest.min.js'
     css: 'assets/slide.css'
     lib_dir: libs

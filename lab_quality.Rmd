@@ -47,7 +47,7 @@ mkdir tutorial
 Download the tutorial and exercise data:
 
 ```{bash}
-curl https://raw.githubusercontent.com/zifornd/bioinformatics-workshop/main/data/quality/data.tar.gz --output tutorial/data.tar.gz
+curl https://media.githubusercontent.com/media/zifornd/bioinformatics-workshop/main/data/quality/data.tar.gz --output tutorial/data.tar.gz
 ```
 
 Extract the archive file into the tutorial directory:

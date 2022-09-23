@@ -8,7 +8,7 @@ title: "&nbsp;"
 
 <div class="col-sm-8" style="text-align:left;vertical-align:middle;">
 <p class="small" style="color:#bdbdbd;">
-<b>2022</b> • [Zifo](https://www.zifornd.com)
+<b>2021</b> • [Zifo](https://www.zifornd.com) • [Bioinformatics](https://www.zifornd.com/category/omics-bioinformatics)
 </p>
 </div>
 

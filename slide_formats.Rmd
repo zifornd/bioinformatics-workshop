@@ -5,7 +5,7 @@ institute: Zifo RnD Solutions
 output:
   xaringan::moon_reader:
     encoding: 'UTF-8'
-    self_contained: false
+    self_contained: true
     chakra: 'assets/remark-latest.min.js'
     css: 'assets/slide.css'
     lib_dir: libs
@@ -550,19 +550,22 @@ knitr::include_url("https://bioinf.shenwei.me/seqkit/", height = "500px")
 
 * Produce an overview of FASTA/Q files:
 
-```{bash}
+```{bash, echo = -1}
+conda activate seqkit
 seqkit stats data/formats/virus.fasta data/formats/reads.fastq
 ```
 
 * Get GC content of every sequence in FASTA/Q file:
 
-```{bash}
+```{bash, echo = -1}
+conda activate seqkit
 seqkit fx2tab --name --only-id --gc data/formats/virus.fasta
 ```
 
 * Locate motif in FASTA/Q sequences:
 
-```{bash}
+```{bash, echo = -1}
+conda activate seqkit
 seqkit locate --pattern "AACGCA" data/formats/reads.fastq
 ```
 

@@ -374,5 +374,14 @@ conda activate sra-tools
 fastq-dump --minSpotId 100 --maxSpotId 500 --outdir exercises/ex3/SRR013564 exercises/ex3/SRR013564/SRR013564.sra
 ```
 
+<!-- Clean conda and files -->
+
+```{bash, include = FALSE}
+rm -rf tutorial
+rm -rf exercises
+conda remove --name sra-tools --all --yes
+conda remove --name entrez-direct --all --yes
+```
+
 ```{r,child="assets/footer-lab.Rmd"}
 ```

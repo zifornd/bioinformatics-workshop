@@ -1,13 +1,12 @@
 ---
 title: "RNA sequencing"
-subtitle: "RNA-seq data analysis"
 author: "`r paste0('<b>James Ashmore</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
 institute: Zifo RnD Solutions
 keywords: rnaseq
 output:
   xaringan::moon_reader:
     encoding: 'UTF-8'
-    self_contained: false
+    self_contained: true
     chakra: 'assets/remark-latest.min.js'
     css: 'assets/slide.css'
     lib_dir: libs

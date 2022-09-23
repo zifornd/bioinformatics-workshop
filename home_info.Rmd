@@ -19,10 +19,10 @@ library(leaflet)
 loc <- yaml::read_yaml("_site.yml")$location
 
 if(loc=="chennai") {
-  dfr <- data.frame(venue_lat=55.713394,
-                    venue_lon=13.206628,
-                    venue_address="<b>Department of Biology</b>,Building D, Room Retina D227, Sölvegatan 35,Lund Sweden",
-                    description="For Lund city buses, regional buses and regional trains, [click here](https://www.skanetrafiken.se/). You can buy a ticket at the central station in Lund or at the regional bus (card only). You can also use the app [Skånetrafiken](https://www.skanetrafiken.se/biljetter/app2/)",
+  dfr <- data.frame(venue_lat=13.021999562932578,
+                    venue_lon=80.17598320563087,
+                    venue_address="2nd Floor, Block 8, 1/124, Mount Poonamallee Rd, Manapakkam, Chennai, Tamil Nadu 600089, India",
+                    description="The workshop will be hosted in one of the following conference rooms: Block 2 (1st or 4th floor), Block 8 (2nd floor)",
                     stringsAsFactors=F)
 }
 ```
@@ -39,7 +39,7 @@ if(loc!="online") {
 
 ```{r,eval=TRUE,echo=FALSE,chunk.title=NULL,results="asis"}
 if(loc=="online") {
-  cat("The workshop is online only. Zoom and Slack links are sent to participants by email.")
+  cat("The workshop is online only. Microsoft Teams links are sent to participants by email.")
 }
 ```
 
@@ -52,8 +52,8 @@ if(loc!="online") {
 
 ## Contact
 
-This workshop is run by the **National Bioinformatics Infrastructure Sweden (NBIS)**. NBIS is a platform at SciLifeLab.
+This workshop is run by the Bioinformatics team at Zifo.
 
-If you would like to get in touch with us regarding this workshop, please contact us at **education [at] nbis.se**.
+If you would like to get in touch with us regarding this workshop, please contact us at **bioinformatics [at] zifornd.com**.
 
 ***

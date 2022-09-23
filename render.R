@@ -1,11 +1,6 @@
 library(rmarkdown)
 
-render("assets/footer-lab.Rmd")
-render("assets/footer-slide.Rmd")
-render("assets/header-lab.Rmd")
-render("assets/header-slide.Rmd")
-
-
+render("index.Rmd")
 render("home_content.Rmd")
 render("home_info.Rmd")
 render("home_precourse.Rmd")

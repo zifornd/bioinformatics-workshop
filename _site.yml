@@ -1,8 +1,6 @@
-name: bioinformatics
-# output directory used on gh-pages branch. format: YYMM
-output_dir: 2210
-# location options are linkoping, lund, umea, uppsala or online
-location: uppsala
+name: bioinformatics-workshop
+output_dir: _site
+location: chennai
 assistants:
  - "JA: James Ashmore"
  - "BS: Benjamin Southgate"
@@ -45,7 +43,7 @@ output:
     number_sections: true
     df_print: default
     code_folding: none
-    self_contained: false
+    self_contained: true
     keep_md: false
     encoding: 'UTF-8'
     css: "assets/lab.css"

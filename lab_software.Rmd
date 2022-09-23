@@ -387,5 +387,19 @@ Finally, delete the `bio-quant` environment and everything in it:
 conda remove --yes --name bio-quant --all
 ```
 
+<!-- Clean up conda and files -->
+
+```{bash, include = FALSE}
+rm -rf $HOME/miniconda-installer.sh
+rm -rf $HOME/miniconda
+
+conda remove --name bioinfo --all --yes
+conda remove --name bioinfo-copy --all --yes
+conda remove --name pyenv --all --yes
+conda remove --name bio-qc --all --yes
+conda remove --name bio-align --all --yes
+conda remove --name bio-quant2 --all --yes
+```
+
 ```{r,child="assets/footer-lab.Rmd"}
 ```

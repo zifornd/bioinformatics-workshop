@@ -9,7 +9,7 @@ output:
 ```{r,child="assets/header-lab.Rmd"}
 ```
 
-This workshop is aimed towards biologists, researchers, computer scientists or data analysts planning to run, analyse and interpret biolical data. Basic knowledge of working on the Unix/Linux command line is expected.
+This workshop is aimed towards biologists, researchers, computer scientists or data analysts planning to run, analyse and interpret bioinformatics data. Basic knowledge of working on the Unix/Linux command line is expected.
 
 # &nbsp; {.tabset .tabset-fade}
 
@@ -41,62 +41,62 @@ If you need to transfer data between a remote cluster and your computer, you can
 For all users, if you prefer a GUI to upload and download files from a remote cluster, we recommend installing [FileZilla](https://filezilla-project.org/).
 </div>
 
-### Tools
+<!-- ### Tools -->
 
-[![](data/common/r.png)](https://cloud.r-project.org/)
+<!-- [![](data/common/r.png)](https://cloud.r-project.org/) -->
 
-<i class="fas fa-chevron-circle-right"></i> **Install R statistical software** from [r-project.org](https://cloud.r-project.org/). If you have an old version of R and you do not use it, uninstall it and then install a newer version. Make sure you have one of the recent versions of R. One version older than the latest version is recommended. This is because all packages may not be updated for the very latest version of R. For Windows users, it is recommended that you DO NOT install to `C:\Program Files\R\`. Instead, install to `C:\R\`.
+<!-- <i class="fas fa-chevron-circle-right"></i> **Install R statistical software** from [r-project.org](https://cloud.r-project.org/). If you have an old version of R and you do not use it, uninstall it and then install a newer version. Make sure you have one of the recent versions of R. One version older than the latest version is recommended. This is because all packages may not be updated for the very latest version of R. For Windows users, it is recommended that you DO NOT install to `C:\Program Files\R\`. Instead, install to `C:\R\`. -->
 
-[![](data/common/rstudio.png)](https://www.rstudio.com/products/rstudio/download/)
+<!-- [![](data/common/rstudio.png)](https://www.rstudio.com/products/rstudio/download/) -->
 
-<i class="fas fa-chevron-circle-right"></i> **Install [RStudio](https://www.rstudio.com/products/rstudio/download/)**. RStudio provides you with tools like code editor with highlighting, project management, version control, package building, debugger, profiler and more.
+<!-- <i class="fas fa-chevron-circle-right"></i> **Install [RStudio](https://www.rstudio.com/products/rstudio/download/)**. RStudio provides you with tools like code editor with highlighting, project management, version control, package building, debugger, profiler and more. -->
 
-<i class="fas fa-chevron-circle-right"></i> **Additional R packages** used in the workshop exercises (if any) are listed below. It is recommended that you install this in advance.
+<!-- <i class="fas fa-chevron-circle-right"></i> **Additional R packages** used in the workshop exercises (if any) are listed below. It is recommended that you install this in advance. -->
 
-For Linux and Mac users, you may have to install some extra OS specific libraries before installing the R packages. Pick the packages as needed based on your system below.
+<!-- For Linux and Mac users, you may have to install some extra OS specific libraries before installing the R packages. Pick the packages as needed based on your system below. -->
 
-- **libcurl**
+<!-- - **libcurl** -->
 
-> deb: libcurl4-openssl-dev (Debian, Ubuntu, etc)  
-> rpm: libcurl-devel (Fedora, CentOS, RHEL)  
-> csw: libcurl_dev (Solaris)  
+<!-- > deb: libcurl4-openssl-dev (Debian, Ubuntu, etc)   -->
+<!-- > rpm: libcurl-devel (Fedora, CentOS, RHEL)   -->
+<!-- > csw: libcurl_dev (Solaris)   -->
 
-- **libssl**
+<!-- - **libssl** -->
 
-> deb: libssl-dev (Debian, Ubuntu, etc)  
-> rpm: openssl-devel (Fedora, CentOS, RHEL)  
-> csw: libssl_dev (Solaris)  
-> brew: openssl@1.1 (Mac OSX)  
+<!-- > deb: libssl-dev (Debian, Ubuntu, etc)   -->
+<!-- > rpm: openssl-devel (Fedora, CentOS, RHEL)   -->
+<!-- > csw: libssl_dev (Solaris)   -->
+<!-- > brew: openssl@1.1 (Mac OSX)   -->
 
-- **libxml2**
+<!-- - **libxml2** -->
 
-> deb: libxml2-dev (Debian, Ubuntu, etc)  
-> rpm: libxml2-devel (Fedora, CentOS, RHEL)  
-> csw: libxml2_dev (Solaris)  
+<!-- > deb: libxml2-dev (Debian, Ubuntu, etc)   -->
+<!-- > rpm: libxml2-devel (Fedora, CentOS, RHEL)   -->
+<!-- > csw: libxml2_dev (Solaris)   -->
 
-Install the R packages. Simply copy and paste the code into R.
+<!-- Install the R packages. Simply copy and paste the code into R. -->
 
-```{r,eval=TRUE,chunk.title=NULL,echo=FALSE,comment="",class.output="r"}
-# this code block reads package names from '_site.yml' and prints them as installation instruction.
+<!-- ```{r,eval=TRUE,chunk.title=NULL,echo=FALSE,comment="",class.output="r"} -->
+<!-- # this code block reads package names from '_site.yml' and prints them as installation instruction. -->
 
-pkg <- yaml::read_yaml("_site.yml")
+<!-- pkg <- yaml::read_yaml("_site.yml") -->
 
-if(!is.null(pkg$packages$packages_cran_student)) {
- cat("# install from cran\n")
- cat(paste0("install.packages(c('",paste(pkg$packages$packages_cran_student,sep="",collapse="','"),"'))"))
- cat("\n")
-}
+<!-- if(!is.null(pkg$packages$packages_cran_student)) { -->
+<!--  cat("# install from cran\n") -->
+<!--  cat(paste0("install.packages(c('",paste(pkg$packages$packages_cran_student,sep="",collapse="','"),"'))")) -->
+<!--  cat("\n") -->
+<!-- } -->
 
-if(!is.null(pkg$packages$packages_bioc_student)) {
- cat("# install from bioconductor\n")
- cat(paste0("BiocManager::install(c('",paste(pkg$packages$packages_bioc_student,sep="",collapse="','"),"'))"))
-}
+<!-- if(!is.null(pkg$packages$packages_bioc_student)) { -->
+<!--  cat("# install from bioconductor\n") -->
+<!--  cat(paste0("BiocManager::install(c('",paste(pkg$packages$packages_bioc_student,sep="",collapse="','"),"'))")) -->
+<!-- } -->
 
-if(!is.null(pkg$packages$packages_github_student)) {
- cat("# install from github\n")
- cat(paste0("devtools::install_github(c('",paste(pkg$packages$packages_github_student,sep="",collapse="','"),"'))"))
-}
-```
+<!-- if(!is.null(pkg$packages$packages_github_student)) { -->
+<!--  cat("# install from github\n") -->
+<!--  cat(paste0("devtools::install_github(c('",paste(pkg$packages$packages_github_student,sep="",collapse="','"),"'))")) -->
+<!-- } -->
+<!-- ``` -->
 
 ***
 
