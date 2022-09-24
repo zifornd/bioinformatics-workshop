@@ -9,7 +9,10 @@ assistants:
  - "HK: Haris Khan"
  - "MK: Mohamed Kassam"
  - "RS: Ragavi Shanmugam"
- - "RN: Radesh Nattamai Malli Pooranachandhiran"
+ - "RP: Radesh Nattamai Malli Pooranachandhiran"
+ - "RM: Ratnesh Bhai Mehta"
+ - "LM: Lathika Madhan Mohan"
+
 
 favicon: assets/favicon.png
 exclude: ["docs","README.md","schedule.csv","LICENSE","LICENSE.md","scripts","tmprepo"]
