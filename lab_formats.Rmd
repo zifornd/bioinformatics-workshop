@@ -541,3 +541,14 @@ conda activate seqkit
 seqkit grep --pattern "1" tutorial/data/leishmania/Leishmania_major.ASM272v2.dna.toplevel.fa | seqkit locate --bed --pattern "NGRRT|NGRRN" --degenerate > exercises/leishmania/cas9-sites.bed
 seqkit subseq --bed exercises/leishmania/cas9-sites.bed --only-flank --up-stream 20 tutorial/data/leishmania/Leishmania_major.ASM272v2.dna.toplevel.fa | seqkit watch --fields GC --img exercises/leishmania/cas9-sites-gc.png
 ``` 
+
+<!-- Clean up conda and files -->
+
+```{bash, include = FALSE}
+rm -rf tutorial
+rm -rf exercises
+conda remove --name seqkit --all --yes
+```
+
+```{r,child="assets/footer-lab.Rmd"}
+```

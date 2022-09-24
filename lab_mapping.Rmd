@@ -7,10 +7,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 ```
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(
-  chunk.title = TRUE,
-  engine.opts = list(bash = "-l")
-)
+knitr::opts_chunk$set(chunk.title = TRUE, engine.opts = list(bash = "-l"))
 ```
 
 # Introduction
@@ -467,4 +464,15 @@ grep -m 1 "mapped" exercises/dengue/*_bwa_flagstat.txt
 ```{bash, blur = TRUE}
 # limit to first match (-m 1)
 grep -m 1 "mapped" exercises/dengue/*_bowtie2_flagstat.txt
+```
+
+<!-- Clean up conda and files -->
+
+```{bash, include = FALSE}
+rm -rf tutorial
+rm -rf exercises
+conda remove --name alignment --all --yes
+```
+
+```{r,child="assets/footer-lab.Rmd"}
 ```

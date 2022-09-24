@@ -302,3 +302,13 @@ snapshot exercises/expression/snapshot.png
 
 exit
 ```
+
+<!-- Clean up conda and files -->
+
+```{bash, include = FALSE}
+rm -rf tutorial
+conda remove --name igvtools --all --yes
+```
+
+```{r,child="assets/footer-lab.Rmd"}
+```

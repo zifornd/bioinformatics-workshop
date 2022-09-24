@@ -572,3 +572,14 @@ done < exercises/tuberculosis/runids.txt
 conda activate alignment
 samtools depth -H exercises/tuberculosis/*.PROPER_PAIR.bam > exercises/tuberculosis/depth.txt
 ```
+
+<!-- Clean up conda and files -->
+
+```{bash, include = FALSE}
+rm -rf tutorial
+rm -rf exercises
+conda remove --name alignment --all --yes
+```
+
+```{r,child="assets/footer-lab.Rmd"}
+```

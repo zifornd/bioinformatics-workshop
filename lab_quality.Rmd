@@ -371,3 +371,15 @@ fastqc -o exercises/atacseq exercises/atacseq/chipseq_trimmed.fastq.gz
 # Those regions of open DNA are what go on to be sequenced.
 # The strange pattern you observe is due to a bias in the Tn5 transposase itself - it has a tendency to insert itself into regions of the DNA with a particular sequence composition.
 ```
+
+<!-- Clean up conda and files -->
+
+```{bash, include = FALSE}
+rm -rf tutorial
+rm -rf exercises
+conda remove --name fastqc --all --yes
+conda remove --name cutadapt --all --yes
+```
+
+```{r,child="assets/footer-lab.Rmd"}
+```
