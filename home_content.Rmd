@@ -29,7 +29,7 @@ command
 
 1.  [Introduction to Bioinformatics](slide_introduction.html)
 2.  [Software Installation](slide_software.html)
-3.  [Next-Generation Sequencing](slide_sequencing.html)
+3.  [Next-Generation Sequencing](slide_sequencing.pdf)
 4.  [Data Sources](slide_sources.html)
 5.  [Data Formats](slide_formats.html)
 6.  [Data Visualization](slide_visualization.html)
