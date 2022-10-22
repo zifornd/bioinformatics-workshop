@@ -1,1 +1,3 @@
-# Bioinformatics Workshop [![gh-actions-build-status](https://github.com/zifornd/bioinformatics-workshop/workflows/build/badge.svg)](https://github.com/zifornd/bioinformatics-workshop/actions?workflow=build)
+# Bioinformatics Workshop
+
+![badge](https://github.com/zifornd/bioinformatics-workshop/actions/workflows/main.yml/badge.svg)
