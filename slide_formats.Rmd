@@ -30,14 +30,18 @@ count: false
 knitr::opts_chunk$set(
   echo = FALSE, 
   engine.opts = list(bash = "-l"), 
-  fig.align = "center", 
-  python.reticulate = FALSE
+  fig.align = "center"
 )
 ```
 
 ```{r, include = FALSE}
 library(knitr)
 library(kableExtra)
+```
+
+```{r, include = FALSE}
+library(reticulate)
+use_python("/opt/miniconda3/bin/python")
 ```
 
 ---
