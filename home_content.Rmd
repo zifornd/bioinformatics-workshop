@@ -38,6 +38,7 @@ command
 9.  [Read Mapping](slide_mapping.html)
 10. [SAM Format](slide_sam.html)
 11. [RNA-seq](slide_rnaseq.html)
+12. [Metagenomics](slide_metagenomics.pdf)
 
 # Labs
 
