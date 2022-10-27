@@ -1,0 +1,33 @@
+Type,Name,Background correction       ,Normalization      ,Summarization     ,DE analysis      ,GeneSet Enrichment
+R Package,affy,X,X,X,,
+,affyio,,,,X,
+,beadarray,X,,,,
+,clusterProfiler,,,,,X
+,gcrma,X,,,,
+,genefilter,,,,,X
+,GEOquery,,,,,X
+,Gostat,,,,,X
+,limma,X,X,X,X,
+,marray,X,X,,,
+,methylumi,X,X,X,,
+,minfi,X,X,X,X,
+,oligo,X,X,X,,
+,ReactomePA,,,,,X
+,siggens,,,,X,
+,simpleaffy,X,X,X,X,
+,sva,X,,,,
+,topGO,,,,,X
+,vsn,X,X,X,,
+SOFTWARE,BASE,X,X,X,,
+,Chipster,X,X,X,X,X
+,EzArray,X,X,X,X,
+,Geoss,,,,X,
+,MARS,X,X,X,X,X
+,CARMAWeb,X,X,X,X,X
+,Mayday,X,X,X,X,X
+,TM4,,,X,X,X
+LICENSE,Genedata Expressionist,X,X,X,X,X
+,Partek,X,X,X,X,X
+,GeneSpring GX,X,X,X,X,X
+,Geospiza,X,X,X,X,X
+,GenomeStudio ,X,X,X,X,X

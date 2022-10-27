@@ -39,6 +39,7 @@ command
 10. [SAM Format](slide_sam.html)
 11. [RNA-seq](slide_rnaseq.html)
 12. [Metagenomics](slide_metagenomics.pdf)
+13. [Microarray](slide_microarray.html)
 
 # Labs
 

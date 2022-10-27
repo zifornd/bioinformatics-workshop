@@ -17,6 +17,7 @@ render("slide_alignment.Rmd", "xaringan::moon_reader")
 render("slide_mapping.Rmd", "xaringan::moon_reader")
 render("slide_sam.Rmd", "xaringan::moon_reader")
 render("slide_rnaseq.Rmd", "xaringan::moon_reader")
+render("slide_microarray.Rmd", "xaringan::moon_reader")
 
 render("lab_software.Rmd")
 render("lab_sequencing.Rmd")
