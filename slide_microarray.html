@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Valentino Ruggieri • 27-Oct-2022" />
+
+
+<title>Introduction to Microarray Analysis</title>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link id="font-awesome-1-attachment" rel="attachment" href="site_libs/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="assets/lab.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+#TOC {
+  display: none !important;
+}
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img src="assets/logo.svg" id="logo" style="height:20px;margin:0;"/></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="home_schedule.html">Schedule</a>
+</li>
+<li>
+  <a href="home_content.html">Content</a>
+</li>
+<li>
+  <a href="home_precourse.html">Precourse</a>
+</li>
+<li>
+  <a href="home_info.html">Info</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Introduction to Microarray Analysis</h1>
+<h4 class="author"><b>Valentino Ruggieri</b> • 27-Oct-2022</h4>
+
+</div>
+
+
+<p>exclude: true
+count: false</p>
+<p><link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;subset=latin-ext" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"></p>
+<!-- ------------ Only edit title, subtitle & author above this ------------ -->
+<hr />
+<div id="background" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Background</h1>
+<div id="what-is-a-microarray" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> What is a Microarray?</h2>
+<p>At the most general level, a microarray is a flat surface on which one molecule interacts with another. Generally, a microarray is a glass or plastic slide or a bead that has a piece of DNA or cDNA (an oligonucleotide or oligo) attached to it. For genomic resequencing, such as genotyping, the oligos will be pieces of DNA; for gene expression it would be cDNA derived from the transcripts. Location and signal produced provide characteristics about the interacting partners.</p>
+<p>Probe-target hybridization is usually detected and quantified by detection of fluorophore-, silver-, or chemiluminescence-labeled targets to determine relative abundance of nucleic acid sequences in the target</p>
+<p><strong>Probe (or reporters or oligos)</strong>: relatively short sequence of DNA fixed to the surface</p>
+<p><strong>Target</strong>: the sequence entity that we are measuring (typically labeled)</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-4"></span>
+<img src="data/microarray/fig1.png" alt="Microarray chip overview  (IMage from https://learn.genetics.utah.edu/content/labs/microarray/)" width="50%" />
+<p class="caption">
+Figure 1.1: Microarray chip overview (IMage from <a href="https://learn.genetics.utah.edu/content/labs/microarray/" class="uri">https://learn.genetics.utah.edu/content/labs/microarray/</a>)
+</p>
+</div>
+<hr />
+</div>
+</div>
+<div id="main-purposes-and-applications-of-microarrays" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Main purposes and applications of microarrays</h1>
+<ul>
+<li><p>Gene expression (e.g., assess the effects of certain treatments, diseases, and developmental stages on gene expression)</p></li>
+<li><p>Biomarker discovery (e.g., identify genes that are differentially regulated in a state)</p></li>
+<li><p>Regulation patterns (e.g., identify co–regulated genes network)</p></li>
+<li><p>Drug discovery (e.g., identify genes that are regulated in response to drug treatment)</p></li>
+<li><p>Splice variants (e.g., detection of different splicing isoforms, exon splicing events)</p></li>
+<li><p>Single nucleotide polymorphisms (SNPs) (Identifying variants among alleles within or between populations)</p></li>
+<li><p>To detect the presence of certain pathogens (e.g., check IDs of organisms in food or other matrices)</p></li>
+<li><p>Chromatin immunoprecipitation on Chip (determination of protein binding site occupancy)</p></li>
+</ul>
+<hr />
+</div>
+<div id="quantitative-measure-of-mrna" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Quantitative measure of mRNA</h1>
+<div id="gene-expression-microarray" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Gene expression microarray</h2>
+<p>The set of expressed genes is one of the main factor determining the phenotype of a particular cell.</p>
+<p>Gene expression microarrays are powerful tools that help scientists study cellular genetics. Researchers study gene expression by measuring the amount of RNA copies a gene produces.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-5"></span>
+<img src="data/microarray/fig2.png" alt="DNA-&gt;mRNA-&gt;protein (Image from: https://www.healio.com/hematology-oncology/learn-genomics/)" width="75%" />
+<p class="caption">
+Figure 3.1: DNA-&gt;mRNA-&gt;protein (Image from: <a href="https://www.healio.com/hematology-oncology/learn-genomics/" class="uri">https://www.healio.com/hematology-oncology/learn-genomics/</a>)
+</p>
+</div>
+<hr />
+</div>
+</div>
+<div id="cells-and-gene-expression" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Cells and Gene expression</h1>
+<p>The repertoire of RNA produced by cells (e.g cancer cell vs its normal counterpart) might differ significantly.</p>
+<p>Measure of expression can be useful to</p>
+<ul>
+<li>Identify genes expressed in different cell types (e.g. Liver vs Kidney)</li>
+<li>Understand how expression levels change in different developmental stages (embryo vs adult)</li>
+<li>Understand how expression levels change in disease development (cancerous vs non-cancerous)</li>
+<li>Understand how groups of genes inter-relate (gene-gene interactions)</li>
+<li>Identify cellular processes that genes participate in (structure, repair, metabolism, replication, etc)</li>
+</ul>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-6"></span>
+<img src="data/microarray/fig3.png" alt="As shown in figure, gene B is expressed at high level in cancer cell when compared to normal cell by contrast gene A is not expressed at all. An active gene producing a lot of RNA must be important for that specific cell type. Studying gene expression can help with understanding of cell function and lead to treatment of diseases." width="50%" />
+<p class="caption">
+Figure 4.1: As shown in figure, gene B is expressed at high level in cancer cell when compared to normal cell by contrast gene A is not expressed at all. An active gene producing a lot of RNA must be important for that specific cell type. Studying gene expression can help with understanding of cell function and lead to treatment of diseases.
+</p>
+</div>
+<hr />
+</div>
+<div id="steps-to-analyze-a-gene-expression-microarray" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Steps to analyze a gene expression microarray</h1>
+<ul>
+<li><p>Hybridization</p></li>
+<li><p>Data Acquisition</p></li>
+<li><p>Data-preprocessing</p></li>
+<li><p>Differential expression analysis</p></li>
+<li><p>Functional Annotation</p></li>
+<li><p>Downstream analysis</p></li>
+</ul>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-7"></span>
+<img src="data/microarray/fig4.png" alt="Microarray workflow" width="80%" />
+<p class="caption">
+Figure 5.1: Microarray workflow
+</p>
+</div>
+<hr />
+</div>
+<div id="from-sample-to-data" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> From sample to data</h1>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-8"></span>
+<img src="data/microarray/fig5.png" alt="Main steps for microarray preparation" width="110%" />
+<p class="caption">
+Figure 6.1: Main steps for microarray preparation
+</p>
+</div>
+<hr />
+</div>
+<div id="affymetrix-data-file-formats" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Affymetrix Data file formats</h1>
+<p>Affymetrix GeneChips are scanned in a scanner, and the initial quantification of features is performed using associated software. The software produces numerous files.</p>
+<ul>
+<li>EXP Contains basic information about the experiment.</li>
+<li>DAT Contains the raw image.</li>
+<li>CEL Contains features Quantifications.</li>
+<li>IDF Contains top level information about the experiment including title, description, protocols, etc.</li>
+<li>SDRF Contains essential information on the experimental samples, e.g. the experimental group(s) they belong to.</li>
+</ul>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-9"></span>
+<img src="data/microarray/fig6.png" alt="Main format files coming from microarray analysis" width="100%" />
+<p class="caption">
+Figure 7.1: Main format files coming from microarray analysis
+</p>
+</div>
+<hr />
+</div>
+<div id="bioconductor-expressionset" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> Bioconductor ExpressionSet</h1>
+<p>Genomic data can be very complex, usually consisting of a number of different components, e.g. information on the experimental samples, annotation of genomic features measured as well as the experimental data itself. In Bioconductor, the approach is taken that these components should be stored in a single structure to easily manage the data.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-10"></span>
+<img src="data/microarray/fig7.png" alt="Structure of ExpressionSet class" width="85%" />
+<p class="caption">
+Figure 8.1: Structure of ExpressionSet class
+</p>
+</div>
+<hr />
+</div>
+<div id="quality-control-of-the-raw-data" class="section level1" number="9">
+<h1><span class="header-section-number">9</span> Quality control of the raw data</h1>
+<p>The first step after the initial data import is the quality control of the data. Here we check for outliers and try to see whether the data clusters as expected, e.g. by the experimental conditions.</p>
+<p><b>Possible source of problem:</b></p>
+<ul>
+<li>tissue contamination</li>
+<li>RNA degradation</li>
+<li>amplification efficiency</li>
+<li>reverse transcription efficiency</li>
+<li>hybridization efficiency and specificity</li>
+<li>clone identification and mapping</li>
+<li>PCR yield, contamination</li>
+<li>spotting efficiency</li>
+<li>DNA support binding</li>
+<li>other array manufacturing related issues</li>
+<li>image segmentation</li>
+<li>signal quantification</li>
+</ul>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-11"></span>
+<img src="data/microarray/fig8.png" alt="On left side: Heatmap of the distances between arrays. Patterns in this plot can indicate clustering of the arrays either because of intended biological or unintended experimental factors (batch effects). On right side: bar chart highlighting the outlier detection." width="100%" />
+<p class="caption">
+Figure 9.1: On left side: Heatmap of the distances between arrays. Patterns in this plot can indicate clustering of the arrays either because of intended biological or unintended experimental factors (batch effects). On right side: bar chart highlighting the outlier detection.
+</p>
+</div>
+<hr />
+</div>
+<div id="background-adjustment-calibration-summarization" class="section level1" number="10">
+<h1><span class="header-section-number">10</span> Background adjustment, calibration, summarization</h1>
+<p><b>Background adjustment</b></p>
+<p>After the initial import and quality assessment, the next step in processing of microarray data is background adjustment. This is essential because a proportion of the measured probe intensities are due to non-specific hybridization and the noise in the optical detection system. Therefore, observed intensities need to be adjusted to give accurate measurements of specific hybridization.</p>
+<p><b>Across-array normalization (calibration)</b></p>
+<p>Normalization across arrays is needed in order to be able to compare measurements from different array hybridizations due to many obscuring sources of variation. These include different efficiencies of reverse transcription, labeling or hybridization reactions, physical problems with the arrays, reagent batch effects, and laboratory conditions.</p>
+<p><strong>Summarization</strong></p>
+<p>After normalization, summarization is necessary to be done because transcripts are generally represented by multiple probes, that are mapped in multiple locations on the array. For each gene, the background-adjusted and normalized intensities of all probes need to be summarized into one quantity that estimates an amount proportional to the amount of RNA transcript.</p>
+<hr />
+</div>
+<div id="background-adjustment-calibration" class="section level1" number="11">
+<h1><span class="header-section-number">11</span> Background adjustment, calibration</h1>
+<div id="some-mathematical-background-on-normalization-calibration-and-background-correction." class="section level2" number="11.1">
+<h2><span class="header-section-number">11.1</span> Some mathematical background on normalization (calibration) and background correction.</h2>
+<p>A generic model for the value of the intensity Y of a single probe on a microarray is given by</p>
+<pre><code>                        Y = B + α · S
+                        </code></pre>
+<p>where B is a random quantity due to background noise, usually composed of optical effects and non-specific binding, ‘α’ is a gain factor, and ‘S’ is the amount of measured specific binding. The signal ‘S’ is considered a random variable as well and accounts for measurement error and probe effects. The measurement error is typically assumed to be multiplicative so we can write:</p>
+<pre><code>                      log(S) = θ + φ + ε
+                      </code></pre>
+<p>Here ‘θ’ represents the logarithm of the true abundance, ‘φ’ is a probe-specific effect, and ‘ε’ accounts for the nonspecific error. This is the additive-multiplicative-error model for microarray data used by RMA and also the vsn algorithm. The algorithms differ in the way that ‘B’ is removed and an estimate of ‘θ’ is obtained.</p>
+<p><img src="data/microarray/fig9.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="summarization" class="section level2" number="11.2">
+<h2><span class="header-section-number">11.2</span> Summarization</h2>
+<p>The final step of pre-processing is the summarization, in which a single expression estimate is calculated for each probe-set based on the intensity of the individual probe signals. Summarization step is highly dependent on the quality of the probe and probeset definitions which are in many cases low due to inaccurate transcriptome data at the time of microarray design. This can result in probesets targeting transcripts of multiple genes due to low probe specificity, probes that do not map any of the known transcripts or multiple probesets that map the same gene (Jaksik et al., 2015)</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-13"></span>
+<img src="data/microarray/fig10.png" alt="Probes corresponding to the characteristic fragments of a given gene are placed in different locations across the array; b Single probes are arranged in sets corresponding to the same region of the gene. DNA that hybridizes to the probe can be detected using a fluorescent reporter system. Increasing the number of probes to which cDNA hybridizes correctly, increases the contrast between this probe set (probe set A) and any other probe set (probe set B). (From Jaksik et al., 2015)" width="90%" />
+<p class="caption">
+Figure 11.1: Probes corresponding to the characteristic fragments of a given gene are placed in different locations across the array; b Single probes are arranged in sets corresponding to the same region of the gene. DNA that hybridizes to the probe can be detected using a fluorescent reporter system. Increasing the number of probes to which cDNA hybridizes correctly, increases the contrast between this probe set (probe set A) and any other probe set (probe set B). (From Jaksik et al., 2015)
+</p>
+</div>
+<hr />
+</div>
+</div>
+<div id="differential-expression-analysis" class="section level1" number="12">
+<h1><span class="header-section-number">12</span> Differential expression analysis</h1>
+<p>The goal of differential expression analysis is to identify those genes that are consistently expressed at different levels under different conditions by using statistical test (e.g. t-test, ANOVA, Mann-Whitney test,…) controlling the probability of false declaration.</p>
+<p>An important consideration for differential expression analysis is correction for multiple testing. This is a statistical phenomenon that occurs when thousands of comparisons (e.g. the comparison of expression of multiple genes in multiple conditions) are performed for a small number of samples (most microarray experiments have less than five biological replicates per condition). This leads to an increased chance of false positive results.</p>
+<p>Commonly used statistical methods for microarray include:</p>
+<p><strong>t-test</strong>. The statistical methods used to identify differentially expressed genes in the two groups are based on fold change, i.e., X(diseased) – Y (healthy) for any gene.</p>
+<p><strong>ANOVA</strong>. When there are more than two conditions in an experiment</p>
+<p><strong>Linear models</strong>. (e.g Limma). Capable of handling complex experimental designs and to test very flexible hypotheses.</p>
+<p><strong>Bayesian models</strong>. Flexible exploration of complex hypotheses, easy inclusion of nuisance parameters and handle missing data.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-14"></span>
+<img src="data/microarray/fig11.png" alt="Differential expression analysis plots (heat-map and Volcano plot)" width="85%" />
+<p class="caption">
+Figure 12.1: Differential expression analysis plots (heat-map and Volcano plot)
+</p>
+</div>
+<hr />
+</div>
+<div id="list-of-tools-and-software-used-in-microarray-analysis" class="section level1" number="13">
+<h1><span class="header-section-number">13</span> List of tools and software used in microarray analysis</h1>
+<table>
+<caption>
+<span id="tab:unnamed-chunk-15">Table 13.1: </span>List of commonly used tools and software according to the different steps of the microarray analysis
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+Type
+</th>
+<th style="text-align:center;">
+Name
+</th>
+<th style="text-align:center;">
+Background.correction
+</th>
+<th style="text-align:center;">
+Normalization
+</th>
+<th style="text-align:center;">
+Summarization
+</th>
+<th style="text-align:center;">
+DE.analysis
+</th>
+<th style="text-align:center;">
+GeneSet.Enrichment
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+R Package
+</td>
+<td style="text-align:center;">
+affy
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+affyio
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+beadarray
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+clusterProfiler
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+gcrma
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+genefilter
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+GEOquery
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Gostat
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+limma
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+marray
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+methylumi
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+minfi
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+oligo
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+ReactomePA
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+siggens
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+simpleaffy
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+sva
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+topGO
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+vsn
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+SOFTWARE
+</td>
+<td style="text-align:center;">
+BASE
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Chipster
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+EzArray
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Geoss
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+MARS
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+CARMAWeb
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Mayday
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+TM4
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+LICENSE
+</td>
+<td style="text-align:center;">
+Genedata Expressionist
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Partek
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+GeneSpring GX
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Geospiza
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+GenomeStudio
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="why-use-dna-microarrays-in-the-era-of-next-generation-sequencing-technology" class="section level1" number="14">
+<h1><span class="header-section-number">14</span> Why use DNA microarrays in the era of Next Generation Sequencing technology?</h1>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-16"></span>
+<img src="data/microarray/fig12.png" alt="PubMed search results count per year for microarray (orange line) and RNA-Seq (blue line)" width="85%" />
+<p class="caption">
+Figure 14.1: PubMed search results count per year for microarray (orange line) and RNA-Seq (blue line)
+</p>
+</div>
+<p><strong>Microarrays</strong></p>
+<p>+ easier and mature</p>
+<p>+ lower cost (100$-200$/sample)</p>
+<p>+ yield higher throughput</p>
+<p>– cross-hybridization</p>
+<p>– probe design bias &amp; probe annotations</p>
+<p>– limited to quantify low/high expressed genes</p>
+<p><strong>RNA-seq</strong></p>
+<p>+ precise and no cross-hybridization</p>
+<p>+ higher accuracy and wider dynamic range</p>
+<p>+ discovery of novel transcripts</p>
+<p>+ allele-specific expression and splice junct</p>
+<p>– library preparation</p>
+<p>– higher cost (300$-1000$/sample) (decreasing with new sequencing technologies)</p>
+<hr />
+<hr />
+</div>
+<div id="learning-resources" class="section level1" number="15">
+<h1><span class="header-section-number">15</span> Learning resources</h1>
+<div id="papers" class="section level2" number="15.1">
+<h2><span class="header-section-number">15.1</span> Papers</h2>
+</div>
+<div id="manuals" class="section level2" number="15.2">
+<h2><span class="header-section-number">15.2</span> Manuals</h2>
+</div>
+<div id="tutorials" class="section level2" number="15.3">
+<h2><span class="header-section-number">15.3</span> Tutorials</h2>
+<!-- --------------------- Do not edit this and below --------------------- -->
+<hr />
+<p>name: end_slide
+class: end-slide, middle
+count: false</p>
+</div>
+</div>
+<div id="thank-you.-questions" class="section level1" number="16">
+<h1><span class="header-section-number">16</span> Thank you. Questions?</h1>
+<p>.end-text[
+]</p>
+</div>
+
+
+<footer class="footer">
+<div class="container footer-container">
+<div class="row">
+
+<div class="footer-left col-sm-6">
+<p class="small">
+<b>2022</b> • <a href="https://www.zifornd.com">Zifo</a> • <a href="https://www.zifornd.com/category/omics-bioinformatics">Bioinformatics</a>
+</p>
+</div>
+
+<div class="footer-right col-sm-6">
+<p>
+<span>
+  <span class="footericon" style="padding-right:4px; padding-left:4px">
+    <a href="https://www.zifornd.com">
+      <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 496 512"><path d="M248 8C111.03 8 0 119.03 0 256s111.03 248 248 248 248-111.03 248-248S384.97 8 248 8zm82.29 357.6c-3.9 3.88-7.99 7.95-11.31 11.28-2.99 3-5.1 6.7-6.17 10.71-1.51 5.66-2.73 11.38-4.77 16.87l-17.39 46.85c-13.76 3-28 4.69-42.65 4.69v-27.38c1.69-12.62-7.64-36.26-22.63-51.25-6-6-9.37-14.14-9.37-22.63v-32.01c0-11.64-6.27-22.34-16.46-27.97-14.37-7.95-34.81-19.06-48.81-26.11-11.48-5.78-22.1-13.14-31.65-21.75l-.8-.72a114.792 114.792 0 0 1-18.06-20.74c-9.38-13.77-24.66-36.42-34.59-51.14 20.47-45.5 57.36-82.04 103.2-101.89l24.01 12.01C203.48 89.74 216 82.01 216 70.11v-11.3c7.99-1.29 16.12-2.11 24.39-2.42l28.3 28.3c6.25 6.25 6.25 16.38 0 22.63L264 112l-10.34 10.34c-3.12 3.12-3.12 8.19 0 11.31l4.69 4.69c3.12 3.12 3.12 8.19 0 11.31l-8 8a8.008 8.008 0 0 1-5.66 2.34h-8.99c-2.08 0-4.08.81-5.58 2.27l-9.92 9.65a8.008 8.008 0 0 0-1.58 9.31l15.59 31.19c2.66 5.32-1.21 11.58-7.15 11.58h-5.64c-1.93 0-3.79-.7-5.24-1.96l-9.28-8.06a16.017 16.017 0 0 0-15.55-3.1l-31.17 10.39a11.95 11.95 0 0 0-8.17 11.34c0 4.53 2.56 8.66 6.61 10.69l11.08 5.54c9.41 4.71 19.79 7.16 30.31 7.16s22.59 27.29 32 32h66.75c8.49 0 16.62 3.37 22.63 9.37l13.69 13.69a30.503 30.503 0 0 1 8.93 21.57 46.536 46.536 0 0 1-13.72 32.98zM417 274.25c-5.79-1.45-10.84-5-14.15-9.97l-17.98-26.97a23.97 23.97 0 0 1 0-26.62l19.59-29.38c2.32-3.47 5.5-6.29 9.24-8.15l12.98-6.49C440.2 193.59 448 223.87 448 256c0 8.67-.74 17.16-1.82 25.54L417 274.25z"></path>
+      </svg>
+    </a>
+    </span>
+    <span class="footericon" style="padding-right:4px; padding-left:4px">
+      <a href="https://twitter.com/zifornd"><svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path>
+    </svg>
+    </a>
+    </span>
+    <span class="footericon" style="padding-left:4px">
+      <a href="https://www.linkedin.com/company/zifo-technologies">
+        <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path>
+        </svg>
+    </a>
+    </span>
+  </span>
+</p>
+</div>
+
+</div>
+</div>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
