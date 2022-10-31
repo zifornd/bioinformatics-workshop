@@ -361,11 +361,21 @@ knitr::include_graphics("data/microarray/fig12.png")
 
 # Learning resources
 
+
 ## Papers
+* [Tools for managing and analyzing microarray data] (https://academic.oup.com/bib/article/13/1/46/218685?login=false)
 
-## Manuals
+* [DNA microarrays: Types, Applications and their future] (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4011503/)
 
-## Tutorials
+
+## Videos
+* [Probes synthesis on microarray chip] (https://www.youtube.com/watch?v=V8uNJCO7Qqo)
+
+
+## Databases
+* [Gene Expression Omnibus] (https://www.ncbi.nlm.nih.gov/geo/)
+
+* [ArrayExpress] (https://www.ebi.ac.uk/arrayexpress/)
 
 
 <!-- --------------------- Do not edit this and below --------------------- -->
