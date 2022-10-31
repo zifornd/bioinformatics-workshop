@@ -1,17 +1,9 @@
-date,room,start_time,end_time,topic,teacher,assistant,link_slide,link_lab,link_room
-31-10-2022,Zillion,9:00:00 AM,10:00:00 AM,Computer setup,,,,,http://bit.ly/2UKjEoQ
-31-10-2022,,10:00:00 AM,11:00:00 AM,Computer setup,,,,lab_md.html,
-31-10-2022,,11:00:00 AM,12:00:00 PM,"Introduction to Bioinformatics, Conda - Pre-Read",,MS,,lab_rmd.html,
-31-10-2022,,12:00:00 PM,12:30:00 PM,"Introduction to Bioinformatics, Conda - Pre-Read",,,,lab_rmdadv.html,
-31-10-2022,,1:30:00 PM,2:30:00 PM,Welcome,,,,,
-31-10-2022,,2:30:00 PM,3:30:00 PM,Introduction,,,,,
-31-10-2022,,3:30:00 PM,4:30:00 PM,Introduction to Bioinformatics,Subarna,,slide_introduction.html,,
-31-10-2022,,4:30:00 PM,5:30:00 PM,Software installation,Ahkam,,slide_software.html,,
-01-11-2022,Zillion,9:00:00 AM,10:00:00 AM,,,,,,
-,,10:00:00 AM,11:00:00 AM,,,,,,
-,,11:00:00 AM,12:00:00 PM,,,,,,
-,,12:00:00 PM,12:30:00 PM,,,,,,
-,,1:30:00 PM,2:30:00 PM,,,,,,
-,,2:30:00 PM,3:30:00 PM,,,,,,
-,,3:30:00 PM,4:30:00 PM,,,,,,
-,,4:30:00 PM,5:30:00 PM,,,,,,
+date;room;start_time;end_time;topic;teacher;assistant;link_slide;link_lab;link_room
+31-10-2022;Zillion;9:00;10:00;Computer setup;;;;;					
+;;10:00;11:00;Computer setup;;;;;			
+;;11:00;12:00;Introduction to Bioinformatics, Conda - Pre-Read;;;;;						
+;;12:00	12:30;Introduction to Bioinformatics, Conda - Pre-Read;;;;;						
+;;13:30;14:30;Welcome;;;;;						
+;;14:30;15:30;Introduction;;;;;						
+;;15:30;16:30;Introduction to Bioinformatics;SC;;slide_introduction.html;;		
+;;16:30;17:30;Software installation;AS;;slide_software.html;;
