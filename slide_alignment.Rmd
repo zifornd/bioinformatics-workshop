@@ -219,7 +219,7 @@ knitr::include_graphics("data/alignment/dotplot-arrows.png")
 # B: GTCGGAGCCCGGT
 
 # A: GTCGCAGATCGAT
-     ||||.||..||.|
+#    ||||.||..||.|
 # B: GTCGGAGCCCGGT
 
 # Hamming distance: 4
