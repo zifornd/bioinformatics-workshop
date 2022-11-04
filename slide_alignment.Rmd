@@ -460,13 +460,13 @@ The alignment score:
 ```{verbatim, echo = TRUE}
 # 1: Match (G/G) = 5
 # 2: Gap open = -2
-# 3: Match (A/A) = 4
+# 3: Match (A/A) = 5
 # 4: Match (T/T) = 5
 # 5: Mismatch (A/C) = -4
 # 6: Match (G/G) = 5
 # 7: Mismatch (A/C) = -4
 # 8: Gap open = -2
-# Total score = 7
+# Total score = 8
 ```
 
 ---
