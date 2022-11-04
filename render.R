@@ -6,6 +6,8 @@ render("home_info.Rmd")
 render("home_precourse.Rmd")
 render("home_schedule.Rmd")
 
+# Slides
+
 render("slide_introduction.Rmd", "xaringan::moon_reader")
 render("slide_software.Rmd", "xaringan::moon_reader")
 #render("slide_sequencing.Rmd", "xaringan::moon_reader") 
@@ -19,6 +21,8 @@ render("slide_sam.Rmd", "xaringan::moon_reader")
 render("slide_rnaseq.Rmd", "xaringan::moon_reader")
 render("slide_microarray.Rmd", "xaringan::moon_reader")
 render("slide_epidemiology.Rmd", "xaringan::moon_reader")
+
+# Labs
 
 render("lab_software.Rmd")
 render("lab_sequencing.Rmd")
