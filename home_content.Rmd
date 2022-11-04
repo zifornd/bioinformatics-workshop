@@ -40,6 +40,7 @@ command
 11. [RNA-seq](slide_rnaseq.html)
 12. [Metagenomics](slide_metagenomics.pdf)
 13. [Microarray](slide_microarray.html)
+14. [Epidemiology](slide_epidemiology.html)
 
 # Labs
 
