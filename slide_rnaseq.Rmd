@@ -217,11 +217,11 @@ knitr::include_graphics("data/rnaseq/images/transcriptome-alignment.png")
 
 .pull-left-50[
 
-* A
+* [DESeq2](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html): The package DESeq2 provides methods to test for differential expression by use of negative binomial generalized linear models.
 
-* B
+* [EdgeR](https://www.bioconductor.org/packages/devel/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf): Also a commonly used workflow but differs from DESeq2 in normalisation strategy. EdgeR applies a weighted mean of log ratios-based method (Trimmed Mean of M-Values) where DESeq2 uses a geometric normalisation. 
 
-* C
+* **Important Takeaway!** No statistical modelling can fully capture biological phenomena. Statistical methods rely on assumptions and requirements that are only partially satisfied. It is important to understand the basics of statistical models to know which one works best on your data!
 
 ]
 
@@ -245,11 +245,7 @@ knitr::include_graphics("data/rnaseq/images/de-analysis-overview.png")
 
   * a gene must be expressed at some minimal level before it is likely to be translated into a protein or to be biologically important
 
-* From a statistical point of view:
-
-  * The more inferences are made, the more likely erroneous inferences become
-  
-  * 
+* From a statistical point of view the more inferences are made, the more likely erroneous inferences become
 
 * The expression level is indistinguishable from technical noise
 
@@ -267,19 +263,50 @@ knitr::include_graphics("data/rnaseq/images/de-analysis-overview.png")
 
 ## Normalization
 
+.pull-left-50[
+
 * The observed counts of the genes cannot be directly compared across samples since there
 are differences in sequencing depth across libraries
 
-* Several methods have been developed to normalize counts to facilitate cross-sample comparisons:
+* Several strategies have been developed to normalize counts to facilitate cross-sample comparisons:
+  
+  * **Library Size**: One source of variation between samples is the difference in library size, where library size is the total number of reads generated for a given sample.
+  
+  * **Gene Length**: Larger genes will have inevitably higher read counts compared to smaller genes due to the difference in their gene lengths or sizes.
+  
+  * **Across Sample**: Across sample normalization methods correct for other technical artifacts (batch effects, for example) to improve data quality and ability to detect biologically relevant genes.
 
+]
 
+.pull-right-50[
+
+```{r, fig.cap = "Gene Expression Normalization Methods", out.width = "100%"}
+knitr::include_graphics("data/rnaseq/images/normalization.png")
+```
+
+]
 ---
 
 # Differential expression
 
 ## Modeling and estimation
 
+.pull-left-50[
 
+* Even with extensive datasets availability, the quantitative understanding of gene regulation is far from comprehensive, since the available data usually gives only an average of many cell states or a few snapshots of dynamic systems.
+
+* Obtaining a complete operational picture using solely experimental approaches is challenging. Mathematical modeling provides an alternative path for this key problem, offering new approaches that incorporate detailed dynamics of sets of biochemical interactions.
+
+* Therefore, differential expression analysis tools apply different techniques to achieve this. DESeq2, for example, estimates **size factors** and **gene-wise dispersion** to create a linear model for each gene.  
+]
+
+.pull-right-50[
+
+```{r, fig.cap = "Gene Expression modeling and estimation", out.width = "100%"}
+knitr::include_graphics("data/rnaseq/images/de_theory.png")
+```
+
+]
 
 
 
