@@ -1,6 +1,6 @@
 ---
 title: "RNA sequencing"
-author: "`r paste0('<b>James Ashmore</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+author: "`r paste0('<b>Haris Khan</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
 institute: Zifo RnD Solutions
 output:
   xaringan::moon_reader:
@@ -105,7 +105,7 @@ knitr::include_graphics("data/rnaseq/images/rnaseq-protocol.png")
 
 ---
 
-# ALIGNMENT AND QUANTIFICATION
+# Alignment and Quantification
 
 ## Introduction
 
