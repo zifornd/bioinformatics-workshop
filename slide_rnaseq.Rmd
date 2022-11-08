@@ -53,6 +53,51 @@ knitr::include_graphics("data/rnaseq/images/rnaseq-protocol.png")
 ```
 
 
+---
+
+# RNA-seq Applications
+
+* The popularity of RNA-seq is driven by its large number of applications
+
+* One of the main application areas is gene regulation:
+
+  * Comparison of gene expression between different tissues, cell types, genotypes, stimulation conditions, time points, disease states, growth condtions, and so on
+  
+  * The goal of such comparisons is to identify the genes that change in expression to understand the molecular pathways that are used or altered
+
+---
+
+# Design Aspects of RNA-seq
+
+.pull-left-50[
+
+* It is important to understand WHY are you sequencing? Answer to this question will affect how you design your experiment. 
+
+* Main equation for a RNA-seq experiment is:
+
+$X_dollars = #replicates x library_prep_cost + #replicates x sequencing_depth_per_replicate ~ sequencing_length
+
+
+* Key factors that can play a significant role:
+  
+  * Read type (instrument) 
+  * Number of replicates
+  * Library type
+    * Single vs paired end
+    * Type of RNA extraction
+  * The depth of sequencing
+  * Library randomization (preparation and run)
+
+]
+
+.pull-right-50[
+
+```{r, fig.cap = "A typical RNA-seq experiment", out.width = "100%"}
+knitr::include_graphics("data/rnaseq/images/exp_design.jpg")
+```
+
+]
+
 
 ---
 
@@ -82,50 +127,6 @@ knitr::include_graphics("data/rnaseq/images/rnaseq-experiment.png")
 
 ]
 
-
----
-
-# Design Aspects of RNA-seq
-
-.pull-left-50[
-
-* It is important to understand WHY are you sequencing? Answer to this question will affect how you design your experiment. 
-
-* Main equation for a RNA-seq experiment is:
-
-$X_dollars = #replicates x library_prep_cost + #replicates x sequencing_depth_per_replicate ~ sequencing_length
-
-* Key factors that can play a significant role:
-  
-  * Read type (instrument) 
-  * Number of replicates
-  * Library type
-    * Single vs paired end
-    * Type of RNA extraction
-  * The depth of sequencing
-  * Library randomization (preparation and run)
-
-]
-
-.pull-right-50[
-
-```{r, fig.cap = "A typical RNA-seq experiment", out.width = "100%"}
-knitr::include_graphics("data/rnaseq/images/exp_design.jpg")
-```
-
-]
-
----
-
-# RNA-seq Applications
-
-* The popularity of RNA-seq is driven by its large number of applications
-
-* One of the main application areas is gene regulation:
-
-  * Comparison of gene expression between different tissues, cell types, genotypes, stimulation conditions, time points, disease states, growth condtions, and so on
-  
-  * The goal of such comparisons is to identify the genes that change in expression to understand the molecular pathways that are used or altered
 
 
 ---
@@ -205,22 +206,6 @@ knitr::include_graphics("data/rnaseq/images/aggregatedcounts.png")
 * The total expression of a gene is the sum of the expression of its isoforms
 
 * Popular stand-alone read counting tools include [featureCounts](http://subread.sourceforge.net) and [HTSeq](https://htseq.readthedocs.io/en/master/)
-
----
-
-# Alignment and Quantification
-
-## Transcript Quantification
-
-* Gene-level quantification consists of assigning reads to genes
-
-* A gene consists of all transcripts produced from a specific strand at a specific locus
-
-* The total expression of a gene is the sum of the expression of its isoforms
-
-* Popular stand-alone read counting tools include [featureCounts](http://subread.sourceforge.net) and [HTSeq](https://htseq.readthedocs.io/en/master/)
-
-
 
 ---
 
