@@ -1,0 +1,5 @@
+﻿Disease,Code,Phenotype,Samples
+Crohn's disease,CD,non-inflamed colonic mucosa,15
+Crohn's disease,CD,inflamed colonic mucosa,15
+Ulcerative colitis,UC,non-inflamed colonic mucosa,14
+Ulcerative colitis,UC,inflamed colonic mucosa,14
