@@ -52,5 +52,6 @@ command
 6. [Read mapping](lab_mapping.html)
 7. [Samtools](lab_sam.html)
 8. [Analysis of RNA-seq data](lab_rnaseq.html)
+9. [Microarray analysis](lab_microarray.html)
 
 ***
