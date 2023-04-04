@@ -47,7 +47,7 @@ command
 1. [Introduction to Conda](lab_software.html)
 2. [SRA Toolkit and EDirect](lab_sequencing.html)
 3. [FASTA/Q Processing](lab_formats.html)
-4. [Integrative Genomics Viewer](lab_visualization.html)
+4. [Data Visualization](lab_visualization.html)
 5. [Quality Control](lab_quality.html)
 6. [Read mapping](lab_mapping.html)
 7. [Samtools](lab_sam.html)
