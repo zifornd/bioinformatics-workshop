@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Conda"
+title: "Software Installation- Conda"
 author: "James Ashmore"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---
