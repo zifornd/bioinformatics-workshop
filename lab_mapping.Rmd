@@ -43,7 +43,7 @@ mkdir tutorial
 Create a new environment called 'alignment' with all the required software installed:
 
 ```{bash}
-conda create --yes --name alignment bowtie2 bwa entrez-direct samtools seqkit sra-tools=2.11.0=pl5262h37d2149_1 # only this version works currently (21/09/2022) 
+conda create --yes --name alignment bowtie2 bwa entrez-direct samtools seqkit sra-tools=2.11.0 # only this version works currently (21/09/2022) 
 ```
 
 <!-- Download xtract for Apple Silicon -->
@@ -313,7 +313,7 @@ sleep 10
 cat /tmp/query.txt | efetch -format runinfo > exercises/hiv/runinfo.csv
 ```
 
-3. Create a file which contains the run accession numbers, each accession number should be on its own line:
+3. Create a file which contains the first five run accession numbers, each accession number should be on its own line:
 
 ```{bash, blur = TRUE}
 cut -d ',' -f 1 exercises/hiv/runinfo.csv | tail -n +2 | head -n 5 > exercises/hiv/runids.txt

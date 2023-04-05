@@ -318,8 +318,8 @@ knitr::include_graphics("data/sam/wgsim/reads.alignment.MAPQ.png")
 * An alignment with POS = `2` and CIGAR = `3M2I3M`
 
 ```{verbatim, echo = TRUE}
-# REF: AAGT--TAGAA
-# SEQ:  GTCGATAG
+# REF: AAGTC--TAGAA
+# SEQ:   GTCGATAG
 ```
 
 * An alignment with POS = `2` and CIGAR = `2M1D3M`

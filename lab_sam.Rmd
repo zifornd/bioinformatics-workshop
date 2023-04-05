@@ -46,7 +46,7 @@ mkdir tutorial
 Create a new environment called 'alignment' with all the required software installed:
 
 ```{bash}
-conda create --yes --name alignment bowtie2 bwa entrez-direct samtools seqkit sra-tools=2.11.0=pl5262h37d2149_1 # only this version works currently (21/09/2022)
+conda create --yes --name alignment bowtie2 bwa entrez-direct samtools seqkit sra-tools=2.11.0 # only this version works currently (21/09/2022)
 ```
 
 <!-- Download xtract for Apple Silicon -->
