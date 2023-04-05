@@ -1,0 +1,32 @@
+---
+title: "Pre-Reads"
+output:
+  bookdown::html_document2:
+    toc: false
+    number_sections: false
+---
+
+```{r,child="assets/header-lab.Rmd"}
+```
+
+This page contains links to different topics that are part of the workshop. The links below are similar to that under [Schedule](home_schedule.html) but organised here by topic.
+
+<br>
+
+# Pre-Reads
+
+1.  [Introduction to Bioinformatics](preread_introduction.html)
+2.  [Software Installation](preread_software.html)
+3.  [Next-Generation Sequencing](preread_sequencing.pdf)
+4.  [Data Sources](preread_sources.html)
+5.  [Data Formats](preread_formats.html)
+6.  [Data Visualization](preread_visualization.html)
+7.  [Quality Control](preread_quality.html)
+8.  [Sequence Alignment](preread_alignment.html)
+9.  [Read Mapping](preread_mapping.html)
+10. [SAM Format](preread_sam.html)
+11. [RNA-seq](preread_rnaseq.html)
+12. [Metagenomics](preread_metagenomics.pdf)
+13. [Microarray](preread_microarray.html)
+14. [Epidemiology](preread_epidemiology.html)
+15. [Genomic Variations](preread_genomicvariation.html)
