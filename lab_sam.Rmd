@@ -1,5 +1,5 @@
 ---
-title: "Samtools"
+title: "SAM Format- Samtools"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---
 
