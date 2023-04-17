@@ -59,6 +59,7 @@ command
 12. [Metagenomics](slide_metagenomics.pdf)
 13. [Microarray](slide_microarray.html)
 14. [Epidemiology](slide_epidemiology.html)
+15. [Genomic Variation](slide_genvar.html)
 
 # Labs
 

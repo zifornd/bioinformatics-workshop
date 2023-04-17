@@ -37,6 +37,7 @@ render("slide_sam.Rmd", "xaringan::moon_reader")
 render("slide_rnaseq.Rmd", "xaringan::moon_reader")
 render("slide_microarray.Rmd", "xaringan::moon_reader")
 render("slide_epidemiology.Rmd", "xaringan::moon_reader")
+render("slide_genvar.Rmd", "xaringan::moon_reader")
 
 # Labs
 
