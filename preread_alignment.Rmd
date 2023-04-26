@@ -1,0 +1,37 @@
+---
+title: "Sequence Alignment"
+author: "`r paste0('<b>Pre-read</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo RnD Solutions
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: true
+    chakra: 'remark-latest.min.js'
+    css: 'slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+
+<!--------------- Only edit title, subtitle & author above this --------------->
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+```
+
+---
+
+### Reference Articles
+
+   * https://www.nature.com/articles/nbt0509-455
+   
+   * https://www.nature.com/articles/nbt0704-909
+
+
+---

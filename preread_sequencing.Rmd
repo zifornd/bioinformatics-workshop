@@ -1,0 +1,54 @@
+---
+title: "Next Generation Sequencing"
+author: "`r paste0('<b>Pre-read</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo RnD Solutions
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: true
+    chakra: 'remark-latest.min.js'
+    css: 'slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+
+<!--------------- Only edit title, subtitle & author above this --------------->
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+```
+
+---
+
+### Sequencing (NGS)
+
+   * https://geneticeducation.co.in/what-is-sequencing-read-in-ngs/#
+   
+   * https://www.technologynetworks.com/genomics/articles/an-overview-of-next-generation-sequencing-346532
+   
+   * https://thebiologynotes.com/next-generation-sequencing-ngs/
+   
+### Sequence Read Archive (SRA)
+
+   * https://www.ncbi.nlm.nih.gov/sra/docs/sradownload/
+   
+   * https://btep.ccr.cancer.gov/docs/b4b/Module1_Unix_Biowulf/Lesson6/#what-is-the-sra
+   
+   * https://linsalrob.github.io/ComputationalGenomicsManual/Databases/SRA.html
+   
+### Entrez Direct
+
+   * https://www.ncbi.nlm.nih.gov/books/NBK179288/
+   
+   * https://anaconda.org/bioconda/entrez-direct
+   
+   * https://bioconda.github.io/recipes/entrez-direct/README.html
+   
+---

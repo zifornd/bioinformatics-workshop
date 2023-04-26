@@ -1,0 +1,91 @@
+---
+title: "Data Sources"
+author: "`r paste0('<b>Pre-read</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo RnD Solutions
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: true
+    chakra: 'remark-latest.min.js'
+    css: 'slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+
+<!--------------- Only edit title, subtitle & author above this --------------->
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+```
+
+---
+
+### Explore
+
+   * What is database? 
+  
+   * Different types of databases -primary, secondary database ?
+  
+   * Different database (On basis of date stored)- genomic database like UCSC, Ensembl 
+   
+   * Go to the webpage of databases and explore (What information are there, how can you download or retrieve the information, etc.)
+   
+   * Genomic feature, Genomic assembly, Genomic variation.
+   
+   * Different file formats- FASTA, FASTAQ, BED, GFF, GTF, VCF.
+   
+### Useful links
+
+##### Links to important database.
+
+   * [Ensembl](https://www.ensembl.org/index.html), [Ensembl User Guides](https://www.ensembl.org/info/website/tutorials/index.html)
+   
+   * [UCSC](https://genome.ucsc.edu/), [UCSC User Guide](https://genome.ucsc.edu/goldenPath/help/hgTracksHelp.html)
+   
+   * [NCBI](https://www.ncbi.nlm.nih.gov), [NCBI_TP53gene](https://www.ncbi.nlm.nih.gov/gene/7157)
+   
+   * [DDBJ](https://www.ddbj.nig.ac.jp/index-e.html)
+   
+   * [INSDC](https://www.insdc.org (to explore))
+   
+##### Great guide on file formats
+  
+   * Describes all types of file formats - https://genome.ucsc.edu/FAQ/FAQformat.html
+   
+##### Review article on human database
+   * https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4411498/
+   
+##### EBI Summary
+   
+   * https://www.ebi.ac.uk
+   
+##### Links to very short EBI course content on roles of databases and data sources in bioinformatics
+   
+   * https://www.ebi.ac.uk/training/online/courses/bioinformatics-terrified/the-role-of-public-databases/
+   
+   * https://www.ebi.ac.uk/training/online/courses/bioinformatics-terrified/what-makes-a-good-bioinformatics-database/
+   
+   * https://www.ebi.ac.uk/training/online/courses/bioinformatics-terrified/where-do-i-submit-my-data/
+   
+##### Older review on web based genome browsers
+  
+   * https://academic.oup.com/bib/article/14/2/131/208726 
+   
+##### Review article of UCSC, RefSeq and ensembl annotations in the context of RNAseq
+  
+   * https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4339237/
+   
+##### For efforts to match annotations between NCBI and Ensembl
+  
+   * https://www.ensembl.org/info/genome/genebuild/mane.html
+   
+   * https://www.nature.com/articles/s41586-022-04558-8
+   
+---

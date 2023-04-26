@@ -1,0 +1,72 @@
+---
+title: "Data Visualization"
+author: "`r paste0('<b>Pre-read</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo RnD Solutions
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: true
+    chakra: 'remark-latest.min.js'
+    css: 'slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+
+<!--------------- Only edit title, subtitle & author above this --------------->
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+```
+
+---
+
+### Explore
+
+   * Why do you think it is necessary to visualize genomic data ?
+   
+   * What is the genome/chromosome coordinate system ?
+   
+   * What are genome tracks ?
+   
+   * What are glyphs (in the context of data visualization) ?
+   
+   * What are coverage plots ? Also look into types if any.
+    
+   * What is genomic locus ?
+   
+   * What is a chromosome ideogram ?
+   
+   * Explore the following genomic file types:
+   
+        * bed
+        * bam
+        * gff
+        * sam
+        * vcf
+        * seg
+        * cram
+        * gtf
+        * gff3
+        * psl
+        * bigbed
+        * wig
+        * bedgraph
+        * bigwig
+        * tdf
+        
+### Useful links
+
+   * https://zifotech-my.sharepoint.com/personal/asma_a_zifocorp_com/Documents/Documents/Training-IGV/Understanding%20Genome%20Browsing.pdf
+   
+   * https://asia.ensembl.org/Multi/Help/Glossary?db=core
+   
+   * https://genome.ucsc.edu/FAQ/FAQformat.html
+    
+---
