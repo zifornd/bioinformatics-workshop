@@ -26,7 +26,7 @@ render("preread_epidemiology.Rmd", "xaringan::moon_reader")
 
 render("slide_introduction.Rmd", "xaringan::moon_reader")
 render("slide_software.Rmd", "xaringan::moon_reader")
-#render("slide_sequencing.Rmd", "xaringan::moon_reader") 
+render("slide_sequencing.Rmd", "xaringan::moon_reader") 
 render("slide_sources.Rmd", "xaringan::moon_reader")
 render("slide_formats.Rmd", "xaringan::moon_reader")
 render("slide_visualization.Rmd", "xaringan::moon_reader")
@@ -38,6 +38,7 @@ render("slide_rnaseq.Rmd", "xaringan::moon_reader")
 render("slide_microarray.Rmd", "xaringan::moon_reader")
 render("slide_epidemiology.Rmd", "xaringan::moon_reader")
 render("slide_genvar.Rmd", "xaringan::moon_reader")
+render("slide_microbiome.Rmd", "xaringan::moon_reader")
 
 # Labs
 

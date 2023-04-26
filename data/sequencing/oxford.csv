@@ -1,0 +1,2 @@
+Instrument,Yield & Runtime ,Read Length *,Error Rate #,Error Type
+MinION,"10-50 Gb, ~72 hrs",~882 Kbp,~30%,Mismatches

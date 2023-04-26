@@ -1,0 +1,377 @@
+---
+title: "Next-Generation Sequencing"
+author: "`r paste0('<b>Ratnesh Bhai Mehta</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo RnD Solutions
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: true
+    chakra: 'assets/remark-latest.min.js'
+    css: 'assets/slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+exclude: true
+count: false
+
+```{r,echo=FALSE,child="assets/header-slide.Rmd"}
+```
+
+<!-- ------------ Only edit title, subtitle & author above this ------------ -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, 
+  engine.opts = list(bash = "-l"), 
+  fig.align = "center"
+)
+```
+
+```{r, include = FALSE}
+library(knitr)
+library(kableExtra)
+```
+
+```{r, include = FALSE}
+library(reticulate)
+use_python("/opt/miniconda3/bin/python")
+```
+
+---
+
+## Sequencing Technologies 
+
+### Sequencing: Definition
+
+* In [genetics](https://en.wikipedia.org/wiki/Genetics) and [biochemistry](https://en.wikipedia.org/wiki/Biochemistry), [**sequencing**]((https://en.wikipedia.org/wiki/Sequencing)) means to determine the [primary structure](https://en.wikipedia.org/wiki/Biochemistry) (sometimes incorrectly called the primary sequence) of an unbranched [biopolymer](https://en.wikipedia.org/wiki/Biopolymer).
+
+
+  * Types
+  * Principles
+  * Their “+” and “-”
+
+<br>
+
+---
+
+## Sequencing Technologies 
+
+### Technologies
+
+<br>
+
+```{r}
+dat1 <- read.csv("data/sequencing/technologies.csv")
+
+tech <- kable(dat1[, 1:4], "html", align = "l")
+
+tech
+```
+
+---
+
+## Sequencing Technologies 
+
+### Differences Between Platforms
+
+* Technology : Chemistry + Signal Detection
+* Run Time : Varies from hours to days
+* Product Range : Mb – Gb
+* Read Length : < 100 bp to >20 Kbp
+* Accuracy per base: 0.1 % to 15%
+* Cost per base: Varies 
+
+---
+
+## Sequencing Technologies 
+
+### Illumina
+
+<br>
+```{r}
+dat2 <- read.csv("data/sequencing/illumina.csv")
+
+illu <- kable(dat2[, 1:5], "html", align = "l")
+
+illu
+```
+
+[*https://sapac.illumina.com/systems/sequencing-platforms.html](https://sapac.illumina.com/systems/sequencing-platforms.html)
+[#https://academic.oup.com/nargab/article/3/1/lqab019/6193612](https://academic.oup.com/nargab/article/3/1/lqab019/6193612)
+
+<br>
+
+#### Main Application
+
+* Whole Genome, Whole Exome, Targeted Panel Sequencing
+* Transcriptome Sequencing (total RNA-Seq, mRNA-Seq, gene expression profiling, miRNA)
+* Single-Cell Profiling (scRNA-Seq, snDNA-Seq, scDNA-Seq, oligo tagging assays)
+* Methylome and ChiPSeq
+* Metagenomic Profiling (16S RNA, shotgun metagenomics, metatranscriptomics)
+
+---
+
+## Sequencing Technologies 
+
+### ILLUMINA: Sequencing By Synthesis (SBS)
+
+<br>
+
+<iframe width="720" height="580" align="middle" src="data/sequencing/SBS.mp4" frameborder="0" allowfullscreen data-external= "1" > </iframe>
+
+
+---
+
+## Sequencing Technologies 
+
+### Thermofisher
+
+```{r}
+dat3 <- read.csv("data/sequencing/thermo.csv")
+
+thermo <- kable(dat3[, 1:5], "html", align = "l")
+
+thermo
+```
+
+[#https://www.nature.com/articles/s41598-017-08139-y](https://www.nature.com/articles/s41598-017-08139-y)
+<br>
+
+* Main Application
+   * Small Genomes, Whole Exome, Targeted Panel Sequencing
+   * Transcriptome Sequencing (total RNA-Seq, mRNA-Seq, gene expression profiling, miRNA)
+   * Metagenomic Profiling (16S RNA)
+
+---
+
+## Sequencing Technologies 
+
+### Ion Semiconductor Sequencing (pH)
+
+<br>
+
+<iframe width="720" height="580" align="middle" src="data/sequencing/ion.mp4" frameborder="0" allowfullscreen data-external= "1" > </iframe>
+
+---
+
+## Sequencing Technologies 
+
+### Pacific Biosciences
+
+```{r}
+dat4 <- read.csv("data/sequencing/pacific.csv")
+
+pacific <- kable(dat4[, 1:5], "html", align = "l")
+
+pacific
+```
+
+[#https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5553090/](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5553090/)
+<br>
+
+* Main Application
+  * Large Genomes
+  * Transcriptome Sequencing (total RNA-Seq, mRNA-Seq)
+  * Metagenomic Profiling (Shotgun Sequencing)
+
+---
+
+## Sequencing Technologies 
+
+### Single Molecule Real Time Sequencing (SMRT)
+
+<br>
+
+<iframe width="720" height="580" align="middle" src="data/sequencing/SMRT.mp4" frameborder="0" allowfullscreen data-external= "1" > </iframe>
+
+---
+
+## Sequencing Technologies 
+
+### Oxford Nanopore Technologies
+
+```{r}
+dat5 <- read.csv("data/sequencing/oxford.csv")
+
+oxford <- kable(dat5[, 1:5], "html", align = "l")
+
+oxford
+```
+
+[*https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5889714/](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5889714/)
+[#https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5553090/](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5553090/)
+
+<br>
+
+* Main Application
+  * Large Genomes, Targeted Sequencing
+  * Transcriptome Sequencing (total RNA-Seq, mRNA-Seq)
+  * Metagenomic Profiling (Shotgun Sequencing)
+  * Epigenetics
+
+---
+
+## Sequencing Technologies 
+
+### Nanopore Sequencing
+
+<br>
+
+<iframe width="720" height="580" align="middle" src="data/sequencing/nanopore.mp4" frameborder="0" allowfullscreen data-external= "1" > </iframe>
+
+
+---
+
+## Sequencing Technologies 
+
+### What is the best ?
+
+* Design your experiment based on the scientific question.
+  * Chose the best suited application for your project.
+  * Find the most optimal sequencing technology.
+  * Answer all questions about our technologies and applications, as well as 
+    bioinformatics (down stream analysis)
+---
+
+## Sequencing Technologies
+
+### Library Preparation for Sequencing
+
+<br>
+
+```{r, out.width = "40%"}
+include_graphics("data/sequencing/libprep.jpg")
+```
+---
+
+## Sequence Database
+
+### Sequencing Storage/ Cost
+
+<br>
+
+```{r, out.width = "40%"}
+include_graphics("data/sequencing/seq_storage.jpg")
+```
+
+---
+
+## Sequence Database
+
+### Raw Data Archiving
+
+```{r, out.width = "40%"}
+include_graphics("data/sequencing/raw_data.jpg")
+```
+
+---
+
+## Sequence Database
+
+### Sequencing Read Archive (SRA)
+
+* The Sequence Read Archive (SRA) was created and engineered at the
+  National Center for Biotechnology Information (NCBI), National Library of
+  Medicine (NLM), National Institutes of Health (NIH), Department of Health
+  and Human Services.
+* The SRA is part of a cluster of sequencing data repositories called the "Trace
+  Archives“ and is located under the "Primary Data Archives" at NCBI, which
+  includes GenBank.
+* The SRA is part of the International Nucleotide Sequence Database
+  Collaboration (INSDC). The data model, data transfer protocols, and
+  accession space are shared with the INSDC collaborators: European
+  Bioinformatics Institute (EBI) and the DNA Data Bank of Japan (DDBJ).
+---
+
+## Sequence Database
+
+### Primary Data Archive
+
+```{r, out.width = "40%"}
+include_graphics("data/sequencing/primary_data.jpg")
+```
+
+---
+
+## Sequence Database
+
+### Primary Data Archive: Key Features
+
+* Primary Data Archives are submitter-driven.
+* Data Archive is different from file archive. It stores data not original files.
+* Data Archive is not necessarily lossless. Some controlled loss of information
+  or precision should be allowed.
+* Internal storage format should be sufficiently uniform to enable validation,
+  searching, sub-setting, etc...
+* Extra effort is needed to support conversion from input formats as well as
+  produce output formats. Large variety of formats significantly stresses
+  archive’s resources.
+* Additional benefit of conversion is that all data are validated before archival.
+
+---
+
+## Sequence Database
+
+### NCBI-Sequence Read Archive (SRA): Walkthrough
+
+```{r, out.width = "100%"}
+knitr::include_url("https://www.ncbi.nlm.nih.gov/sra", height = "500px")
+```
+
+---
+
+
+## Sequence Database
+
+### SRA: Download (SRA Toolkit)
+
+```{r, out.width = "100%"}
+knitr::include_url("https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit", height = "500px")
+```
+
+---
+
+## Sequence Database
+
+### European Nucleotide Archive (ENA)
+
+```{r, out.width = "100%"}
+knitr::include_url("https://www.ebi.ac.uk/ena/browser/home", height = "500px")
+```
+
+---
+
+## Sequence Database
+
+### DDBJ Sequence Read Archive (DRA)
+
+```{r, out.width = "100%"}
+knitr::include_url("https://www.ddbj.nig.ac.jp/dra/index-e.html", height = "500px")
+```
+
+
+<!-- --------------------- Do not edit this and below --------------------- -->
+
+---
+name: end_slide
+class: end-slide, middle
+count: false
+
+# Thank you. Questions?
+
+```{r,echo=FALSE,child="assets/footer-slide.Rmd"}
+```
+
+```{r,include=FALSE,eval=FALSE}
+# manually run this to render this document to HTML
+rmarkdown::render("slide.Rmd")
+# manually run this to convert HTML to PDF
+#pagedown::chrome_print("slide_sample.html",output="slide_sample.pdf")
+```

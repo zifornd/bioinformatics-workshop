@@ -1,0 +1,4 @@
+Instrument,Yield & Runtime *,Read Length,Error Rate #,Error Type
+MiSeq,"15 Gb, 4-55 hrs",2 X 300 bp,0.47,Substitution
+NextSeq,"330 Gb, 11-48 hrs",2 X 150 bp,0.59,Substitution
+NovaSeq,"6000 Gb, 13-44 hrs",2 X 250 bp,0.11,Substitution

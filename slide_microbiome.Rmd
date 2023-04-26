@@ -1,0 +1,276 @@
+---
+title: "World of Microbiome"
+author: "`r paste0('<b>Ragavi Shanmugam</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo RnD Solutions
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: true
+    chakra: 'assets/remark-latest.min.js'
+    css: 'assets/slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+exclude: true
+count: false
+
+```{r,echo=FALSE,child="assets/header-slide.Rmd"}
+```
+
+<!-- ------------ Only edit title, subtitle & author above this ------------ -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, 
+  engine.opts = list(bash = "-l"), 
+  fig.align = "center"
+)
+```
+
+```{r, include = FALSE}
+library(knitr)
+library(kableExtra)
+```
+
+```{r, include = FALSE}
+library(reticulate)
+use_python("/opt/miniconda3/bin/python")
+```
+
+---
+
+## What is a Microbiome ?
+
+<br>
+
+```{r, out.width = "50%", fig.cap = "xkcd: Standards"}
+knitr::include_graphics("data/microbiome/microbiome.jpg")
+```
+
+---
+
+## What is Microbiome ?
+
+* The microbiome is the community of microorganisms (such as fungi, bacteria and viruses) that 
+exists in a particular environment (Types of Microbiome: 1. Soil Microbiome (Most complex) 2. 
+Marine microbiome 3. Plant microbiome 4. Animal Microbiome (Ex. Chicken gut microbiome) 5. 
+Human microbiome (Ex. Human gut microbiome)
+
+* In humans, the term is often used to describe the microorganisms that live in or on a particular 
+part of the body, such as the skin or gastrointestinal tract. These groups of microorganisms are 
+dynamic and change in response to a host of environmental factors, such as exercise, diet, medication and other exposures.
+
+* Microbiome research mostly looks at bacteria and fungi and rarely into archaea, viruses and other types.
+
+<br>
+
+```{r, out.width = "50%", fig.cap = "xkcd: Standards"}
+knitr::include_graphics("data/microbiome/microbiome2.jpg")
+```
+
+---
+
+## Why study Microbiome ?
+
+* We know the microbiome is important for maintaining human health, 
+  and when things go wrong it can contribute to disease. In order to 
+  understand how microbes, influence human disease, we first need to 
+  understand the microbial make up of a healthy person—what types of 
+  microbes are present, and what are they doing?
+
+<br>
+```{r, out.width = "50%"}
+include_graphics("data/microbiome/gut_microbiome.jpg")
+```
+
+---
+
+
+## What is bacteria ?
+
+
+.pull-left-40[
+
+* Bacterial Genome: 
+  1. Single chromosome 
+  2. Mostly circular 
+  3. Contains about 500-7500 
+     genes 
+  4. Genome size ranges from 
+     400kbp – 13 million base pairs
+
+]
+
+.pull-right-60[
+
+```{r, out.width = "100%"}
+include_graphics("data/microbiome/bac_cell.jpg")
+```
+
+<br>
+
+```{r, out.width = "100%"}
+include_graphics("data/microbiome/bac_genome.jpg")
+```
+
+]
+
+---
+
+## Prokaryote Ribose and 16S rRNA
+
+```{r, out.width = "100%"}
+include_graphics("data/microbiome/ribosome.jpg")
+```
+
+
+---
+
+## 16S rRNA sequence
+
+```{r, out.width = "60%"}
+include_graphics("data/microbiome/16S.jpg")
+```
+
+<br>
+
+The 16S rRNA gene is used for phylogenetic studies as it is 
+highly conserved between different species of bacteria and 
+archaea. Provides very good resolution till genus level and to 
+some extent species level. There could be one or more copies 
+of 16SrRNA in a bacterial genome.
+
+---
+
+## Comparison metagenomics VS. 16S rRNA
+
+
+```{r, out.width = "100%"}
+include_graphics("data/microbiome/comparison.jpg")
+```
+
+
+---
+
+## Comparison metagenomics VS. 16S rRNA
+
+
+```{r, out.width = "100%"}
+include_graphics("data/microbiome/comparison2.jpg")
+```
+
+
+---
+
+## 16s rRNA processing pipeline
+
+
+```{r, out.width = "100%"}
+include_graphics("data/microbiome/process_pipeline.jpg")
+```
+
+
+---
+
+## Shotgun Metagenomics Pipeline
+
+
+```{r, out.width = "100%"}
+include_graphics("data/microbiome/shotgun.jpg")
+```
+
+
+---
+
+## Suites of analysis tools
+
+```{r, out.width = "100%"}
+include_graphics("data/microbiome/tools.jpg")
+```
+
+
+---
+
+## The taxonomic and functional compositions of a microbiome
+
+```{r, out.width = "100%"}
+include_graphics("data/microbiome/taxonomic.jpg")
+```
+
+
+---
+
+## The taxonomic and functional compositions of a microbiome
+
+```{r, out.width = "100%"}
+include_graphics("data/microbiome/taxonomic2.jpg")
+```
+
+---
+
+## Diversity estimates are a central topic in microbiome data analysis
+
+### Alpha, Beta and Gamma diversity 
+* The α-diversity is just the diversity of each site (local species pool). 
+* The β-diversity represents the differences in species composition 
+  among sites. 
+* The γ-diversity is the diversity of the entire landscape (regional species 
+  pool). 
+* Shannon index α-diversity Test- Shannon index measures how evenly 
+  the microbes are distributed in a sample. It answers the question "How 
+  different?" How are the microbes balanced to each other? Do we have 
+  species evenness (similar abundance level) or do some species 
+  dominate others? 
+`
+
+---
+
+## Diversity estimates are a central topic in microbiome data analysis
+
+```{r, out.width = "100%"}
+include_graphics("data/microbiome/diversity.jpg")
+```
+
+
+---
+
+## The developing gut microbiome and major influencing environmental factors
+
+```{r, out.width = "100%"}
+include_graphics("data/microbiome/diversity2.jpg")
+```
+
+
+---
+
+## Bibliography
+
+* [Tools for Analysis of the Microbiome](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7598837/)
+
+* [Best practices for analysing microbiomes](http://users.encs.concordia.ca/~gregb/home/PDF/best-practices-analysing-microbiomes-nat2018.pdf)
+
+<!-- --------------------- Do not edit this and below --------------------- -->
+
+---
+name: end_slide
+class: end-slide, middle
+count: false
+
+# Thank you. Questions?
+
+```{r,echo=FALSE,child="assets/footer-slide.Rmd"}
+```
+
+```{r,include=FALSE,eval=FALSE}
+# manually run this to render this document to HTML
+rmarkdown::render("slide.Rmd")
+# manually run this to convert HTML to PDF
+#pagedown::chrome_print("slide_sample.html",output="slide_sample.pdf")
+```

@@ -47,7 +47,7 @@ command
 
 1.  [Introduction to Bioinformatics](slide_introduction.html)
 2.  [Software Installation](slide_software.html)
-3.  [Next-Generation Sequencing](slide_sequencing.pdf)
+3.  [Next-Generation Sequencing](slide_sequencing.html)
 4.  [Data Sources](slide_sources.html)
 5.  [Data Formats](slide_formats.html)
 6.  [Data Visualization](slide_visualization.html)
@@ -56,7 +56,7 @@ command
 9.  [Read Mapping](slide_mapping.html)
 10. [SAM Format](slide_sam.html)
 11. [RNA-seq](slide_rnaseq.html)
-12. [Metagenomics](slide_metagenomics.pdf)
+12. [Metagenomics](slide_microbiome.html)
 13. [Microarray](slide_microarray.html)
 14. [Epidemiology](slide_epidemiology.html)
 15. [Genomic Variation](slide_genvar.html)
