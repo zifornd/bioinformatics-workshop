@@ -39,10 +39,6 @@ library(knitr)
 library(kableExtra)
 ```
 
-```{r, include = FALSE}
-library(reticulate)
-use_python("/opt/miniconda3/bin/python")
-```
 
 ---
 
@@ -50,13 +46,15 @@ use_python("/opt/miniconda3/bin/python")
 
 <br>
 
-```{r, out.width = "50%", fig.cap = "xkcd: Standards"}
+```{r, out.width = "100%"}
 knitr::include_graphics("data/microbiome/microbiome.jpg")
 ```
 
 ---
 
 ## What is Microbiome ?
+
+<br>
 
 * The microbiome is the community of microorganisms (such as fungi, bacteria and viruses) that 
 exists in a particular environment (Types of Microbiome: 1. Soil Microbiome (Most complex) 2. 
@@ -69,15 +67,16 @@ dynamic and change in response to a host of environmental factors, such as exerc
 
 * Microbiome research mostly looks at bacteria and fungi and rarely into archaea, viruses and other types.
 
-<br>
 
-```{r, out.width = "50%", fig.cap = "xkcd: Standards"}
+```{r, out.width = "50%"}
 knitr::include_graphics("data/microbiome/microbiome2.jpg")
 ```
 
 ---
 
 ## Why study Microbiome ?
+
+<br>
 
 * We know the microbiome is important for maintaining human health, 
   and when things go wrong it can contribute to disease. In order to 
@@ -86,7 +85,7 @@ knitr::include_graphics("data/microbiome/microbiome2.jpg")
   microbes are present, and what are they doing?
 
 <br>
-```{r, out.width = "50%"}
+```{r, out.width = "70%"}
 include_graphics("data/microbiome/gut_microbiome.jpg")
 ```
 
@@ -99,6 +98,7 @@ include_graphics("data/microbiome/gut_microbiome.jpg")
 .pull-left-40[
 
 * Bacterial Genome: 
+
   1. Single chromosome 
   2. Mostly circular 
   3. Contains about 500-7500 
@@ -110,13 +110,13 @@ include_graphics("data/microbiome/gut_microbiome.jpg")
 
 .pull-right-60[
 
-```{r, out.width = "100%"}
+```{r, out.width = "60%"}
 include_graphics("data/microbiome/bac_cell.jpg")
 ```
 
 <br>
 
-```{r, out.width = "100%"}
+```{r, out.width = "90%"}
 include_graphics("data/microbiome/bac_genome.jpg")
 ```
 
@@ -125,6 +125,8 @@ include_graphics("data/microbiome/bac_genome.jpg")
 ---
 
 ## Prokaryote Ribose and 16S rRNA
+
+<br>
 
 ```{r, out.width = "100%"}
 include_graphics("data/microbiome/ribosome.jpg")
@@ -135,7 +137,9 @@ include_graphics("data/microbiome/ribosome.jpg")
 
 ## 16S rRNA sequence
 
-```{r, out.width = "60%"}
+<br>
+
+```{r, out.width = "100%"}
 include_graphics("data/microbiome/16S.jpg")
 ```
 
@@ -151,6 +155,7 @@ of 16SrRNA in a bacterial genome.
 
 ## Comparison metagenomics VS. 16S rRNA
 
+<br>
 
 ```{r, out.width = "100%"}
 include_graphics("data/microbiome/comparison.jpg")
@@ -161,6 +166,7 @@ include_graphics("data/microbiome/comparison.jpg")
 
 ## Comparison metagenomics VS. 16S rRNA
 
+<br>
 
 ```{r, out.width = "100%"}
 include_graphics("data/microbiome/comparison2.jpg")
@@ -171,6 +177,7 @@ include_graphics("data/microbiome/comparison2.jpg")
 
 ## 16s rRNA processing pipeline
 
+<br>
 
 ```{r, out.width = "100%"}
 include_graphics("data/microbiome/process_pipeline.jpg")
@@ -181,6 +188,7 @@ include_graphics("data/microbiome/process_pipeline.jpg")
 
 ## Shotgun Metagenomics Pipeline
 
+<br>
 
 ```{r, out.width = "100%"}
 include_graphics("data/microbiome/shotgun.jpg")
@@ -191,6 +199,8 @@ include_graphics("data/microbiome/shotgun.jpg")
 
 ## Suites of analysis tools
 
+<br>
+
 ```{r, out.width = "100%"}
 include_graphics("data/microbiome/tools.jpg")
 ```
@@ -200,7 +210,9 @@ include_graphics("data/microbiome/tools.jpg")
 
 ## The taxonomic and functional compositions of a microbiome
 
-```{r, out.width = "100%"}
+<br>
+
+```{r, out.width = "70%"}
 include_graphics("data/microbiome/taxonomic.jpg")
 ```
 
@@ -208,6 +220,8 @@ include_graphics("data/microbiome/taxonomic.jpg")
 ---
 
 ## The taxonomic and functional compositions of a microbiome
+
+<br>
 
 ```{r, out.width = "100%"}
 include_graphics("data/microbiome/taxonomic2.jpg")
@@ -217,7 +231,12 @@ include_graphics("data/microbiome/taxonomic2.jpg")
 
 ## Diversity estimates are a central topic in microbiome data analysis
 
+<br>
+
 ### Alpha, Beta and Gamma diversity 
+
+<br>
+
 * The α-diversity is just the diversity of each site (local species pool). 
 * The β-diversity represents the differences in species composition 
   among sites. 
@@ -234,6 +253,8 @@ include_graphics("data/microbiome/taxonomic2.jpg")
 
 ## Diversity estimates are a central topic in microbiome data analysis
 
+<br>
+
 ```{r, out.width = "100%"}
 include_graphics("data/microbiome/diversity.jpg")
 ```
@@ -243,6 +264,8 @@ include_graphics("data/microbiome/diversity.jpg")
 
 ## The developing gut microbiome and major influencing environmental factors
 
+<br>
+
 ```{r, out.width = "100%"}
 include_graphics("data/microbiome/diversity2.jpg")
 ```
@@ -251,6 +274,8 @@ include_graphics("data/microbiome/diversity2.jpg")
 ---
 
 ## Bibliography
+
+<br>
 
 * [Tools for Analysis of the Microbiome](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7598837/)
 
