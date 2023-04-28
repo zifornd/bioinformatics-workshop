@@ -1,0 +1,48 @@
+---
+title: "Data Formats"
+author: "`r paste0('<b>Pre-read</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo RnD Solutions
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: true
+    chakra: 'remark-latest.min.js'
+    css: 'slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+
+<!--------------- Only edit title, subtitle & author above this --------------->
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+```
+
+---
+
+## Explore
+
+   * Data formats- FASTA, FASTQ ?
+   
+   * Parsing FASTA, FASTQ files- Using Biopython and Bioconductor ?
+   
+   * Using Seqkit for FASTA/FASTQ processing ?
+   
+## Useful Links
+
+   * https://compgenomr.github.io/book/fasta-and-fastq-formats.html
+   
+   * https://bioinf.shenwei.me/seqkit/
+   
+   * https://biopython.org/wiki/SeqIO#
+   
+   * https://bioconductor.org/packages/release/bioc/vignettes/Biostrings/inst/doc/BiostringsQuickOverview.pdf
+   
+---

@@ -1,0 +1,44 @@
+---
+title: "Epidemiology"
+author: "`r paste0('<b>Pre-read</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo RnD Solutions
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: true
+    chakra: 'remark-latest.min.js'
+    css: 'slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+
+<!--------------- Only edit title, subtitle & author above this --------------->
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+```
+
+---
+
+### References
+
+   * https://www.bmj.com/about-bmj/resources-readers/publications/epidemiology-uninitiated
+   
+   * https://www.bmj.com/content/323/Suppl_S1/0107226
+   
+   * https://www.bmj.com/content/323/Suppl_S2/0108277
+   
+   * https://www.bmj.com/content/323/Suppl_S3/0109324
+   
+   * https://www.bmj.com/content/323/Suppl_S4/0110370
+   
+   * https://www.sciencedirect.com/science/article/pii/S0140673605673229
+   
+---
