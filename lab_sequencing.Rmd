@@ -1,5 +1,5 @@
 ---
-title: "SRA Toolkit and EDirect"
+title: "NGS- SRA Toolkit and EDirect"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---
 
@@ -49,7 +49,7 @@ The software we are going to use in this tutorial can be installed using the con
 Create a new environment with the SRA Toolkit installed:
 
 ```{bash}
-conda create --yes --name sra-tools sra-tools=2.11.0=pl5262h37d2149_1 # only this version works currently (21/09/2022)
+conda create --yes --name sra-tools sra-tools=2.11.0 # only this version works currently (21/09/2022)
 ```
 
 Activate the new environment to use it:

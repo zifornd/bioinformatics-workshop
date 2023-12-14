@@ -1,0 +1,5 @@
+Company,Platform,Amplification,Sequencing Method
+Illumina,"MiSeq, NextSeq, NovaSeq",Bridge PCR,Synthesis (SBS)
+ThermoFisher,Ion Torrent,emPCR,Synthesis (pH)
+Pacific Biosciences,Sequel II,None,Synthesis
+Oxford Nanopore Technologies,"MinION, GridION, PromethION",None,Flow

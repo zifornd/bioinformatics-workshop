@@ -1,0 +1,59 @@
+---
+title: "Quality control"
+author: "`r paste0('<b>Pre-read</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo RnD Solutions
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: true
+    chakra: 'remark-latest.min.js'
+    css: 'slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+
+<!--------------- Only edit title, subtitle & author above this --------------->
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+```
+
+---
+
+### Terminologies
+
+   * Probes.
+   
+   * Micro array.
+   
+   * Targets. 
+   
+   * CEL file formats.
+   
+### Concepts to understand
+ 
+   * Purpose of Normalization. 
+
+   * Purpose of Linear model and fitting linear model.
+   
+### References
+
+   * https://zifornd.github.io/bioinformatics-workshop/data/microarray/statistical_methods.pdf
+
+   * https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3431718/
+
+### Video reference: 
+
+   * https://www.youtube.com/watch?v=V8uNJCO7Qqo
+   
+---
+
+
+

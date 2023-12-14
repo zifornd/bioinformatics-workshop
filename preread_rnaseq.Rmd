@@ -1,0 +1,56 @@
+---
+title: "RNA Sequencing"
+author: "`r paste0('<b>Pre-read</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo RnD Solutions
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: true
+    chakra: 'remark-latest.min.js'
+    css: 'slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+
+<!--------------- Only edit title, subtitle & author above this --------------->
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+```
+
+---
+
+### Explore
+
+   * Replicates in an RNA seq experiment.
+   
+   * Applications of analyzing RNA Seq data.
+   
+   * Differentially Expressed genes.
+   
+   * Library size in an RNA SEQ Experiment.
+   
+   * Steps in RNA Seq Data Analysis.
+   
+### Useful Links
+
+   * https://www.genome.gov/genetics-glossary/Gene-Expression
+   
+   * https://www.yourgenome.org/facts/what-is-gene-expression/
+   
+   * https://www.ncbi.nlm.nih.gov/probe/docs/applexpression/
+   
+   * https://sapac.illumina.com/techniques/sequencing/rna-sequencing.html
+   
+   * https://www.technologynetworks.com/genomics/articles/rna-seq-basics-applications-and-protocol-299461
+   
+   * https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/ref-based/tutorial.html
+   
+---

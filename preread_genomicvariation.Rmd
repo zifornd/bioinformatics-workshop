@@ -1,0 +1,77 @@
+---
+title: "Genomic Variation"
+author: "`r paste0('<b>Pre-read</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo RnD Solutions
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: true
+    chakra: 'remark-latest.min.js'
+    css: 'slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+
+<!--------------- Only edit title, subtitle & author above this --------------->
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+```
+
+---
+
+### Explore
+
+   * How does a genetic variation occur ?
+      * https://www.nature.com/scitable/topicpage/the-genetic-variation-in-a-population-is-6526354/
+      
+   * Difference between [Variation](https://www.genome.gov/genetics-glossary/Genomic-Variation), [Mutation](https://www.genome.gov/genetics-glossary/Mutation) and [Polymorphism](https://www.genome.gov/genetics-glossary/Polymorphism) ?
+   
+   * What is an allele ? (Reference allele, Alternative allele, Major and Minor allele)
+      * https://www.genome.gov/genetics-glossary/Allele
+      * https://www.genome.gov/genetics-glossary/Dominant-Traits-and-Alleles
+      * https://www.genome.gov/genetics-glossary/Recessive-Traits-Alleles
+   
+   * What are [Genotype](https://www.genome.gov/genetics-glossary/genotype) and [Phenotype](https://www.genome.gov/genetics-glossary/Phenotype) ?
+   
+   * What are [Germline and Somatic variants](https://www.genomicseducation.hee.nhs.uk/genotes/knowledge-hub/constitutional-germline-vs-somatic-tumour-variants/) ?
+   
+   * Types of Variation ([RFLP](https://www.genome.gov/genetics-glossary/Restriction-Fragment-Length-Polymorphism), [VNTR](https://www.nlm.nih.gov/exhibition/visibleproofs/education/dna/vntr.pdf), [SSR](https://www.cell.com/trends/neurosciences/fulltext/S0166-2236(08)00131-8), [SNP](https://www.genome.gov/genetics-glossary/Single-Nucleotide-Polymorphisms), [Insertions & Deletions](https://profiles.wustl.edu/en/publications/insertions-and-deletions-indels), Rearrangement [[inversion](https://www.genome.gov/genetics-glossary/Inversion), [duplication](https://www.genome.gov/genetics-glossary/Duplication), [complex rearrangement](https://pubmed.ncbi.nlm.nih.gov/17515301/)] and [CNVs.](https://www.genome.gov/genetics-glossary/Copy-Number-Variation)
+   
+   * Difference between Synonymous SNP, Missense and Nonsense SNP ?
+      * https://www.technologynetworks.com/genomics/articles/missense-nonsense-and-frameshift-mutations-a-genetic-guide-329274
+   
+   * [Frameshift](https://www.genome.gov/genetics-glossary/Frameshift-Mutation) and [Splice site](https://www.qeios.com/read/4DGFPX) mutations ?
+   
+   * [GWAS.](https://medlineplus.gov/genetics/understanding/genomicresearch/gwastudies/#)
+   
+   * If we identify these mutations, how will we report them clinically? Is there a standard guideline ?
+      * https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4544753/
+   
+   * [WES and WGS](https://www.engenome.com/news/wes_wgs/)
+   
+   * [Microarray](https://www.genome.gov/about-genomics/fact-sheets/DNA-Microarray-Technology)
+   
+   * [What is VCF file](https://www.genomoncology.com/blog/what-is-a-variant-call-format-vcf-file#:~:text=A%20variant%20call%20format%20file,producing%20a%20raw%20sequence%20file.) ?
+
+
+### References
+
+   * Narendra M. et al. A Bioinformatics Pipeline for Whole Exome Sequencing: Overview of the Processing and Steps from Raw Data to Downstream Analysis. BioRxiv (2017).
+   
+   * The discovery of human genetic variations and their use as disease markers: past, present and future: https://www.nature.com/articles/jhg201055
+   
+   * GWAS Fact sheet: https://www.genome.gov/about-genomics/fact-sheets/Genome-Wide-Association-Studies-Fact-Sheet
+   
+   * A video on Choosing the right NGS approach: WGS vs. WES vs. targeted sequencing: https://www.science.org/content/webinar/choosing-right-ngs-approach-wgs-vs-wes-vs-targeted-sequencing
+   
+   * Small Insertions and deletions in human genome: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2953750/
+   
+---
