@@ -24,7 +24,7 @@ output:
 
 ---
 
-### Explore
+# Explore
 
    * Central dogma.
    
@@ -34,7 +34,7 @@ output:
    
    * Chromosome.
    
-### Compare the terms
+# Compare the terms
 
    * DNA vs RNA.
    
@@ -50,7 +50,7 @@ output:
    
    * Genome, Transcriptome, Metabolome, Proteome.
    
-### Useful Links
+# Useful Links
 
    * https://www.yourgenome.org/theme/how-is-dna-turned-into-protein-the-central-dogma-of-molecular-biology/
    
