@@ -6,8 +6,8 @@ output:
   xaringan::moon_reader:
     encoding: 'UTF-8'
     self_contained: true
-    chakra: 'assets/remark-latest.min.js'
-    css: 'assets/slide.css'
+    #chakra: 'assets/remark-latest.min.js'
+    #css: 'assets/slide.css'
     lib_dir: libs
     include: NULL
     nature:
@@ -21,9 +21,7 @@ output:
 
 <!--------------- Only edit title, subtitle & author above this --------------->
 
-```{r}
-knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
-```
+
 
 ---
 
