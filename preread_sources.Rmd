@@ -53,7 +53,7 @@ knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
    
    * [DDBJ](https://www.ddbj.nig.ac.jp/index-e.html)
    
-   * [INSDC](https://www.insdc.org (to explore))
+   * [INSDC](https://www.insdc.org/)
    
 ##### Great guide on file formats
   

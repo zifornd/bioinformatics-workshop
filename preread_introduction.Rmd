@@ -55,10 +55,9 @@ knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
    
 ### Useful Links
 
-   * https://www.yourgenome.org/facts/what-is-the-central-dogma/
+   * https://www.yourgenome.org/theme/how-is-dna-turned-into-protein-the-central-dogma-of-molecular-biology/
    
-   * https://www.ncbi.nlm.nih.gov/books/NBK202165/%23:
-   
+
    * https://www.orthobullets.com/basic-science/9084/molecular-biology-basics
    
 ---

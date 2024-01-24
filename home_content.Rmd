@@ -29,7 +29,7 @@ command
 
 1.  [Introduction to Bioinformatics](preread_introduction.html)
 2.  [Software Installation](preread_software.html)
-3.  [Next-Generation Sequencing](preread_sequencing.pdf)
+3.  [Next-Generation Sequencing](preread_sequencing.html)
 4.  [Data Sources](preread_sources.html)
 5.  [Data Formats](preread_formats.html)
 6.  [Data Visualization](preread_visualization.html)
@@ -38,7 +38,7 @@ command
 9.  [Read Mapping](preread_mapping.html)
 10. [SAM Format](preread_sam.html)
 11. [RNA-seq](preread_rnaseq.html)
-12. [Metagenomics](preread_metagenomics.pdf)
+12. [Metagenomics](preread_metagenomics.html)
 13. [Microarray](preread_microarray.html)
 14. [Epidemiology](preread_epidemiology.html)
 15. [Genomic Variations](preread_genomicvariation.html)
