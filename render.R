@@ -11,7 +11,6 @@ render("home_prereads.Rmd")
 
 render("preread_introduction.Rmd", "xaringan::moon_reader")
 render("preread_software.Rmd", "xaringan::moon_reader")
-render("preread_sequencing.Rmd", "xaringan::moon_reader")
 render("preread_sources.Rmd", "xaringan::moon_reader")
 render("preread_formats.Rmd", "xaringan::moon_reader")
 render("preread_visualization.Rmd", "xaringan::moon_reader")
@@ -20,10 +19,8 @@ render("preread_alignment.Rmd", "xaringan::moon_reader")
 render("preread_mapping.Rmd", "xaringan::moon_reader")
 render("preread_sam.Rmd", "xaringan::moon_reader")
 render("preread_rnaseq.Rmd", "xaringan::moon_reader")
-render("preread_metagenomics.Rmd", "xaringan::moon_reader")
 render("preread_microarray.Rmd", "xaringan::moon_reader")
 render("preread_epidemiology.Rmd", "xaringan::moon_reader")
-render("preread_genomicvariation.Rmd", "xaringan::moon_reader")
 
 # Slides
 
