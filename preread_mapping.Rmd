@@ -21,10 +21,18 @@ output:
 
 <!--------------- Only edit title, subtitle & author above this --------------->
 
-```{r}
-knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
-```
 
 ---
+
+### Explore
+   
+   * Mapping to genome.
+   * Mapping to transcriptome.
+   * Genome Indexing.
+   * Multi-mapping reads.
+
+### Useful links
+
+   * https://www.ebi.ac.uk/training/online/courses/functional-genomics-ii-common-technologies-and-data-analysis-methods/rna-sequencing/performing-a-rna-seq-experiment/data-analysis/read-mapping-or-alignment/
 
 ---

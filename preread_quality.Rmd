@@ -21,9 +21,6 @@ output:
 
 <!--------------- Only edit title, subtitle & author above this --------------->
 
-```{r}
-knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
-```
 
 ---
 
@@ -47,8 +44,7 @@ knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
    
 ### Useful Links
 
-   * https://bioinformaticsconsultants.com/qc.html
-   
+ 
    * https://support.illumina.com/bulletins/2016/04/adapter-trimming-why-are-adapter-sequences-trimmed-from-only-the--ends-of-reads.html
    
    * https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/11%20Kmer%20Content.html

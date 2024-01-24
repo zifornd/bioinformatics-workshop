@@ -21,9 +21,6 @@ output:
 
 <!--------------- Only edit title, subtitle & author above this --------------->
 
-```{r}
-knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
-```
 
 ---
 
@@ -43,7 +40,7 @@ knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
 
    * https://www.genome.gov/genetics-glossary/Gene-Expression
    
-   * https://www.yourgenome.org/facts/what-is-gene-expression/
+   * https://www.yourgenome.org/theme/what-is-gene-expression/
    
    * https://www.ncbi.nlm.nih.gov/probe/docs/applexpression/
    

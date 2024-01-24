@@ -21,9 +21,7 @@ output:
 
 <!--------------- Only edit title, subtitle & author above this --------------->
 
-```{r}
-knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
-```
+
 
 ---
 
