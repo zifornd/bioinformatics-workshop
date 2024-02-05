@@ -1,32 +1,32 @@
 ---
-title: "Introduction to Microarray Analysis"
-author: "`r paste0('<b>Valentino Ruggieri</b> â€¢ ',format(Sys.time(), '%d-%b-%Y'))`"
+  title: "Introduction to Microarray Analysis"
+author: "`r paste0('<b>Valentino Ruggieri</b> . ',format(Sys.time(), '%d-%b-%Y'))`"
 institute: Zifo RnD Solutions
 output:
   xaringan::moon_reader:
-    encoding: 'UTF-8'
-    self_contained: true
-    chakra: ['assets/remark-latest.min.js']
-    css: ['assets/slide.css']
-    lib_dir: libs
-    include: NULL
-    nature:
-      ratio: '4:3'
-      highlightLanguage: r
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      slideNumberFormat: "%current%/%total%"
+  encoding: 'UTF-8'
+self_contained: true
+chakra: ['assets/remark-latest.min.js']
+css: ['assets/slide.css']
+lib_dir: libs
+include: NULL
+nature:
+  ratio: '4:3'
+highlightLanguage: r
+highlightStyle: github
+highlightLines: true
+countIncrementalSlides: false
+slideNumberFormat: "%current%/%total%"
 ---
-exclude: true
+  exclude: true
 count: false
 
 ```{r,echo=FALSE,child="assets/header-slide.Rmd"}
 ```
 
 <!-- ------------ Only edit title, subtitle & author above this ------------ -->
-
-```{r,echo=FALSE,message=FALSE,warning=FALSE}
+  
+  ```{r,echo=FALSE,message=FALSE,warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
 ```
 
@@ -37,11 +37,11 @@ library(kableExtra)
 
 
 ---
-
-# Background
-## What is a Microarray?
-
-At the most general level, a microarray is a flat surface on which one molecule interacts with another. Generally, a microarray is a glass or plastic slide or a bead that has a piece of DNA or cDNA (an oligonucleotide or oligo) attached to it. For genomic resequencing, such as genotyping, the oligos will be pieces of DNA; for gene expression it would be cDNA derived from the transcripts. Location and signal produced provide characteristics about the interacting partners.
+  
+  # Background
+  ## What is a Microarray?
+  
+  At the most general level, a microarray is a flat surface on which one molecule interacts with another. Generally, a microarray is a glass or plastic slide or a bead that has a piece of DNA or cDNA (an oligonucleotide or oligo) attached to it. For genomic resequencing, such as genotyping, the oligos will be pieces of DNA; for gene expression it would be cDNA derived from the transcripts. Location and signal produced provide characteristics about the interacting partners.
 
 Probe-target hybridization is usually detected and quantified by detection of fluorophore-, silver-, or chemiluminescence-labeled targets to determine relative abundance of nucleic acid sequences in the target
 
@@ -58,15 +58,15 @@ knitr::include_graphics("data/microarray/fig1.png")
 ```
 
 ---
-
-# Main purposes and applications of microarrays
-
-
-* Gene expression (e.g., assess the effects of certain treatments, diseases, and developmental stages on gene expression)
+  
+  # Main purposes and applications of microarrays
+  
+  
+  * Gene expression (e.g., assess the effects of certain treatments, diseases, and developmental stages on gene expression)
 
 * Biomarker discovery (e.g., identify genes that are differentially regulated in a state)
 
-* Regulation patterns (e.g., identify coâ€“regulated genes network)
+* Regulation patterns (e.g., identify co-regulated genes network)
 
 * Drug discovery (e.g., identify genes that are regulated in response to drug treatment)
 
@@ -81,11 +81,11 @@ knitr::include_graphics("data/microarray/fig1.png")
 
 
 ---
-
-# Quantitative measure of mRNA
-## Gene expression microarray
-
-The set of expressed genes is one of the main factor determining the phenotype of a particular cell.
+  
+  # Quantitative measure of mRNA
+  ## Gene expression microarray
+  
+  The set of expressed genes is one of the main factor determining the phenotype of a particular cell.
 
 Gene expression microarrays are powerful tools that help scientists study cellular genetics. Researchers study gene expression by measuring the amount of RNA copies a gene produces.
 
@@ -97,10 +97,10 @@ knitr::include_graphics("data/microarray/fig2.png")
 ```
 
 ---
-
-# Cells and Gene expression 
-
-The repertoire of RNA produced by cells (e.g cancer  cell vs its normal counterpart) might differ significantly.
+  
+  # Cells and Gene expression 
+  
+  The repertoire of RNA produced by cells (e.g cancer  cell vs its normal counterpart) might differ significantly.
 
 Measure of expression can be useful to
 
@@ -109,7 +109,7 @@ Measure of expression can be useful to
 * Understand how expression levels change in disease development (cancerous vs non-cancerous)
 * Understand how groups of genes inter-relate (gene-gene interactions)
 * Identify cellular processes that genes participate in (structure, repair, metabolism, replication, etc)
- 
+
 
 
 ```{r, out.width = "50%", fig.cap = "As shown in figure, gene B is expressed at high level in cancer cell when compared to normal cell by contrast gene A is not expressed at all. An active gene producing a lot of RNA must be important for that specific cell type. Studying gene expression can help with understanding of cell function and lead to treatment of diseases."}
@@ -117,11 +117,11 @@ knitr::include_graphics("data/microarray/fig3.png")
 ```
 
 ---
-
-# Steps to analyze a gene expression microarray
-
-
-* Hybridization
+  
+  # Steps to analyze a gene expression microarray
+  
+  
+  * Hybridization
 
 * Data Acquisition
 
@@ -139,21 +139,21 @@ knitr::include_graphics("data/microarray/fig4.png")
 ```
 
 ---
-
-# From sample to data
-
-
-```{r, out.width = "110%", fig.cap = "Main steps for microarray preparation"}
+  
+  # From sample to data
+  
+  
+  ```{r, out.width = "110%", fig.cap = "Main steps for microarray preparation"}
 knitr::include_graphics("data/microarray/fig5.png")
 ```
 
 ---
-
-# Affymetrix Data file formats
-
- 
-
-Affymetrix GeneChips are scanned in a scanner, and the initial quantification of features is performed using associated software. The software produces numerous files.
+  
+  # Affymetrix Data file formats
+  
+  
+  
+  Affymetrix GeneChips are scanned in a scanner, and the initial quantification of features is performed using associated software. The software produces numerous files.
 
 * EXP Contains basic information about the experiment.
 * DAT Contains the raw image. 
@@ -168,11 +168,11 @@ knitr::include_graphics("data/microarray/fig6.png")
 
 
 ---
-
-# Bioconductor ExpressionSet
-
-
-Genomic data can be very complex, usually consisting of a number of different components, e.g. information on the experimental samples, annotation of genomic features measured as well as the experimental data itself. In Bioconductor, the approach is taken that these components should be stored in a single structure to easily manage the data.
+  
+  # Bioconductor ExpressionSet
+  
+  
+  Genomic data can be very complex, usually consisting of a number of different components, e.g. information on the experimental samples, annotation of genomic features measured as well as the experimental data itself. In Bioconductor, the approach is taken that these components should be stored in a single structure to easily manage the data.
 
 
 ```{r, out.width = "85%", fig.cap = "Structure of ExpressionSet class"}
@@ -180,16 +180,16 @@ knitr::include_graphics("data/microarray/fig7.png")
 ```
 
 ---
-
-# Quality control of the raw data
-
-
-The first step after the initial data import is the quality control of the data. Here we check for outliers and try to see whether the data clusters as expected, e.g. by the experimental conditions. 
+  
+  # Quality control of the raw data
+  
+  
+  The first step after the initial data import is the quality control of the data. Here we check for outliers and try to see whether the data clusters as expected, e.g. by the experimental conditions. 
 
 
 <b>Possible source of problem:</b>
-
-* tissue contamination
+  
+  * tissue contamination
 * RNA degradation
 * amplification efficiency
 * reverse transcription efficiency
@@ -212,40 +212,40 @@ knitr::include_graphics("data/microarray/fig8.png")
 
 
 ---
-
-# Background adjustment, calibration, summarization
-
-
-<b>Background adjustment</b>
-
-After the initial import and quality assessment, the next step in processing of microarray data is background adjustment. This is essential because a proportion of the measured probe intensities are due to non-specific hybridization and the noise in the optical detection system. Therefore, observed intensities need to be adjusted to give accurate measurements of specific hybridization.
+  
+  # Background adjustment, calibration, summarization
+  
+  
+  <b>Background adjustment</b>
+  
+  After the initial import and quality assessment, the next step in processing of microarray data is background adjustment. This is essential because a proportion of the measured probe intensities are due to non-specific hybridization and the noise in the optical detection system. Therefore, observed intensities need to be adjusted to give accurate measurements of specific hybridization.
 
 
 <b>Across-array normalization (calibration)</b>
-
-Normalization across arrays is needed in order to be able to compare measurements from different array hybridizations due to many obscuring sources of variation. These include different efficiencies of reverse transcription, labeling or hybridization reactions, physical problems with the arrays, reagent batch effects, and laboratory conditions.
+  
+  Normalization across arrays is needed in order to be able to compare measurements from different array hybridizations due to many obscuring sources of variation. These include different efficiencies of reverse transcription, labeling or hybridization reactions, physical problems with the arrays, reagent batch effects, and laboratory conditions.
 
 
 **Summarization**
-
-After normalization, summarization is necessary to be done because transcripts are generally represented by multiple probes, that are mapped in multiple locations on the array. For each gene, the background-adjusted and normalized intensities of all probes need to be summarized into one quantity that estimates an amount proportional to the amount of RNA transcript.
+  
+  After normalization, summarization is necessary to be done because transcripts are generally represented by multiple probes, that are mapped in multiple locations on the array. For each gene, the background-adjusted and normalized intensities of all probes need to be summarized into one quantity that estimates an amount proportional to the amount of RNA transcript.
 
 
 ---
+  
+  # Background adjustment, calibration
+  
+  ## Some mathematical background on normalization (calibration) and background correction.
+  
+  A generic model for the value of the intensity Y of a single probe on a microarray is given by
 
-# Background adjustment, calibration
+Y = B + ?? · S
 
-## Some mathematical background on normalization (calibration) and background correction.
+where B is a random quantity due to background noise, usually composed of optical effects and non-specific binding, '??' is a gain factor, and 'S' is the amount of measured specific binding. The signal 'S' is considered a random variable as well and accounts for measurement error and probe effects. The measurement error is typically assumed to be multiplicative so we can write:
+  
+  log(S) = ?? + ?? + ??
 
-A generic model for the value of the intensityÂ YÂ of a single probe on a microarray is given by
-
-                            YÂ =Â BÂ +Â Î± Â· S
-                            
-where B is a random quantity due to background noise, usually composed of optical effects and non-specific binding,Â 'Î±'Â is a gain factor, andÂ 'S'Â is the amount of measured specific binding. The signalÂ 'S'Â is considered a random variable as well and accounts for measurement error and probe effects. The measurement error is typically assumed to be multiplicative so we can write:
-
-                          log(S) =Â Î¸Â +Â Ï†Â +Â Îµ
-                          
-HereÂ 'Î¸'Â represents the logarithm of the true abundance,Â 'Ï†'Â is a probe-specific effect, andÂ 'Îµ'Â accounts for the nonspecific error. This is the additive-multiplicative-error model for microarray data used by RMA and also theÂ vsnÂ algorithm. The algorithms differ in the way thatÂ 'B'Â is removed and an estimate ofÂ 'Î¸'Â is obtained.
+Here '??' represents the logarithm of the true abundance, '??' is a probe-specific effect, and '??' accounts for the nonspecific error. This is the additive-multiplicative-error model for microarray data used by RMA and also the vsn algorithm. The algorithms differ in the way that 'B' is removed and an estimate of '??' is obtained.
 
 
 
@@ -267,17 +267,17 @@ knitr::include_graphics("data/microarray/fig10.png")
 
 
 ---
-
-# Differential expression analysis
-
-
-The goal of differential expression analysis is to identify those genes that are consistently expressed at different levels under different conditions by using statistical test (e.g. t-test, ANOVA, Mann-Whitney test,â€¦) controlling the probability of false declaration.
+  
+  # Differential expression analysis
+  
+  
+  The goal of differential expression analysis is to identify those genes that are consistently expressed at different levels under different conditions by using statistical test (e.g. t-test, ANOVA, Mann-Whitney test,.) controlling the probability of false declaration.
 
 An important consideration for differential expression analysis is correction for multiple testing. This is a statistical phenomenon that occurs when thousands of comparisons (e.g. the comparison of expression of multiple genes in multiple conditions) are performed for a small number of samples (most microarray experiments have less than five biological replicates per condition). This leads to an increased chance of false positive results.
 
 Commonly used statistical methods for microarray include:
-
-**t-test**. The statistical methods used to identify differentially expressed genes in the two groups are based on fold change, i.e.,  X(diseased) â€“ Y (healthy) for any gene.
+  
+  **t-test**. The statistical methods used to identify differentially expressed genes in the two groups are based on fold change, i.e.,  X(diseased) - Y (healthy) for any gene.
 
 **ANOVA**. When there are more than two conditions in an experiment
 
@@ -293,10 +293,10 @@ knitr::include_graphics("data/microarray/fig11.png")
 ```
 
 ---
-
-# List of tools and software used in microarray analysis
-
-```{r}
+  
+  # List of tools and software used in microarray analysis
+  
+  ```{r}
 dat <- read.csv("data/microarray/software_microarray_list.csv")
 
 kbl <- kable(dat, format= "html", caption = "List of commonly used tools and software according to the different steps of the microarray analysis", booktabs = TRUE, align = "c")
@@ -306,13 +306,13 @@ kbl
 ```
 
 ---
-
-# Why use DNA microarrays in the era of Next Generation Sequencing technology?
-
-
-
-
-```{r, out.width = "85%", fig.cap = "PubMed search results count per year for microarray (orange line) and RNA-Seq (blue line)"}
+  
+  # Why use DNA microarrays in the era of Next Generation Sequencing technology?
+  
+  
+  
+  
+  ```{r, out.width = "85%", fig.cap = "PubMed search results count per year for microarray (orange line) and RNA-Seq (blue line)"}
 knitr::include_graphics("data/microarray/fig12.png")
 ```
 
@@ -320,50 +320,50 @@ knitr::include_graphics("data/microarray/fig12.png")
 
 
 **Microarrays**
-
+  
   \+ easier and mature
 
-  \+ lower cost (100\$\-200\$\/sample)
+\+ lower cost (100\$\-200\$\/sample)
 
-  \+ yield higher throughput
+\+ yield higher throughput
 
-  â€“ cross-hybridization 
-  
-  â€“ probe design bias & probe annotations 
-  
-  â€“ limited to quantify low/high expressed genes
-  
-  
-  
+- cross-hybridization 
+
+- probe design bias & probe annotations 
+
+- limited to quantify low/high expressed genes
+
+
+
 
 
 **RNA-seq** 
-
+  
   \+ precise and no cross-hybridization 
-  
-  \+ higher accuracy and wider dynamic range 
-  
-  \+ discovery of novel transcripts
 
-  \+ allele-specific expression and splice junct
-  
-  â€“ library preparation
-  
-  â€“ higher cost (300\$\-1000$\/sample) (decreasing with new sequencing technologies)
-  
+\+ higher accuracy and wider dynamic range 
 
+\+ discovery of novel transcripts
 
----
+\+ allele-specific expression and splice junct
+
+- library preparation
+
+- higher cost (300\$\-1000$\/sample) (decreasing with new sequencing technologies)
 
 
 
 ---
-
-# Learning resources
-
-
-## Papers
-* [Tools for managing and analyzing microarray data] (https://academic.oup.com/bib/article/13/1/46/218685?login=false)
+  
+  
+  
+  ---
+  
+  # Learning resources
+  
+  
+  ## Papers
+  * [Tools for managing and analyzing microarray data] (https://academic.oup.com/bib/article/13/1/46/218685?login=false)
 
 * [DNA microarrays: Types, Applications and their future] (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4011503/)
 
@@ -379,9 +379,9 @@ knitr::include_graphics("data/microarray/fig12.png")
 
 
 <!-- --------------------- Do not edit this and below --------------------- -->
-
----
-name: end_slide
+  
+  ---
+  name: end_slide
 class: end-slide, middle
 count: false
 
