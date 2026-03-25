@@ -38,9 +38,9 @@ command
 9.  [Read Mapping](preread_mapping.html)
 10. [SAM Format](preread_sam.html)
 11. [RNA-seq](preread_rnaseq.html)
-12. [Metagenomics](preread_metagenomics.html)
-13. [Microarray](preread_microarray.html)
-14. [Epidemiology](preread_epidemiology.html)
+#12. [Metagenomics](preread_metagenomics.html)
+#13. [Microarray](preread_microarray.html)
+#14. [Epidemiology](preread_epidemiology.html)
 15. [Genomic Variations](preread_genomicvariation.html)
 
 # Slides
@@ -56,9 +56,9 @@ command
 9.  [Read Mapping](slide_mapping.html)
 10. [SAM Format](slide_sam.html)
 11. [RNA-seq](slide_rnaseq.html)
-12. [Metagenomics](slide_microbiome.html)
-13. [Microarray](slide_microarray.html)
-14. [Epidemiology](slide_epidemiology.html)
+#12. [Metagenomics](slide_microbiome.html)
+#13. [Microarray](slide_microarray.html)
+#14. [Epidemiology](slide_epidemiology.html)
 15. [Genomic Variation](slide_genvar.html)
 
 # Labs
@@ -71,6 +71,6 @@ command
 6. [Read mapping](lab_mapping.html)
 7. [SAM Format- Samtools](lab_sam.html)
 8. [Analysis of RNA-seq data](lab_rnaseq.html)
-9. [Microarray analysis](lab_microarray.html)
+#9. [Microarray analysis](lab_microarray.html)
 
 ***
