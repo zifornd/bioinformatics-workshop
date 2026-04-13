@@ -39,7 +39,7 @@ library(kableExtra)
   
 Across human tissues there is an incredible diversity of cell types, states, and interactions. To better understand these tissues and the cell types present, single-cell RNA-seq (scRNA-seq) offers a glimpse into what genes are being expressed at the level of individual cells.
 ```{r, fig.cap="Single-cell RNA sequencing workflow", out.width="60%"}
-knitr::include_graphics("assets/bulk_vs_single.jpg")
+knitr::include_graphics("data/scrna/bulk_vs_single.jpg")
 ```
 
 ---
@@ -53,7 +53,7 @@ knitr::include_graphics("assets/bulk_vs_single.jpg")
 * Gain deeper insights than bulk RNA‑seq
 
 ```{r, fig.cap="Single-cell RNA sequencing workflow", out.width="70%"}
-knitr::include_graphics("assets/Heterogeneous_Cells.jpg")
+knitr::include_graphics("data/scrna/Heterogeneous_Cells.jpg")
 ```
 
 ---
@@ -61,7 +61,7 @@ knitr::include_graphics("assets/Heterogeneous_Cells.jpg")
 # Technology Overview
 
 ```{r, fig.cap="Single-cell RNA sequencing workflow", out.width="70%"}
-knitr::include_graphics("assets/Single_Cell_Genome_Sequencing_Workflow.jpg")
+knitr::include_graphics("data/scrna/Single_Cell_Genome_Sequencing_Workflow.jpg")
 ```
 
 * Single‑cell isolation with microfluidics or droplets
@@ -72,7 +72,7 @@ knitr::include_graphics("assets/Single_Cell_Genome_Sequencing_Workflow.jpg")
 # Workflow Overview (Wet Lab)
 
 ```{r, fig.cap="Single-cell RNA-seq library workflow", out.width="80%"}
-knitr::include_graphics("assets/RNA-Seq_workflow-5.jpg")
+knitr::include_graphics("data/scrna/RNA-Seq_workflow-5.jpg")
 ```
 
 * Dissociation → Isolation → RT → Amplification → Sequencing
@@ -93,7 +93,7 @@ knitr::include_graphics("assets/RNA-Seq_workflow-5.jpg")
 
 
 ```{r, fig.cap="Clustering concept", out.width="80%"}
-knitr::include_graphics("assets/SEURAT_scRNASeq_workflow.jpg")
+knitr::include_graphics("data/scrna/SEURAT_scRNASeq_workflow.jpg")
 ```
 
 
@@ -124,11 +124,11 @@ knitr::include_graphics("assets/SEURAT_scRNASeq_workflow.jpg")
 
 .pull-right-50[
 ```{r, out.width="60%"}
-knitr::include_graphics("assets/KMeans-Gaussian-data.png")
+knitr::include_graphics("data/scrna/KMeans-Gaussian-data.png")
 ```
 
 ```{r, out.width="100%"}
-knitr::include_graphics("assets/scrna_PCA.png")
+knitr::include_graphics("data/scrna/scrna_PCA.png")
 ```
 ]
 ---
@@ -146,7 +146,7 @@ knitr::include_graphics("assets/scrna_PCA.png")
 
 .pull-right-50[
 ```{r, out.width="65%"}
-knitr::include_graphics("assets/scrna_TSNE.png")
+knitr::include_graphics("data/scrna/scrna_TSNE.png")
 ```
 ]
 <br style="clear: both">
@@ -172,7 +172,7 @@ knitr::include_graphics("assets/scrna_TSNE.png")
   - NKG7 → NK cells
 
 ```{r, out.width="80%"}
-knitr::include_graphics("assets/cell-markers.jpg")
+knitr::include_graphics("data/scrna/cell-markers.jpg")
 ```
 
 ---
@@ -186,7 +186,7 @@ knitr::include_graphics("assets/cell-markers.jpg")
   - Stem‑cell development
 
 ```{r, out.width="85%"}
-knitr::include_graphics("assets/scrna_seq_trajectory_analysis.png")
+knitr::include_graphics("data/scrna/scrna_seq_trajectory_analysis.png")
 ```
 ---
 
@@ -201,7 +201,7 @@ knitr::include_graphics("assets/scrna_seq_trajectory_analysis.png")
 </br>
 </br>
 ```{r, out.width="85%"}
-knitr::include_graphics("assets/scrna_applications.png")
+knitr::include_graphics("data/scrna/scrna_applications.png")
 ```
 ---
 name: end_slide
