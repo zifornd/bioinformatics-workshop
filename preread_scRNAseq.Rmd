@@ -1,0 +1,51 @@
+---
+title: "scRNA Sequencing"
+author: "`r paste0('<b>Pre-read</b> • ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: Zifo RnD Solutions
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: true
+    chakra: 'assets/remark-latest.min.js'
+    css: 'assets/slide.css'
+    lib_dir: libs
+    include: NULL
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+
+<!--------------- Only edit title, subtitle & author above this --------------->
+
+
+---
+
+### Explore
+
+   * What makes **single cells** different from bulk RNA measurements.
+   
+   * How scRNA‑seq captures **heterogeneity, rare cell types, and cell states**.
+   
+   * What a **UMI (Unique Molecular Identifier)** is and why it matters.
+   
+   * What are **cell and sample barcodes** in scRNA‑seq, how are they generated during library preparation?
+   
+   * Concept of **cell–cell similarity** and how clustering identifies cell types.
+   
+   * Key steps in **scRNA‑seq data analysis** using Seurat.
+   
+   * How dimensionality reduction (PCA, UMAP) helps visualize thousands of cells.
+   
+   
+### Useful Links
+
+   * https://www.10xgenomics.com/what-is-single-cell-rna-seq
+   * https://biologyinsights.com/what-is-single-cell-transcriptomics-why-does-it-matter/
+   * https://satijalab.org/seurat/articles/pbmc3k_tutorial  
+
+
+---
